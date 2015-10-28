@@ -6,4 +6,10 @@
     <title>Task_Merge</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/household/mergeview</path>
+    <page_callback>CRM_Householdmerge_Page_Mergeview</page_callback>
+    <title>Mergeview</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
 </menu>

@@ -37,13 +37,6 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
 
     // Add switch
     $this->add('hidden', 'hh_option');
-    // $selectedRowsRadio = $this->addElement(
-    //   'radio', 
-    //   'hh_option', 
-    //   NULL, 
-    //   '', 
-    //   'ts_sel', 
-    //   array('checked' => 'checked'));    
 
     // Add "CREATE NEW" elements
     $this->add(
@@ -109,29 +102,13 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
       $household_id = $household['existing_household'];
     }
 
-    // the contacts
-    $dupePairs = array();
-    foreach ($this->_contactIds as $contact_id) {
-      $dupePairs[] = array(
-        'srcID' => $contact_id,
-        'dstID' => $household_id,
-        );
-    }
-    // tell our hook to listen for the following merge
-    CRM_Householdmerge_Logic_Util::enableMerge();
-    // try to merge
-    $result = CRM_Dedupe_Merger::merge($dupePairs, array(), 'safe', FALSE);
-    // disable hook
-    CRM_Householdmerge_Logic_Util::disableMerge();
-    error_log(print_r($result,1));
-  // $mode = CRM_Utils_Array::value('mode', $params, 'safe');
-  // $autoFlip = CRM_Utils_Array::value('auto_flip', $params, TRUE);
+    // find contact_ids
+    $contact_ids = implode(',', $this->_contactIds);
 
-  // $dupePairs = array(array(
-  // 'srcID' => CRM_Utils_Array::value('main_id', $params),
-  //     'dstID' => CRM_Utils_Array::value('other_id', $params),
-  //   ));
-  // $result = CRM_Dedupe_Merger::merge($dupePairs, array(), $mode, $autoFlip);
+    // ...and pass the ball to the merge view
+    $mergeview_url = CRM_Utils_System::url('civicrm/household/mergeview', "hid=$household_id&oids=$contact_ids");
+    error_log($mergeview_url);
+    CRM_Utils_System::redirect($mergeview_url);
 
     parent::postProcess();
   }
