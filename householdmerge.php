@@ -152,3 +152,14 @@ _householdmerge_civix_civicrm_angularModules($angularModules);
 function householdmerge_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
   _householdmerge_civix_civicrm_alterSettingsFolders($metaDataFolders);
 }
+
+function householdmerge_civicrm_merge($type, &$data, $mainId = NULL, $otherId = NULL, $tables = NULL) {
+  if($type == "batch") {
+    error_log("blabla" . print_r($data['fields_in_conflict'], TRUE));
+    $data['fields_in_conflict']['move_contact_type'] = "Household";
+    unset($data['move_contact_type']);
+    unset($data['move_last_name']);
+    unset($data['move_gender_id']);
+    unset($data['move_birth_date']);
+  }
+}

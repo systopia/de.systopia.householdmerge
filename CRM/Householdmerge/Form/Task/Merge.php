@@ -97,11 +97,11 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
     // find/determine household
     if ($values['hh_option'] == 'new') {
       $household = civicrm_api3('Contact', 'create', array(
-        // 'contact_type'   => 'Household',
-        // 'household_name' => $values['household_name'],
-        'contact_type'  => 'Individual',
-        'first_name' => $values['household_name'],
-        'last_name' => $values['household_name'],
+         'contact_type'   => 'Household',
+         'household_name' => $values['household_name'],
+        //'contact_type'  => 'Individual',
+        //'first_name' => $values['household_name'],
+        //'last_name' => $values['household_name'],
         ));
       error_log(print_r($household,1));
       $household_id = $household['id'];
