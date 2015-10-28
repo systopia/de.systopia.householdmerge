@@ -117,8 +117,12 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
         'dstID' => $household_id,
         );
     }
-
+    // tell our hook to listen for the following merge
+    CRM_Householdmerge_Logic_Util::enableMerge();
+    // try to merge
     $result = CRM_Dedupe_Merger::merge($dupePairs, array(), 'safe', FALSE);
+    // disable hook
+    CRM_Householdmerge_Logic_Util::disableMerge();
     error_log(print_r($result,1));
   // $mode = CRM_Utils_Array::value('mode', $params, 'safe');
   // $autoFlip = CRM_Utils_Array::value('auto_flip', $params, TRUE);

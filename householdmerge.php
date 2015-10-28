@@ -154,8 +154,8 @@ function householdmerge_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
 }
 
 function householdmerge_civicrm_merge($type, &$data, $mainId = NULL, $otherId = NULL, $tables = NULL) {
-  if($type == "batch") {
-    error_log("blabla" . print_r($data['fields_in_conflict'], TRUE));
+  if($type == "batch" && CRM_Householdmerge_Logic_Util::isMerge()) {
+    error_log("conflict-fields" . print_r($data['fields_in_conflict'], TRUE));
     $data['fields_in_conflict']['move_contact_type'] = "Household";
     unset($data['move_contact_type']);
     unset($data['move_last_name']);
