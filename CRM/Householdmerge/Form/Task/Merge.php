@@ -30,7 +30,6 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
     }
     $this->assign('contacts', $contacts);
     $patterns = $this->calculatePatterns($contacts);
-    error_log(print_r($patterns,1));
 
     // adjust title
     CRM_Utils_System::setTitle(ts("Merge %1 contacts into a Household", array(1=>count($contacts))));
@@ -43,7 +42,7 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
       'text',
       'household_name',
       ts('Household Name'),
-      $patterns[0],
+      reset($patterns),
       TRUE
     );
 
@@ -84,19 +83,13 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
 
   function postProcess() {
     $values = $this->exportValues();
-    error_log(print_r($values,1));
-    error_log(print_r($this->_contactIds,1));
-    
+
     // find/determine household
     if ($values['hh_option'] == 'new') {
       $household = civicrm_api3('Contact', 'create', array(
          'contact_type'   => 'Household',
          'household_name' => $values['household_name'],
-        //'contact_type'  => 'Individual',
-        //'first_name' => $values['household_name'],
-        //'last_name' => $values['household_name'],
         ));
-      error_log(print_r($household,1));
       $household_id = $household['id'];
     } elseif ($values['hh_option'] == 'existing') {
       $household_id = $household['existing_household'];
@@ -107,13 +100,10 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
 
     // ...and pass the ball to the merge view
     $mergeview_url = CRM_Utils_System::url('civicrm/household/mergeview', "hid=$household_id&oids=$contact_ids");
-    error_log($mergeview_url);
     CRM_Utils_System::redirect($mergeview_url);
 
     parent::postProcess();
   }
-
-
 
 
   /*************************************************

@@ -21,7 +21,7 @@
     <table>
     {foreach from=$contacts item=contact}
       <tr class="{cycle values="odd-row,even-row"}">
-        <td><div class="icon crm-icon {$contact.display_name}-icon"></div></td>
+        <td><div class="icon crm-icon {$contact.contact_type}-icon"></div></td>
         <td>{$contact.display_name}</td>
       </tr>
     {/foreach}

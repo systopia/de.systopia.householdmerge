@@ -14,31 +14,69 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*}
 
-<table class="hhmerge">
-  <tr> 
-    <td colspan="1-10">{ts}Target:{/ts}</td>
-  </tr>
+{assign var="household_id" value=$household.id}
 
-  <tr class="hhmerge-target">
-    <td>{* Status Icon *}</td>
-    <td><div class="icon crm-icon {$household.contact_type}-icon"></div> {$household.household_name}</td>
-    <td>[{$household.id}]</div></td>
-    <td>{* Conflict Count *}</td>
-    <td>{* Merge Link *}</td>
-  </tr>
 
-  <tr> 
-    <td colspan="1-10">{ts}Contacts:{/ts}</td>
-  </tr>
-{foreach from=$other_contacts item=contact}
-  <tr class="hhmerge-contact">
-    <td><img src="{$config->resourceBase}i/check.gif"/></td>
-    <td><div class="icon crm-icon {$contact.contact_type}-icon"></div> {$contact.sort_name}</td>
-    <td>[{$contact.id}]</div></td>
-    <td>{$contact.conflicts|@count}</td>
-    <td><a href="{crmURL p='civicrm/contact/merge' q='reset=1&cid=7080&oid=4835'}">{ts}merge{/ts}</a></td>
-  </tr>
-{/foreach}
-</table>
+<div>
+  <h3>{ts}Merge Contacts:{/ts}</h3>
+  <div>
+    <table>
+    {foreach from=$other item=contact}
+      <tr class="{cycle values="odd-row,even-row"}">
+        <td width="22em">[{$contact.id}]</td>
+        <td><div class="icon crm-icon {$contact.contact_type}-icon"></div>&nbsp;{$contact.display_name}</td>
+        <td>{if !$contact.was_merged}{$contact.conflict_count} {ts}Conflicts{/ts}{/if}</td>
+        <td>
+          {if $contact.was_merged}
+          <img width="14" src="{$config->resourceBase}i/check.gif"/>&nbsp;{ts}merged{/ts}
+          {else}
+          <img width="14" src="{$config->resourceBase}i/Error.gif"/>&nbsp;{ts}not merged{/ts}
+          {/if}
+        </td>
+        <td>
+          {if !$contact.was_merged}
+            {assign var="contact_id" value=$contact.id}
+            <a class="button" href="{crmURL p='civicrm/contact/merge' q="reset=1&cid=$household_id&oid=$contact_id"}">
+              <span>{ts}Merge Now{/ts}</span>
+            </a>
+          {/if}
+        </td>
+      </tr>
+    {/foreach}
+    </table>
+  </div>
+</div>
+<br/>
+<div>
+  <h3>{ts}Into Household:{/ts}</h3>
+  <div>
+    <table>
+      <tr class="odd-row">
+        <td width="22em">[{$household_id}]</td>
+        <td><div class="icon crm-icon {$household.contact_type}-icon"></div>&nbsp;{$household.display_name}</td>
+      </tr>
+    </table>
+  </div>
+</div>
 
-<a class="button new-option" href=""><span><div class="icon reload-icon"></div>{ts}Reload{/ts}</span></a>
+
+
+<div class="crm-actions-ribbon">
+  <ul id="actions">
+      <li class="crm-hhmerge-reload">
+        <a class="button" href="">
+          <span><div class="icon refresh-icon"></div>{ts}Reload{/ts}</span>
+        </a>
+      </li>
+      {if $merge_complete}
+      <li class="crm-hhmerge-done">
+        <a class="button" href="{crmURL p='civicrm/contact/view' q="reset=1&cid=$household_id"}">
+          <span><div class="icon ui-icon-check"></div>{ts}Done{/ts}</span>
+        </a>
+      </li>
+      {/if}
+  </ul>
+  <div class="clear"></div>
+</div>
+
+

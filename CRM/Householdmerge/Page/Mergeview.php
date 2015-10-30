@@ -29,18 +29,14 @@ class CRM_Householdmerge_Page_Mergeview extends CRM_Core_Page {
 
     // extract IDs
     $household_id = (int) CRM_Utils_Array::value('hid', $_REQUEST);
-    error_log($household_id);
     $other_ids    = array();
     $oids = preg_split('#,#', CRM_Utils_Array::value('oids', $_REQUEST, ""));
-    error_log(CRM_Utils_Array::value('oids', $_REQUEST, ""));
-    error_log($oids);
     foreach ($oids as $oid) {
       $oid = (int) $oid;
       if ($oid) {
         $other_ids[] = $oid;
       }
     }
-    error_log(print_r($other_ids,1));
 
     // verify parameters
     if (empty($household_id) || empty($other_ids)) {
@@ -55,36 +51,40 @@ class CRM_Householdmerge_Page_Mergeview extends CRM_Core_Page {
     $other_contacts = array();
     foreach ($other_ids as $other_id) {
       $other_contact = civicrm_api3('Contact', 'getsingle', array('id' => $other_id));
-      error_log(print_r($other_contact,1));
-      $other_contact['was_merged'] = (bool) !empty($other_contact['is_deleted']);
+      $other_contact['was_merged'] = (bool) !empty($other_contact['contact_is_deleted']);
       $other_contacts[] = $other_contact;
     }
 
     // AND: try to merge the (remaining) contacts
-    foreach ($other_contacts as $other_contact) {
+    $merge_controller = new CRM_Householdmerge_MergeController();
+    $merge_controller->registerHHMerge($household_id, $other_ids);
+
+    $merge_complete = TRUE;
+    foreach ($other_contacts as &$other_contact) {
       if ($other_contact['was_merged']) continue;
-      $dedupe[] = array('srcID' => $other_contact['id'], 'dstID' => $household_id['id']);
-      
-      CRM_Householdmerge_Logic_Util::enableMerge();
-      $result = CRM_Dedupe_Merger::merge($dedupe, array(), 'safe', FALSE);
-      CRM_Householdmerge_Logic_Util::disableMerge();
+      $cacheParams = array();
+      $mode = 'safe';
+      $dupePairs = array();
+      $dupePairs[] = array('srcID' => $other_contact['id'], 'dstID' => $household_id);
 
-      // TODO: process result
+      $result = CRM_Dedupe_Merger::merge($dupePairs, $cacheParams, $mode, FALSE);
 
-      print_r($result);
+      // process result
+      if (!empty($result['skipped'])) {
+        $other_contact['was_merged'] = FALSE;
+        $merge_complete = FALSE;
+      }
     }
 
-  // $mode = CRM_Utils_Array::value('mode', $params, 'safe');
-  // $autoFlip = CRM_Utils_Array::value('auto_flip', $params, TRUE);
+    // set the conflict counts
+    $hhmerge_controller = new CRM_Householdmerge_MergeController();
+    foreach ($other_contacts as &$other_contact) {
+      $other_contact['conflict_count'] = $hhmerge_controller->getConflictCount($household_id, $other_contact['id']);
+    }
 
-  // $dupePairs = array(array(
-  // 'srcID' => CRM_Utils_Array::value('main_id', $params),
-  //     'dstID' => CRM_Utils_Array::value('other_id', $params),
-  //   ));
-  // $result = CRM_Dedupe_Merger::merge($dupePairs, array(), $mode, $autoFlip);
-
-    $this->assign('household', $household);
-    $this->assign('other',     $other_contacts);
+    $this->assign('household',      $household);
+    $this->assign('other',          $other_contacts);
+    $this->assign('merge_complete', $merge_complete);
 
     parent::run();
   }

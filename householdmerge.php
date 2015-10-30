@@ -141,7 +141,7 @@ function householdmerge_civicrm_caseTypes(&$caseTypes) {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_caseTypes
  */
 function householdmerge_civicrm_angularModules(&$angularModules) {
-_householdmerge_civix_civicrm_angularModules($angularModules);
+  _householdmerge_civix_civicrm_angularModules($angularModules);
 }
 
 /**
@@ -154,12 +154,17 @@ function householdmerge_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
 }
 
 function householdmerge_civicrm_merge($type, &$data, $mainId = NULL, $otherId = NULL, $tables = NULL) {
-  if($type == "batch" && CRM_Householdmerge_Logic_Util::isMerge()) {
-    error_log("conflict-fields" . print_r($data['fields_in_conflict'], TRUE));
-    $data['fields_in_conflict']['move_contact_type'] = "Household";
-    unset($data['move_contact_type']);
-    unset($data['move_last_name']);
-    unset($data['move_gender_id']);
-    unset($data['move_birth_date']);
-  }
+  // pass this hook to the househould merge controller
+  $hhmerge_controller = new CRM_Householdmerge_MergeController();
+  $hhmerge_controller->resolveConflicts($type, $data, $mainId, $otherId);
 }
+
+function householdmerge_civicrm_postProcess( $formName, &$form ) {
+  error_log("POST $formName");
+  //error_log(print_r($fo))
+}
+
+function householdmerge_civicrm_pageRun( &$page ) {
+  error_log("PAGE " . get_class($page));
+}
+
