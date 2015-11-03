@@ -1,0 +1,120 @@
+# Copyright CiviCRM LLC (c) 2004-2015
+# This file is distributed under the same license as the CiviCRM package.
+# If you contribute heavily to a translation and deem your work copyrightable,
+# make sure you license it to CiviCRM LLC under Academic Free License 3.0.
+msgid ""
+msgstr ""
+"Project-Id-Version: de.systopia.householdmerge\n"
+"POT-Creation-Date: 2015-11-03 16:49+0100\n"
+"Language-Team: SYSTOPIA <endres@systopia.de>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Bjoern Endres <Bjoern.Endres@didonai.com>\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: CRM/Householdmerge/Form/Task/Merge.php
+msgid "Custom Name"
+msgstr "Anderer Name"
+
+#: CRM/Householdmerge/Form/Task/Merge.php
+msgid "Merge %1 contacts into a Household"
+msgstr "%1 Kontakte in Haushalt mergen"
+
+#: CRM/Householdmerge/Form/Task/Merge.php
+msgid "Household Name"
+msgstr "Haushaltsname"
+
+#: CRM/Householdmerge/Form/Task/Merge.php
+msgid "Enter houshold name"
+msgstr "Haushaltsname eingeben"
+
+#: CRM/Householdmerge/Form/Task/Merge.php
+msgid "Enter Houshold ID"
+msgstr "Haushalts-ID"
+
+#: CRM/Householdmerge/Form/Task/Merge.php
+msgid "Merge"
+msgstr "Mergen"
+
+#: CRM/Householdmerge/Form/Task/Merge.php
+msgid "Abort"
+msgstr "Abbruch"
+
+#: CRM/Householdmerge/Form/Task/Merge.php
+msgid "and"
+msgstr "und"
+
+#: CRM/Householdmerge/Form/Task/Merge.php
+msgid "The %1s"
+msgstr "Die %1s"
+
+#: CRM/Householdmerge/Form/Task/Merge.php
+msgid "%1 Family"
+msgstr "Familie %1"
+
+#: CRM/Householdmerge/Page/Mergeview.php
+msgid "Merge Contacts into Household"
+msgstr "Kontakte in Haushalt mergen"
+
+#: CRM/Householdmerge/Page/Mergeview.php
+msgid "Household-Merge page cannot be called without \"hid\" or \"oids\" parameter."
+msgstr "Household-Merge Seit kann nicht ohne die  \"hid\" oder \"oids\" Parameter aufgerufen werden."
+
+#: CRM/Householdmerge/Page/Mergeview.php
+msgid "Error"
+msgstr "Fehler"
+
+#: householdmerge.php
+msgid "Merge into Household"
+msgstr "In Haushalt mergen"
+
+#: templates/CRM/Householdmerge/Form/Task/Merge.tpl
+#: templates/CRM/Householdmerge/Page/Mergeview.tpl
+msgid "Merge Contacts:"
+msgstr "Folgende Kontakte:"
+
+#: templates/CRM/Householdmerge/Form/Task/Merge.tpl
+#: templates/CRM/Householdmerge/Page/Mergeview.tpl
+msgid "Into Household:"
+msgstr "In den Haushalt mergen:"
+
+#: templates/CRM/Householdmerge/Form/Task/Merge.tpl
+msgid "Create <strong>new</strong> Household"
+msgstr "<strong>Neuen</strong> Haushalt anlegen"
+
+#: templates/CRM/Householdmerge/Form/Task/Merge.tpl
+msgid "Chose <strong>existing</strong> Household"
+msgstr "<strong>Bestehenden</strong> Haushalt wählen"
+
+#: templates/CRM/Householdmerge/Form/Task/Merge.tpl
+msgid "Warning! This cannot be undone!"
+msgstr "Warnung! Dies kann nicht mehr rückgängig gemacht werden!"
+
+#: templates/CRM/Householdmerge/Page/Mergeview.tpl
+msgid "Conflicts"
+msgstr "Konflikte"
+
+#: templates/CRM/Householdmerge/Page/Mergeview.tpl
+msgid "merged"
+msgstr "gemergt"
+
+#: templates/CRM/Householdmerge/Page/Mergeview.tpl
+msgid "not merged"
+msgstr "nicht gemergt"
+
+#: templates/CRM/Householdmerge/Page/Mergeview.tpl
+msgid "Merge Now"
+msgstr "Jetzt mergen"
+
+#: templates/CRM/Householdmerge/Page/Mergeview.tpl
+msgid "Reload"
+msgstr "Aktualisieren"
+
+#: templates/CRM/Householdmerge/Page/Mergeview.tpl
+msgid "Done"
+msgstr "Fertig"
+

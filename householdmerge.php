@@ -27,7 +27,7 @@ function householdmerge_civicrm_searchTasks($objectType, &$tasks) {
   // add MERGE INTO HOUSEHOLD task to contact list
   if ($objectType == 'contact') {
     $tasks[] = array(
-        'title' => ts('Merge into Household'),
+        'title' => ts('Merge into Household', array('domain' => 'de.systopia.householdmerge')),
         'class' => 'CRM_Householdmerge_Form_Task_Merge',
         'result' => false);
   }

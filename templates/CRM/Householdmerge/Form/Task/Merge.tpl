@@ -16,7 +16,7 @@
 
 
 <div>
-  <h3>{ts}Merge Contacts:{/ts}</h3>
+  <h3>{ts domain="de.systopia.householdmerge"}Merge Contacts:{/ts}</h3>
   <div>
     <table>
     {foreach from=$contacts item=contact}
@@ -29,13 +29,13 @@
 </div>
 <br/>
 <div>
-  <h3>{ts}Into Household:{/ts}</h3>
+  <h3>{ts domain="de.systopia.householdmerge"}Into Household:{/ts}</h3>
   <table>
     <tr><td colspan=2><hr></td></tr>
     <tr>
       <td>
         <input id="hh_option_new" class="crm-form-radio" type="radio" value="new" name="hh_option" checked="checked">
-        <label for="hh_option_new">{ts}Create <strong>new</strong> Household{/ts}</label>
+        <label for="hh_option_new">{ts domain="de.systopia.householdmerge"}Create <strong>new</strong> Household{/ts}</label>
       </td>
       <td>
         <div>
@@ -49,7 +49,7 @@
     <tr>
       <td>
         <input id="hh_option_existing" class="crm-form-radio" type="radio" value="existing" name="hh_option" >
-        <label for="hh_option_existing">{ts}Chose <strong>existing</strong> Household{/ts}</label>
+        <label for="hh_option_existing">{ts domain="de.systopia.householdmerge"}Chose <strong>existing</strong> Household{/ts}</label>
       </td>
       <td>
         <div>
@@ -63,7 +63,7 @@
 </div>
 
 <br/>
-<h1>{ts}Warning! This cannot be undone!{/ts}</h1>
+<h1>{ts domain="de.systopia.householdmerge"}Warning! This cannot be undone!{/ts}</h1>
 <div class="crm-submit-buttons">
 {include file="CRM/common/formButtons.tpl" location="bottom"}
 </div>

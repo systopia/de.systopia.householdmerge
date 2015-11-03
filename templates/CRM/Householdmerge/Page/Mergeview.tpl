@@ -18,26 +18,26 @@
 
 
 <div>
-  <h3>{ts}Merge Contacts:{/ts}</h3>
+  <h3>{ts domain="de.systopia.householdmerge"}Merge Contacts:{/ts}</h3>
   <div>
     <table>
     {foreach from=$other item=contact}
       <tr class="{cycle values="odd-row,even-row"}">
         <td width="22em">[{$contact.id}]</td>
         <td><div class="icon crm-icon {$contact.contact_type}-icon"></div>&nbsp;{$contact.display_name}</td>
-        <td>{if !$contact.was_merged}{$contact.conflict_count} {ts}Conflicts{/ts}{/if}</td>
+        <td>{if !$contact.was_merged}{$contact.conflict_count} {ts domain="de.systopia.householdmerge"}Conflicts{/ts}{/if}</td>
         <td>
           {if $contact.was_merged}
-          <img width="14" src="{$config->resourceBase}i/check.gif"/>&nbsp;{ts}merged{/ts}
+          <img width="14" src="{$config->resourceBase}i/check.gif"/>&nbsp;{ts domain="de.systopia.householdmerge"}merged{/ts}
           {else}
-          <img width="14" src="{$config->resourceBase}i/Error.gif"/>&nbsp;{ts}not merged{/ts}
+          <img width="14" src="{$config->resourceBase}i/Error.gif"/>&nbsp;{ts domain="de.systopia.householdmerge"}not merged{/ts}
           {/if}
         </td>
         <td>
           {if !$contact.was_merged}
             {assign var="contact_id" value=$contact.id}
             <a class="button" href="{crmURL p='civicrm/contact/merge' q="reset=1&cid=$household_id&oid=$contact_id"}">
-              <span>{ts}Merge Now{/ts}</span>
+              <span>{ts domain="de.systopia.householdmerge"}Merge Now{/ts}</span>
             </a>
           {/if}
         </td>
@@ -48,7 +48,7 @@
 </div>
 <br/>
 <div>
-  <h3>{ts}Into Household:{/ts}</h3>
+  <h3>{ts domain="de.systopia.householdmerge"}Into Household:{/ts}</h3>
   <div>
     <table>
       <tr class="odd-row">
@@ -65,13 +65,13 @@
   <ul id="actions">
       <li class="crm-hhmerge-reload">
         <a class="button" href="">
-          <span><div class="icon refresh-icon"></div>{ts}Reload{/ts}</span>
+          <span><div class="icon refresh-icon"></div>{ts domain="de.systopia.householdmerge"}Reload{/ts}</span>
         </a>
       </li>
       {if $merge_complete}
       <li class="crm-hhmerge-done">
         <a class="button" href="{crmURL p='civicrm/contact/view' q="reset=1&cid=$household_id"}">
-          <span><div class="icon ui-icon-check"></div>{ts}Done{/ts}</span>
+          <span><div class="icon ui-icon-check"></div>{ts domain="de.systopia.householdmerge"}Done{/ts}</span>
         </a>
       </li>
       {/if}
