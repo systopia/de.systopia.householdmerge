@@ -30,6 +30,7 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
     }
     $this->assign('contacts', $contacts);
     $patterns = $this->calculatePatterns($contacts);
+    $patterns['custom'] = ts("Custom Name");
 
     // adjust title
     CRM_Utils_System::setTitle(ts("Merge %1 contacts into a Household", array(1=>count($contacts))));
@@ -42,24 +43,25 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
       'text',
       'household_name',
       ts('Household Name'),
-      reset($patterns),
-      TRUE
+      array('size' => 32, 'placeholder' => ts("Enter houshold name")),
+      FALSE
     );
 
-    $this->add(
+    $pattern_select = $this->add(
       'select',
       'household_name_pattern',
       ts('Household Name'),
       $patterns,
-      false
+      TRUE
     );
+    $pattern_select->setSelected('custom');
 
     // Add "MERGE INTO" elements
     $this->add(
       'text',
       'existing_household',
-      ts('Choose Household'),
-      0,
+      ts('Enter Houshold ID'),
+      array('size' => 5),
       false
     );
 

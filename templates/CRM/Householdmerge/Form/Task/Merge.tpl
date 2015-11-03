@@ -21,8 +21,7 @@
     <table>
     {foreach from=$contacts item=contact}
       <tr class="{cycle values="odd-row,even-row"}">
-        <td><div class="icon crm-icon {$contact.contact_type}-icon"></div></td>
-        <td>{$contact.display_name}</td>
+        <td><div class="icon crm-icon {$contact.contact_type}-icon"></div>&nbsp;{$contact.display_name}</td>
       </tr>
     {/foreach}
     </table>
@@ -35,24 +34,21 @@
     <tr><td colspan=2><hr></td></tr>
     <tr>
       <td>
-        <input id="hh_option_new" class="crm-form-radio" type="radio" value="new" name="hh_option">
+        <input id="hh_option_new" class="crm-form-radio" type="radio" value="new" name="hh_option" checked="checked">
         <label for="hh_option_new">{ts}Create <strong>new</strong> Household{/ts}</label>
       </td>
       <td>
         <div>
-          <span>{$form.household_name.label}</span>
-          <span>{$form.household_name.html}</span>
-        </div>
-        <div>
           <span>{$form.household_name_pattern.label}</span>
           <span>{$form.household_name_pattern.html}</span>
+          <span>{$form.household_name.html}</span>
         </div>
       </td>
     </tr>
     <tr><td colspan=2><hr></td></tr>
     <tr>
       <td>
-        <input id="hh_option_existing" class="crm-form-radio" type="radio" value="existing" name="hh_option">
+        <input id="hh_option_existing" class="crm-form-radio" type="radio" value="existing" name="hh_option" >
         <label for="hh_option_existing">{ts}Chose <strong>existing</strong> Household{/ts}</label>
       </td>
       <td>
@@ -71,3 +67,18 @@
 <div class="crm-submit-buttons">
 {include file="CRM/common/formButtons.tpl" location="bottom"}
 </div>
+
+<script type="text/javascript">
+{literal}
+cj("#hh_option_new").val('existing');
+
+cj("#household_name_pattern").change(function(){
+  var selected_pattern = cj("#household_name_pattern").val();
+  if (selected_pattern == "custom") {
+    cj("#household_name").enable(true);
+  } else {
+    cj("#household_name").enable(false);
+  }
+});
+{/literal}
+</script>
