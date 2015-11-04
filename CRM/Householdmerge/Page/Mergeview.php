@@ -73,6 +73,8 @@ class CRM_Householdmerge_Page_Mergeview extends CRM_Core_Page {
       if (!empty($result['skipped'])) {
         $other_contact['was_merged'] = FALSE;
         $merge_complete = FALSE;
+      } else {
+        $other_contact['was_merged'] = TRUE;
       }
     }
 
@@ -85,6 +87,10 @@ class CRM_Householdmerge_Page_Mergeview extends CRM_Core_Page {
     $this->assign('household',      $household);
     $this->assign('other',          $other_contacts);
     $this->assign('merge_complete', $merge_complete);
+
+    if ($merge_complete) {
+      $merge_controller->unregisterHHMerge($household_id);
+    }
 
     parent::run();
   }

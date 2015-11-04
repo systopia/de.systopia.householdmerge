@@ -158,13 +158,3 @@ function householdmerge_civicrm_merge($type, &$data, $mainId = NULL, $otherId = 
   $hhmerge_controller = new CRM_Householdmerge_MergeController();
   $hhmerge_controller->resolveConflicts($type, $data, $mainId, $otherId);
 }
-
-function householdmerge_civicrm_postProcess( $formName, &$form ) {
-  error_log("POST $formName");
-  //error_log(print_r($fo))
-}
-
-function householdmerge_civicrm_pageRun( &$page ) {
-  error_log("PAGE " . get_class($page));
-}
-

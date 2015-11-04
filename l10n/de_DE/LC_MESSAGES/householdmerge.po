@@ -70,7 +70,7 @@ msgstr "Fehler"
 
 #: householdmerge.php
 msgid "Merge into Household"
-msgstr "In Haushalt mergen"
+msgstr "Kontakte in Haushalt mergen"
 
 #: templates/CRM/Householdmerge/Form/Task/Merge.tpl
 #: templates/CRM/Householdmerge/Page/Mergeview.tpl

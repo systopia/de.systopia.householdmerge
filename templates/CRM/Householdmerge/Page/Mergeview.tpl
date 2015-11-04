@@ -36,7 +36,7 @@
         <td>
           {if !$contact.was_merged}
             {assign var="contact_id" value=$contact.id}
-            <a class="button" href="{crmURL p='civicrm/contact/merge' q="reset=1&cid=$household_id&oid=$contact_id"}">
+            <a class="button" target="_blank" href="{crmURL p='civicrm/contact/merge' q="reset=1&cid=$household_id&oid=$contact_id"}">
               <span>{ts domain="de.systopia.householdmerge"}Merge Now{/ts}</span>
             </a>
           {/if}
@@ -71,7 +71,7 @@
       {if $merge_complete}
       <li class="crm-hhmerge-done">
         <a class="button" href="{crmURL p='civicrm/contact/view' q="reset=1&cid=$household_id"}">
-          <span><div class="icon ui-icon-check"></div>{ts domain="de.systopia.householdmerge"}Done{/ts}</span>
+          <span><div class="icon inform-icon"></div>{ts domain="de.systopia.householdmerge"}Done{/ts}</span>
         </a>
       </li>
       {/if}

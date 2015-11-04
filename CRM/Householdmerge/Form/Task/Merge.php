@@ -85,16 +85,21 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
 
   function postProcess() {
     $values = $this->exportValues();
-
-    // find/determine household
+    // find/determine household name
     if ($values['hh_option'] == 'new') {
+      // extract the name:
+      if ($values['household_name_pattern'] == 'custom') {
+        $household_name = $values['household_name'];
+      } else {
+        $household_name = $values['household_name_pattern'];
+      }
       $household = civicrm_api3('Contact', 'create', array(
          'contact_type'   => 'Household',
-         'household_name' => $values['household_name'],
+         'household_name' => $household_name,
         ));
       $household_id = $household['id'];
     } elseif ($values['hh_option'] == 'existing') {
-      $household_id = $household['existing_household'];
+      $household_id = (int) $values['existing_household'];
     }
 
     // find contact_ids
@@ -163,6 +168,13 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
       $patterns[3] = ts("%1 Family", array(1=>$common_last, 'domain' => 'de.systopia.householdmerge'));
     }
 
-    return $patterns;
+
+    // transform patterns into selection list
+    $pattern_selection = array();
+    foreach ($patterns as $pattern) {
+      $pattern_selection[$pattern] = $pattern;
+    }
+
+    return $pattern_selection;
   }
 }

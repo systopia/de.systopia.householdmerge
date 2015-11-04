@@ -34,7 +34,7 @@
     <tr><td colspan=2><hr></td></tr>
     <tr>
       <td>
-        <input id="hh_option_new" class="crm-form-radio" type="radio" value="new" name="hh_option" checked="checked">
+        <input id="hh_option_new" class="crm-form-radio" type="radio" name="hh_option" value="new" checked="checked">
         <label for="hh_option_new">{ts domain="de.systopia.householdmerge"}Create <strong>new</strong> Household{/ts}</label>
       </td>
       <td>
@@ -48,7 +48,7 @@
     <tr><td colspan=2><hr></td></tr>
     <tr>
       <td>
-        <input id="hh_option_existing" class="crm-form-radio" type="radio" value="existing" name="hh_option" >
+        <input id="hh_option_existing" class="crm-form-radio" type="radio" name="hh_option" value="existing">
         <label for="hh_option_existing">{ts domain="de.systopia.householdmerge"}Chose <strong>existing</strong> Household{/ts}</label>
       </td>
       <td>
@@ -70,7 +70,7 @@
 
 <script type="text/javascript">
 {literal}
-cj("#hh_option_new").val('existing');
+// cj("#hh_option_new").val('existing');
 
 cj("#household_name_pattern").change(function(){
   var selected_pattern = cj("#household_name_pattern").val();

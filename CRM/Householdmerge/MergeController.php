@@ -74,18 +74,21 @@ class CRM_Householdmerge_MergeController {
    *  first_name, contact_type, etc.
    */
   public function resolveConflicts($type, &$data, $mainId, $otherId) {
-    if ($this->isHHMerge($mainId, $otherId)) {
+    if ($type == 'batch' && $this->isHHMerge($mainId, $otherId)) {
       // DOESN'T WORK (goBackToHHMerge)
       // $this->session->popUserContext();
       // $this->session->pushUserContext(CRM_Utils_System::url('civicrm/contact/view', 'reset=1&cid=7898'));
 
-      // automatically resolve some of the problems
-      $fields_to_ignore = array('move_contact_type', 'move_last_name', 'move_last_name', 'move_gender_id', 'move_birth_date', 'move_prefix_id');
-      foreach ($fields_to_ignore as $field_name) {
-        unset($data['fields_in_conflict'][$field_name]);
-        unset($data[$field_name]);
-        $this->setConflictCount($mainId, $otherId, count($data['fields_in_conflict']));
+      // automatically "resolve" some of the problems of merging an individual into a household
+      $conflicts = &$data['fields_in_conflict'];
+      $fields_to_ignore = array('move_first_name', 'move_last_name', 'move_gender_id', 'move_birth_date', 'move_prefix_id');
+      foreach ($conflicts as $key => $value) {
+        if (in_array($key, $fields_to_ignore)) {
+          unset($conflicts[$key]);
+        }
       }
+      $conflicts['move_contact_type'] = "Household";
+      $this->setConflictCount($mainId, $otherId, count($conflicts)-1);
     }
   }
 
