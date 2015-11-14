@@ -34,7 +34,6 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
         $contacts[$contact_id] = $contact;
       } elseif ($contact['contact_type'] == 'Household') {
         $households[$contact_id] = $contact;
-        $organisations[$contact_id] = $contact;
       } else {
         $organisations[$contact_id] = $contact;
       }
