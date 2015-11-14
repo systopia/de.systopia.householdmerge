@@ -23,20 +23,36 @@ require_once 'CRM/Core/Form.php';
 class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
   
   function buildQuickForm() {
-    // first: load all the contacts
-    $contacts = array();
+    // first: sort out the contacts
+    $contacts      = array();
+    $households    = array();
+    $organisations = array();
+
     foreach ($this->_contactIds as $contact_id) {
-      $contacts[$contact_id] = civicrm_api3('Contact', 'getsingle', array('id' => $contact_id)); 
+      $contact = civicrm_api3('Contact', 'getsingle', array('id' => $contact_id));
+      if ($contact['contact_type'] == 'Individual') {
+        $contacts[$contact_id] = $contact;
+      } elseif ($contact['contact_type'] == 'Household') {
+        $households[$contact_id] = $contact;
+        $organisations[$contact_id] = $contact;
+      } else {
+        $organisations[$contact_id] = $contact;
+      }
     }
-    $this->assign('contacts', $contacts);
+
+    $this->assign('contacts',   $contacts);
+    $this->assign('households', $households);
+    $this->assign('ignored',    $organisations);
+
     $patterns = $this->calculatePatterns($contacts);
     $patterns['custom'] = ts("Custom Name", array('domain' => 'de.systopia.householdmerge'));
 
     // adjust title
     CRM_Utils_System::setTitle(ts("Merge %1 contacts into a Household", array(1=>count($contacts), 'domain' => 'de.systopia.householdmerge')));
 
-    // Add switch
+    // Add switch and ID list
     $this->add('hidden', 'hh_option');
+    $this->add('hidden', 'hh_contacts', implode(',', array_keys($contacts)));
 
     // Add "CREATE NEW" elements
     $this->add(
@@ -100,10 +116,13 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
       $household_id = $household['id'];
     } elseif ($values['hh_option'] == 'existing') {
       $household_id = (int) $values['existing_household'];
+    } else {
+      // has to be the selected_XXX preselected houshold change
+      $household_id = (int) substr($values['hh_option'], 9);
     }
 
     // find contact_ids
-    $contact_ids = implode(',', $this->_contactIds);
+    $contact_ids = $values['hh_contacts'];
 
     // ...and pass the ball to the merge view
     $mergeview_url = CRM_Utils_System::url('civicrm/household/mergeview', "hid=$household_id&oids=$contact_ids");

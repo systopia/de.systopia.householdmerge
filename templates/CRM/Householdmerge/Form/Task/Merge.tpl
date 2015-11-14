@@ -14,9 +14,11 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*}
 
+{capture assign=ignore_count}{$ignored|@count}{/capture}
+{capture assign=ignore_msg}{ts domain="de.systopia.householdmerge" 1=$ignore_count}(%1 selected contacts have been ignored){/ts}{/capture}
 
 <div>
-  <h3>{ts domain="de.systopia.householdmerge"}Merge Contacts:{/ts}</h3>
+  <h3>{ts domain="de.systopia.householdmerge"}Merge Contacts:{/ts}{if $ignore_count} {$ignore_msg}{/if}</h3>
   <div>
     <table>
     {foreach from=$contacts item=contact}
@@ -31,10 +33,23 @@
 <div>
   <h3>{ts domain="de.systopia.householdmerge"}Into Household:{/ts}</h3>
   <table>
+    {foreach from=$households item=household name=hhlist}
     <tr><td colspan=2><hr></td></tr>
     <tr>
       <td>
-        <input id="hh_option_new" class="crm-form-radio" type="radio" name="hh_option" value="new" checked="checked">
+        <input id="hh_option_existing" class="crm-form-radio" type="radio" name="hh_option" value="selected_{$household.id}" {if $smarty.foreach.hhlist.first}checked="checked"{/if}>
+        <label for="hh_option_existing">{ts domain="de.systopia.householdmerge"}<strong>Selected</strong> Household{/ts}</label>
+      </td>
+      <td>
+        <div class="icon crm-icon {$household.contact_type}-icon"></div>&nbsp;{$household.display_name}&nbsp;[{$household.id}]
+      </td>
+    </tr>
+    {/foreach}
+
+    <tr><td colspan=2><hr></td></tr>
+    <tr>
+      <td>
+        <input id="hh_option_new" class="crm-form-radio" type="radio" name="hh_option" value="new" {if not $households}checked="checked"{/if} >
         <label for="hh_option_new">{ts domain="de.systopia.householdmerge"}Create <strong>new</strong> Household{/ts}</label>
       </td>
       <td>
@@ -45,11 +60,12 @@
         </div>
       </td>
     </tr>
+
     <tr><td colspan=2><hr></td></tr>
     <tr>
       <td>
         <input id="hh_option_existing" class="crm-form-radio" type="radio" name="hh_option" value="existing">
-        <label for="hh_option_existing">{ts domain="de.systopia.householdmerge"}Chose <strong>existing</strong> Household{/ts}</label>
+        <label for="hh_option_existing">{ts domain="de.systopia.householdmerge"}Choose other <strong>existing</strong> Household{/ts}</label>
       </td>
       <td>
         <div>
@@ -61,6 +77,9 @@
     <tr><td colspan=2><hr></td></tr>
   </table>
 </div>
+
+{* contact ID list (hidden) *}
+{$form.hh_contacts.html}
 
 <br/>
 <h1>{ts domain="de.systopia.householdmerge"}Warning! This cannot be undone!{/ts}</h1>
