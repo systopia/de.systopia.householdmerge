@@ -5,13 +5,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: de.systopia.householdmerge\n"
-"POT-Creation-Date: 2015-11-03 16:49+0100\n"
+"POT-Creation-Date: 2015-11-14 11:45+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Bjoern Endres <Bjoern.Endres@didonai.com>\n"
 "Language-Team: SYSTOPIA <endres@systopia.de>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: \n"
-"Last-Translator: Bjoern Endres <Bjoern.Endres@didonai.com>\n"
 "X-Poedit-Language: German\n"
 "X-Poedit-Country: GERMANY\n"
 "X-Poedit-SourceCharset: utf-8\n"
@@ -73,6 +73,10 @@ msgid "Merge into Household"
 msgstr "Kontakte in Haushalt mergen"
 
 #: templates/CRM/Householdmerge/Form/Task/Merge.tpl
+msgid "(%1 selected contacts have been ignored)"
+msgstr "(%1 gewählte Kontakte wurden ignoriert)"
+
+#: templates/CRM/Householdmerge/Form/Task/Merge.tpl
 #: templates/CRM/Householdmerge/Page/Mergeview.tpl
 msgid "Merge Contacts:"
 msgstr "Folgende Kontakte:"
@@ -83,12 +87,16 @@ msgid "Into Household:"
 msgstr "In den Haushalt mergen:"
 
 #: templates/CRM/Householdmerge/Form/Task/Merge.tpl
+msgid "<strong>Selected</strong> Household"
+msgstr "<strong>Ausgewählten</strong> Haushalt"
+
+#: templates/CRM/Householdmerge/Form/Task/Merge.tpl
 msgid "Create <strong>new</strong> Household"
 msgstr "<strong>Neuen</strong> Haushalt anlegen"
 
 #: templates/CRM/Householdmerge/Form/Task/Merge.tpl
-msgid "Chose <strong>existing</strong> Household"
-msgstr "<strong>Bestehenden</strong> Haushalt wählen"
+msgid "Choose other <strong>existing</strong> Household"
+msgstr "Anderen <strong>bestehenden</strong> Haushalt wählen"
 
 #: templates/CRM/Householdmerge/Form/Task/Merge.tpl
 msgid "Warning! This cannot be undone!"
