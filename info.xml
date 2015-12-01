@@ -9,14 +9,14 @@
     <email>endres@systopia.de</email>
   </maintainer>
   <urls>
-    <url desc="Main Extension Page">http://FIXME</url>
-    <url desc="Documentation">http://FIXME</url>
-    <url desc="Support">http://FIXME</url>
+    <url desc="Main Extension Page">https://github.com/systopia/de.systopia.householdmerge</url>
+    <url desc="Documentation">https://github.com/systopia/de.systopia.householdmerge</url>
+    <url desc="Support">https://github.com/systopia/de.systopia.householdmerge</url>
     <url desc="Licensing">http://www.gnu.org/licenses/agpl-3.0.html</url>
   </urls>
   <releaseDate>2015-11-14</releaseDate>
   <version>0.2</version>
-  <develStage>alpha</develStage>
+  <develStage>beta</develStage>
   <compatibility>
     <ver>4.4</ver>
   </compatibility>
