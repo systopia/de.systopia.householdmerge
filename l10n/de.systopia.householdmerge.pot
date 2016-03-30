@@ -24,11 +24,11 @@ msgid "Household Name"
 msgstr ""
 
 #: CRM/Householdmerge/Form/Task/Merge.php
-msgid "Enter houshold name"
+msgid "Enter household name"
 msgstr ""
 
 #: CRM/Householdmerge/Form/Task/Merge.php
-msgid "Enter Houshold ID"
+msgid "Enter Household ID"
 msgstr ""
 
 #: CRM/Householdmerge/Form/Task/Merge.php

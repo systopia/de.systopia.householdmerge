@@ -12,4 +12,18 @@
     <title>Mergeview</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/admin/setting/household</path>
+    <page_callback>CRM_Admin_Form_Setting_Household</page_callback>
+    <title>Household Settings</title>
+    <access_arguments>administer CiviCRM</access_arguments>
+    <adminGroup>CiviContact</adminGroup>
+    <icon>admin/small/06.png</icon>
+  </item>
+  <item>
+    <path>civicrm/household/finder</path>
+    <page_callback>CRM_Householdmerge_Page_Finder</page_callback>
+    <title>Finder</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
 </menu>

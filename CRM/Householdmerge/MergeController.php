@@ -26,7 +26,7 @@ class CRM_Householdmerge_MergeController {
   }
 
   /**
-   * Register an ongoing houshold merge
+   * Register an ongoing household merge
    * This affects the merge hook and a comeback function
    */
   public function registerHHMerge($household_id, $contact_ids) {
@@ -36,7 +36,7 @@ class CRM_Householdmerge_MergeController {
   }
 
   /**
-   * Drop an ongoing houshold merge
+   * Drop an ongoing household merge
    */
   public function unregisterHHMerge($household_id) {
     $this->session->set($household_id, NULL, 'hhmerge');
@@ -70,7 +70,7 @@ class CRM_Householdmerge_MergeController {
   }
 
   /**
-   * remove the obvious conflicts when merging individuals into housholds:
+   * remove the obvious conflicts when merging individuals into households:
    *  first_name, contact_type, etc.
    */
   public function resolveConflicts($type, &$data, $mainId, $otherId) {

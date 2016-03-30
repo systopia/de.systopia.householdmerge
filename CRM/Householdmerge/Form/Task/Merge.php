@@ -58,7 +58,7 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
       'text',
       'household_name',
       ts('Household Name'),
-      array('size' => 32, 'placeholder' => ts("Enter houshold name", array('domain' => 'de.systopia.householdmerge'))),
+      array('size' => 32, 'placeholder' => ts("Enter household name", array('domain' => 'de.systopia.householdmerge'))),
       FALSE
     );
 
@@ -75,7 +75,7 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
     $this->add(
       'text',
       'existing_household',
-      ts('Enter Houshold ID', array('domain' => 'de.systopia.householdmerge')),
+      ts('Enter Household ID', array('domain' => 'de.systopia.householdmerge')),
       array('size' => 5),
       false
     );
@@ -116,7 +116,7 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
     } elseif ($values['hh_option'] == 'existing') {
       $household_id = (int) $values['existing_household'];
     } else {
-      // has to be the selected_XXX preselected houshold change
+      // has to be the selected_XXX preselected household change
       $household_id = (int) substr($values['hh_option'], 9);
     }
 
