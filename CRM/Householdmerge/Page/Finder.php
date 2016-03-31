@@ -28,6 +28,8 @@ class CRM_Householdmerge_Page_Finder extends CRM_Core_Page {
         $result_count = (int) $_REQUEST['count'];
         if ($result_count <= 0) $result_count = 25;
       }
+    } else {
+      $result_count = 25;
     }
 
     // first run the scanner
