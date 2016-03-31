@@ -14,20 +14,21 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*}
 
-<h3>Finder</h3>
+<h3>{ts}Finder{/ts}</h3>
 
 {foreach from=$proposals item=proposal}
-<h2>Proposal</h2>
+<h2>{ts}New Household{/ts}</h2>
 <table>
 {if $proposal.head_id}
+  {assign var=head_id value=$proposal.head_id}
   <tr>
-    <td>HEAD: {$proposal.head_id}</td>
+    <td>HEAD: {$proposal.contacts.$head_id.display_name}</td>
   </tr>
 {/if}
 
 {foreach from=$proposal.member_ids item=member_id}
   <tr>
-    <td>MEMBER: {$member_id}</td>
+    <td>MEMBER: {$proposal.contacts.$member_id.display_name}</td>
   </tr>
 {/foreach}
 </table>

@@ -22,7 +22,7 @@ class CRM_Householdmerge_Page_Finder extends CRM_Core_Page {
 
     // first run the scanner
     $scanner = new CRM_Householdmerge_Logic_Scanner();
-    $proposals = $scanner->findNewHouseholds(20);
+    $proposals = $scanner->findNewHouseholds(5);
 
     $this->assign('proposals', $proposals);
 

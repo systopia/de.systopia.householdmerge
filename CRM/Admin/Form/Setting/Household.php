@@ -22,69 +22,76 @@ require_once 'CRM/Core/Form.php';
  */
 class CRM_Admin_Form_Setting_Household extends CRM_Admin_Form_Setting {
   public function buildQuickForm() {
+    // load realtionships
+    $relationshipOptions = $this->getEligibleRelationships();
 
-    // add form elements
-    $this->add(
-      'select', // field type
-      'favorite_color', // field name
-      'Favorite Color', // field label
-      $this->getColorOptions(), // list of options
-      TRUE // is required
-    );
-    $this->addButtons(array(
-      array(
-        'type' => 'submit',
-        'name' => ts('Submit'),
-        'isDefault' => TRUE,
-      ),
-    ));
+    $this->addElement('select', 
+                    'hh_mode', 
+                    ts('Household Mode'), 
+                    CRM_Householdmerge_Logic_Configuration::getHouseholdModeOptions(),
+                    array('class' => 'crm-select2'));
 
-    // export form elements
-    $this->assign('elementNames', $this->getRenderableElementNames());
+    $this->addElement('select', 
+                    'hh_head_mode', 
+                    ts('Household Head Mode'), 
+                    CRM_Householdmerge_Logic_Configuration::getHouseholdHeadModeOptions(),
+                    array('class' => 'crm-select2'));
+
+    $this->addElement('select', 
+                    'hh_member_relation', 
+                    ts('Household Member Relationship'), 
+                    $relationshipOptions,
+                    array('class' => 'crm-select2'));
+
+    $this->addElement('select', 
+                    'hh_head_relation', 
+                    ts('Household Head Relationship'), 
+                    $relationshipOptions,
+                    array('class' => 'crm-select2'));
+
+
     parent::buildQuickForm();
+  }
+
+  function preProcess() {
+    $this->setDefaults(array(
+      'hh_mode'            => CRM_Householdmerge_Logic_Configuration::getHouseholdMode(),
+      'hh_head_mode'       => CRM_Householdmerge_Logic_Configuration::getHouseholdHeadMode(),
+      'hh_member_relation' => CRM_Householdmerge_Logic_Configuration::getHeadRelationID(),
+      'hh_head_relation'   => CRM_Householdmerge_Logic_Configuration::getMemberRelationID(),
+    ));
   }
 
   public function postProcess() {
     $values = $this->exportValues();
-    $options = $this->getColorOptions();
-    CRM_Core_Session::setStatus(ts('You picked color "%1"', array(
-      1 => $options[$values['favorite_color']]
-    )));
+
+    // store settings
+    $expected_values = array('hh_mode', 'hh_head_mode', 'hh_member_relation', 'hh_head_relation');
+    foreach ($expected_values as $key) {
+      if (isset($values[$key])) {
+        CRM_Householdmerge_Logic_Configuration::setConfigValue($key, $values[$key]);
+      }
+    }
+
     parent::postProcess();
   }
 
-  public function getColorOptions() {
-    $options = array(
-      '' => ts('- select -'),
-      '#f00' => ts('Red'),
-      '#0f0' => ts('Green'),
-      '#00f' => ts('Blue'),
-      '#f0f' => ts('Purple'),
-    );
-    foreach (array('1','2','3','4','5','6','7','8','9','a','b','c','d','e') as $f) {
-      $options["#{$f}{$f}{$f}"] = ts('Grey (%1)', array(1 => $f));
-    }
-    return $options;
-  }
 
   /**
-   * Get the fields/elements defined in this form.
-   *
-   * @return array (string)
+   * load all Individual<->Household Relationships
    */
-  public function getRenderableElementNames() {
-    // The _elements list includes some items which should not be
-    // auto-rendered in the loop -- such as "qfKey" and "buttons".  These
-    // items don't have labels.  We'll identify renderable by filtering on
-    // the 'label'.
-    $elementNames = array();
-    foreach ($this->_elements as $element) {
-      /** @var HTML_QuickForm_Element $element */
-      $label = $element->getLabel();
-      if (!empty($label)) {
-        $elementNames[] = $element->getName();
-      }
-    }
-    return $elementNames;
+  protected function getEligibleRelationships() {
+    $relationship_types = array();
+
+    $list_ab = civicrm_api3('RelationshipType', 'get', array('contact_type_a' => 'Individual', 'contact_type_b' => 'Household'));
+    foreach ($list_ab['values'] as $index => $relationship_type) {
+      $relationship_types[$relationship_type['id']] = $relationship_type['label_a_b'];
+    }    
+    $list_ba = civicrm_api3('RelationshipType', 'get', array('contact_type_b' => 'Individual', 'contact_type_a' => 'Household'));
+    foreach ($list_ba['values'] as $index => $relationship_type) {
+      $relationship_types[$relationship_type['id']] = $relationship_type['label_b_a'];
+    }    
+
+    return $relationship_types;
   }
 }

@@ -14,27 +14,30 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*}
 
-<div class="crm-submit-buttons">
-{include file="CRM/common/formButtons.tpl" location="top"}
+<h3>{ts}Houshold-Module Settings{/ts}</h3>
+
+<div class="crm-section">
+  <div class="label">{$form.hh_mode.label}</div>
+  <div class="content">{$form.hh_mode.html}</div>
+  <div class="clear"></div>
+</div>
+<div class="crm-section">
+  <div class="label">{$form.hh_member_relation.label}</div>
+  <div class="content">{$form.hh_member_relation.html}</div>
+  <div class="clear"></div>
+</div>
+<div class="crm-section">
+  <div class="label">{$form.hh_head_relation.label}</div>
+  <div class="content">{$form.hh_head_relation.html}</div>
+  <div class="clear"></div>
+</div>
+<div class="crm-section">
+  <div class="label">{$form.hh_head_mode.label}</div>
+  <div class="content">{$form.hh_head_mode.html}</div>
+  <div class="clear"></div>
 </div>
 
-{* FIELD EXAMPLE: OPTION 1 (AUTOMATIC LAYOUT) *}
-
-{foreach from=$elementNames item=elementName}
-  <div class="crm-section">
-    <div class="label">{$form.$elementName.label}</div>
-    <div class="content">{$form.$elementName.html}</div>
-    <div class="clear"></div>
-  </div>
-{/foreach}
-
-{* FIELD EXAMPLE: OPTION 2 (MANUAL LAYOUT)
-
-  <div>
-    <span>{$form.favorite_color.label}</span>
-    <span>{$form.favorite_color.html}</span>
-  </div>
-
+<br/>
 {* FOOTER *}
 <div class="crm-submit-buttons">
 {include file="CRM/common/formButtons.tpl" location="bottom"}

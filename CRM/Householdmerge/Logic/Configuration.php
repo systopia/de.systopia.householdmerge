@@ -15,6 +15,8 @@
 
 class CRM_Householdmerge_Logic_Configuration {
 
+  public static $HHMERGE_SETTING_DOMAIN = 'SYSTOPIA Household Extension';
+
   /**
    * will return the configured household mode:
    *  'merge'     - the individual contacts will be removed, only the household contact remains
@@ -24,10 +26,22 @@ class CRM_Householdmerge_Logic_Configuration {
    * @return string
    */
   public static function getHouseholdMode() {
-    // TODO: setting
-    return 'hierarchy';
+    return CRM_Core_BAO_Setting::getItem(self::$HHMERGE_SETTING_DOMAIN, 'hh_mode', NULL, 'merge');
   }
 
+  /**
+   * returns a <select> friendly list of the modes
+   * @see getHouseholdMode
+   *
+   * @return array
+   */
+  public static function getHouseholdModeOptions() {
+    return array(
+      'link'      => ts("Linked with household"),
+      'hierarchy' => ts("Linked with household (with head)"),
+      'merge'     => ts("Merged into houeshold contact")
+      );
+  }
 
   /**
    * will return the configured algorithm to determine the household head
@@ -37,8 +51,19 @@ class CRM_Householdmerge_Logic_Configuration {
    * @return string
    */
   public static function getHouseholdHeadMode() {
-    // TODO: setting
-    return 'topdonor2y_m';
+    return CRM_Core_BAO_Setting::getItem(self::$HHMERGE_SETTING_DOMAIN, 'hh_head_mode', NULL, 'topdonor2y_m');
+  }
+
+  /**
+   * returns a <select> friendly list of the modes
+   * @see getHouseholdMode
+   *
+   * @return array
+   */
+  public static function getHouseholdHeadModeOptions() {
+    return array(
+      'topdonor2y_m' => ts("Most contribtutions in the last 2 years, male preferred"),
+      );
   }
 
   /**
@@ -54,15 +79,20 @@ class CRM_Householdmerge_Logic_Configuration {
    * get the relation ID of the Member relation
    */
   public static function getMemberRelationID() {
-    // TODO: setting
-    return 2;
+    return CRM_Core_BAO_Setting::getItem(self::$HHMERGE_SETTING_DOMAIN, 'hh_member_relation');
   }
 
   /**
    * get the relation ID of the HEAD relation
    */
   public static function getHeadRelationID() {
-    // TODO: setting
-    return 1;  
+    return CRM_Core_BAO_Setting::getItem(self::$HHMERGE_SETTING_DOMAIN, 'hh_head_relation');
+  }
+
+  /**
+   * store a config option
+   */
+  public static function setConfigValue($key, $value) {
+    CRM_Core_BAO_Setting::setItem($value, self::$HHMERGE_SETTING_DOMAIN, $key);
   }
 }

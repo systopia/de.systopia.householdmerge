@@ -16,7 +16,6 @@
 class CRM_Householdmerge_Logic_Scanner {
 
   function __construct() {
-
   }
 
   /**
@@ -42,7 +41,6 @@ class CRM_Householdmerge_Logic_Scanner {
       }
     }
 
-    error_log(print_r($proposals,1));
     return $proposals;
   }
 
@@ -87,7 +85,9 @@ class CRM_Householdmerge_Logic_Scanner {
       // we need to identify the HEAD
       $head_id = $this->identifyHead($members);
       $candidate['head_id'] = $head_id;
-      unset($candidate['member_ids'][$head_id]);
+      // remeove head from member_ids
+      $index = array_search($head_id, $candidate['member_ids']);
+      unset($candidate['member_ids'][$index]);
     }
 
     return $candidate;
@@ -131,8 +131,12 @@ class CRM_Householdmerge_Logic_Scanner {
   protected function identifyHead(&$members) {
     $method = CRM_Householdmerge_Logic_Configuration::getHouseholdHeadMode();
     if ($method == 'topdonor2y_m') {
-      $topdonor_id = NULL;
-      $topdonor_amount = -9999999;
+
+      // init donations array
+      $donations = array();
+      foreach ($members as $member_id => $member) {
+        $donations[$member_id] = 0;
+      }
 
       $contact_ids = implode(',', array_keys($members));
       $td_amounts_sql = "
@@ -147,14 +151,22 @@ class CRM_Householdmerge_Logic_Scanner {
           ";
       $td_amounts = CRM_Core_DAO::executeQuery($td_amounts_sql);
       while ($td_amounts->fetch()) {
-        if ($td_amounts->amount > $topdonor_amount) {
-          $topdonor_id     = $td_amounts->contact_id;
-          $topdonor_amount = $td_amounts->amount;
-        } elseif ($td_amounts->amount == $topdonor_amount) {
-          if ($members[$td_amounts->contact_id]['gender_id'] == 2) {
+        $donations[$td_amounts->contact_id] = $td_amounts->amount;
+      }
+
+      // now determin the head
+      $topdonor_id = NULL;
+      $topdonor_amount = NULL;
+
+      foreach ($donations as $member_id => $donation_amount) {
+        if ($donation_amount > $topdonor_amount  || $topdonor_amount===NULL) {
+          $topdonor_id     = $member_id;
+          $topdonor_amount = $donation_amount;
+        } elseif ($donation_amount == $topdonor_amount) {
+          if ($members[$member_id]['gender_id'] == 2) {
             // if donor has same amount and is male => take over
-            $topdonor_id     = $td_amounts->contact_id;
-            $topdonor_amount = $td_amounts->amount;
+            $topdonor_id     = $member_id;
+            $topdonor_amount = $donation_amount;
           }
         }
       }
