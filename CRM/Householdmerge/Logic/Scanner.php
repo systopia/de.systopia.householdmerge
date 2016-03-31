@@ -52,6 +52,9 @@ class CRM_Householdmerge_Logic_Scanner {
   protected function investigateCandidate($contact_id) {
     $template = civicrm_api3('Contact', 'getsingle', array('id' => $contact_id));
 
+    // template last name should at least have two letters
+    if (!preg_match("/\\w.*\\w/", $template['last_name'])) return NULL;
+
     // load all members
     $member_result = civicrm_api3('Contact', 'get', array(
       'last_name'      => $template['last_name'],

@@ -1,3 +1,4 @@
 TODO (for 0.4)
-- implement execution
+- implement execution AJAX
 - exclude related ones from search
+- exclude empty addresses
