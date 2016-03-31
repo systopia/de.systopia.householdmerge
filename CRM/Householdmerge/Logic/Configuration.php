@@ -37,9 +37,9 @@ class CRM_Householdmerge_Logic_Configuration {
    */
   public static function getHouseholdModeOptions() {
     return array(
-      'link'      => ts("Linked with household"),
-      'hierarchy' => ts("Linked with household (with head)"),
-      'merge'     => ts("Merged into houeshold contact")
+      'link'      => ts("Linked with household", array('domain' => 'de.systopia.householdmerge')),
+      'hierarchy' => ts("Linked with household (with head)", array('domain' => 'de.systopia.householdmerge')),
+      'merge'     => ts("Merged into household contact", array('domain' => 'de.systopia.householdmerge'))
       );
   }
 
@@ -62,7 +62,7 @@ class CRM_Householdmerge_Logic_Configuration {
    */
   public static function getHouseholdHeadModeOptions() {
     return array(
-      'topdonor2y_m' => ts("Most contribtutions in the last 2 years, male preferred"),
+      'topdonor2y_m' => ts("Most contribtutions in the last 2 years, male preferred", array('domain' => 'de.systopia.householdmerge')),
       );
   }
 

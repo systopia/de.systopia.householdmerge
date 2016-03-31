@@ -20,11 +20,22 @@ class CRM_Householdmerge_Page_Finder extends CRM_Core_Page {
   public function run() {
     CRM_Utils_System::setTitle(ts('Household Finder'));
 
+    // determine result count
+    if (!empty($_REQUEST['count'])) {
+      if ($_REQUEST['count'] == 'all') {
+        $result_count = 'all';
+      } else {
+        $result_count = (int) $_REQUEST['count'];
+        if ($result_count <= 0) $result_count = 25;
+      }
+    }
+
     // first run the scanner
     $scanner = new CRM_Householdmerge_Logic_Scanner();
-    $proposals = $scanner->findNewHouseholds(5);
+    $proposals = $scanner->findNewHouseholds($result_count);
 
     $this->assign('proposals', $proposals);
+    $this->assign('result_count', $result_count);
 
     parent::run();
   }

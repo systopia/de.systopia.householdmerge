@@ -17,7 +17,7 @@
     <page_callback>CRM_Admin_Form_Setting_Household</page_callback>
     <title>Household Settings</title>
     <access_arguments>administer CiviCRM</access_arguments>
-    <adminGroup>CiviContact</adminGroup>
+    <adminGroup>CiviContribute</adminGroup>
     <icon>admin/small/06.png</icon>
   </item>
   <item>

@@ -27,25 +27,25 @@ class CRM_Admin_Form_Setting_Household extends CRM_Admin_Form_Setting {
 
     $this->addElement('select', 
                     'hh_mode', 
-                    ts('Household Mode'), 
+                    ts('Household Mode', array('domain' => 'de.systopia.householdmerge')), 
                     CRM_Householdmerge_Logic_Configuration::getHouseholdModeOptions(),
                     array('class' => 'crm-select2'));
 
     $this->addElement('select', 
                     'hh_head_mode', 
-                    ts('Household Head Mode'), 
+                    ts('Household Head Mode', array('domain' => 'de.systopia.householdmerge')), 
                     CRM_Householdmerge_Logic_Configuration::getHouseholdHeadModeOptions(),
                     array('class' => 'crm-select2'));
 
     $this->addElement('select', 
                     'hh_member_relation', 
-                    ts('Household Member Relationship'), 
+                    ts('Household Member Relationship', array('domain' => 'de.systopia.householdmerge')), 
                     $relationshipOptions,
                     array('class' => 'crm-select2'));
 
     $this->addElement('select', 
                     'hh_head_relation', 
-                    ts('Household Head Relationship'), 
+                    ts('Household Head Relationship', array('domain' => 'de.systopia.householdmerge')), 
                     $relationshipOptions,
                     array('class' => 'crm-select2'));
 

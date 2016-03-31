@@ -14,7 +14,7 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*}
 
-<h3>{ts}Houshold-Module Settings{/ts}</h3>
+<h3>{ts domain="de.systopia.householdmerge"}Household-Module Settings{/ts}</h3>
 
 <div class="crm-section">
   <div class="label">{$form.hh_mode.label}</div>

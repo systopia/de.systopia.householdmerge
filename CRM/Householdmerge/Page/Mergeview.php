@@ -40,7 +40,7 @@ class CRM_Householdmerge_Page_Mergeview extends CRM_Core_Page {
 
     // verify parameters
     if (empty($household_id) || empty($other_ids)) {
-      CRM_Core_Session::setStatus(ts('Household-Merge page cannot be called without "hid" or "oids" parameter.', array('domain' => 'de.systopia.householdmerge')), ts('Error'), 'error');
+      CRM_Core_Session::setStatus(ts('Household-Merge page cannot be called without "hid" or "oids" parameter.', array('domain' => 'de.systopia.householdmerge')), ts('Error', array('domain' => 'de.systopia.householdmerge')), 'error');
       CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/dashboard'));
       return;
     }

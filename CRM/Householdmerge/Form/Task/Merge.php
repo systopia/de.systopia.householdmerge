@@ -57,7 +57,7 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
     $this->add(
       'text',
       'household_name',
-      ts('Household Name'),
+      ts('Household Name', array('domain' => 'de.systopia.householdmerge')),
       array('size' => 32, 'placeholder' => ts("Enter household name", array('domain' => 'de.systopia.householdmerge'))),
       FALSE
     );

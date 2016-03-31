@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: de.systopia.householdmerge\n"
-"POT-Creation-Date: 2015-11-14 11:45+0100\n"
+"POT-Creation-Date: 2016-03-31 10:16+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Bjoern Endres <Bjoern.Endres@didonai.com>\n"
 "Language-Team: SYSTOPIA <endres@systopia.de>\n"
@@ -15,6 +15,22 @@ msgstr ""
 "X-Poedit-Language: German\n"
 "X-Poedit-Country: GERMANY\n"
 "X-Poedit-SourceCharset: utf-8\n"
+
+#: CRM/Admin/Form/Setting/Household.php
+msgid "Household Mode"
+msgstr "Modus Haushalte"
+
+#: CRM/Admin/Form/Setting/Household.php
+msgid "Household Head Mode"
+msgstr "Modus Haushaltsvorstand"
+
+#: CRM/Admin/Form/Setting/Household.php
+msgid "Household Member Relationship"
+msgstr "Haushaltsmitglied Beziehung"
+
+#: CRM/Admin/Form/Setting/Household.php
+msgid "Household Head Relationship"
+msgstr "Haushaltsvorstand Beziehung"
 
 #: CRM/Householdmerge/Form/Task/Merge.php
 msgid "Custom Name"
@@ -56,6 +72,26 @@ msgstr "Die %1s"
 msgid "%1 Family"
 msgstr "Familie %1"
 
+#: CRM/Householdmerge/Logic/Configuration.php
+msgid "Linked with household"
+msgstr "Mit Haushalt verbunden"
+
+#: CRM/Householdmerge/Logic/Configuration.php
+msgid "Linked with household (with head)"
+msgstr "Mit Haushalt verbunden (mit Vorstand)"
+
+#: CRM/Householdmerge/Logic/Configuration.php
+msgid "Merged into household contact"
+msgstr "Im Haushaltskontakt zusammengeführt"
+
+#: CRM/Householdmerge/Logic/Configuration.php
+msgid "Most contribtutions in the last 2 years, male preferred"
+msgstr "Höchstes Spendenaufkommen in den letzten 2 Jahren, männlich bevorzugt"
+
+#: CRM/Householdmerge/Page/Finder.php
+msgid "Household Finder"
+msgstr "Haushalts-Scanner"
+
 #: CRM/Householdmerge/Page/Mergeview.php
 msgid "Merge Contacts into Household"
 msgstr "Kontakte in Haushalt mergen"
@@ -71,6 +107,10 @@ msgstr "Fehler"
 #: householdmerge.php
 msgid "Merge into Household"
 msgstr "Kontakte in Haushalt mergen"
+
+#: templates/CRM/Admin/Form/Setting/Household.tpl
+msgid "Household-Module Settings"
+msgstr "Einstellungen Haushalts-Modul"
 
 #: templates/CRM/Householdmerge/Form/Task/Merge.tpl
 msgid "(%1 selected contacts have been ignored)"
@@ -101,6 +141,42 @@ msgstr "Anderen <strong>bestehenden</strong> Haushalt wählen"
 #: templates/CRM/Householdmerge/Form/Task/Merge.tpl
 msgid "Warning! This cannot be undone!"
 msgstr "Warnung! Dies kann nicht mehr rückgängig gemacht werden!"
+
+#: templates/CRM/Householdmerge/Page/Finder.tpl
+msgid "Options"
+msgstr "Optionen"
+
+#: templates/CRM/Householdmerge/Page/Finder.tpl
+msgid "Maximum number of results"
+msgstr "Maximale Anzahl"
+
+#: templates/CRM/Householdmerge/Page/Finder.tpl
+msgid "Create all %1 households"
+msgstr "Alle %1 Haushalte erstellen"
+
+#: templates/CRM/Householdmerge/Page/Finder.tpl
+msgid "Results"
+msgstr "Gefundene Haushalte"
+
+#: templates/CRM/Householdmerge/Page/Finder.tpl
+msgid "New Household:"
+msgstr "Neuer Haushalt:"
+
+#: templates/CRM/Householdmerge/Page/Finder.tpl
+msgid "Head"
+msgstr "Vorstand"
+
+#: templates/CRM/Householdmerge/Page/Finder.tpl
+msgid "Member"
+msgstr "Mitglied"
+
+#: templates/CRM/Householdmerge/Page/Finder.tpl
+msgid "Create Household"
+msgstr "Haushalt erstellen"
+
+#: templates/CRM/Householdmerge/Page/Finder.tpl
+msgid "Address"
+msgstr "Adresse"
 
 #: templates/CRM/Householdmerge/Page/Mergeview.tpl
 msgid "Conflicts"

@@ -26,10 +26,13 @@ require_once 'householdmerge.civix.php';
 function householdmerge_civicrm_searchTasks($objectType, &$tasks) {
   // add MERGE INTO HOUSEHOLD task to contact list
   if ($objectType == 'contact') {
-    $tasks[] = array(
-        'title' => ts('Merge into Household', array('domain' => 'de.systopia.householdmerge')),
-        'class' => 'CRM_Householdmerge_Form_Task_Merge',
-        'result' => false);
+    // this object is only available for the 'merge' mode
+    if ('merge' == CRM_Householdmerge_Logic_Configuration::getHouseholdMode()) {
+      $tasks[] = array(
+          'title' => ts('Merge into Household', array('domain' => 'de.systopia.householdmerge')),
+          'class' => 'CRM_Householdmerge_Form_Task_Merge',
+          'result' => false);      
+    }
   }
 }
 
@@ -153,8 +156,13 @@ function householdmerge_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
   _householdmerge_civix_civicrm_alterSettingsFolders($metaDataFolders);
 }
 
+/**
+ * merge hook for 'merge' mode households
+ */
 function householdmerge_civicrm_merge($type, &$data, $mainId = NULL, $otherId = NULL, $tables = NULL) {
-  // pass this hook to the househould merge controller
-  $hhmerge_controller = new CRM_Householdmerge_MergeController();
-  $hhmerge_controller->resolveConflicts($type, $data, $mainId, $otherId);
+  if ('merge' == CRM_Householdmerge_Logic_Configuration::getHouseholdMode()) {
+    // if in 'merge' mode, pass this hook to the househould merge controller
+    $hhmerge_controller = new CRM_Householdmerge_MergeController();
+    $hhmerge_controller->resolveConflicts($type, $data, $mainId, $otherId);
+  }
 }

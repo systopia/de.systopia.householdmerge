@@ -97,8 +97,13 @@ class CRM_Householdmerge_Logic_Scanner {
    * find the contact_ids of some potential candidates
    */
   protected function findCandidateIDs($count) {
-    $count = (int) $count;
-    $minimum_member_count = (int) 2;
+    $minimum_member_count = (int) CRM_Householdmerge_Logic_Configuration::getMinimumMemberCount();
+    if ($count == 'all') {
+      $limit_clause = '';
+    } else {
+      $count = (int) $count;
+      $limit_clause = "LIMIT $count";
+    }
 
     $candidate_ids = array();
     // TODO: THAT ARE NOT MEMBERS OF...
@@ -113,7 +118,7 @@ class CRM_Householdmerge_Logic_Scanner {
                 AND civicrm_address.id IS NOT NULL
               GROUP BY civicrm_contact.last_name, civicrm_address.street_address, civicrm_address.postal_code, civicrm_address.city) households
         WHERE mitgliederzahl >= $minimum_member_count
-        LIMIT $count;
+        $limit_clause;
       ";
     $scanner = CRM_Core_DAO::executeQuery($scanner_sql);
     while ($scanner->fetch()) {
