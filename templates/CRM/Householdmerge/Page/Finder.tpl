@@ -79,6 +79,8 @@
 
 <script type="text/javascript">
 var page_url = "{crmURL p='civicrm/household/finder' q="count=__count__"}";
+var busy_icon_url = "{$config->resourceBase}i/loading.gif";
+var check_icon_url = "{$config->resourceBase}i/check.gif";
 var proposals = {$proposals_json};
 {literal}
 
@@ -91,8 +93,10 @@ cj("#exec_all").click(function() {
 cj("a.hhcreate").click(function(e) {
   // find ID
   var identifier = cj(e.currentTarget).closest("table").prop('id');
-
-  // TODO: remove BUTTIN, ADD BUSY ICON
+  
+  // disable button, add busy icon
+  cj(e.currentTarget).parent().append('&nbsp;<img class="busyindicator" height="12" src="' + busy_icon_url + '"/>');
+  cj(e.currentTarget).remove();
 
   // build and send query
   var query = proposals[identifier];
@@ -100,15 +104,17 @@ cj("a.hhcreate").click(function(e) {
   CRM.api('Contact', 'create_household', query,
     { // SUCCESS HANDLER
       success: function(data) {
-        // TODO: remove BUSY ICON
+        // replace BUSY icon
+        cj("#" + identifier).find("img.busyindicator").prop('src', check_icon_url);
 
-        // TODO: if in ALL mode, select next and "click"
-        
+        // TODO: display/link result?
+
+        // TODO: if "exec_all" trigger
       }
     });
 });
 
-// click on INDIVIDUAL BUTTON
+// change result count
 cj("#result_count").change(function() {
   var url = page_url.replace('__count__', cj("#result_count").val());
   window.location = url;

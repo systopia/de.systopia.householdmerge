@@ -27,17 +27,18 @@ class CRM_Householdmerge_Logic_Scanner {
    *                       'household_id' => int, 
    *                       'member_ids'   => array(int), 
    *                       'head_id'      => int, 
-   *                       'contacts'     => array(int=>contact_data))
+   *                       'address'      => array(<address data>)
+   *                       'contacts'     => array(int=>contact_data)
    */
   public function findNewHouseholds($count) {
     $proposals = array();
 
     // first, find candidates (will return only one ID)
-    $candidates = $this->findCandidateIDs($count);
+    $candidates = $this->findCandidates($count);
 
     // then go through all candidates
-    foreach ($candidates as $contact_id) {
-      $proposal = $this->investigateCandidate($contact_id);
+    foreach ($candidates as $contact_id => $signature) {
+      $proposal = $this->investigateCandidate($contact_id, $signature);
       if ($proposal) {
         $proposals[$proposal['id']] = $proposal;
       }
@@ -51,40 +52,82 @@ class CRM_Householdmerge_Logic_Scanner {
    *
    * @return array see findNewHouseholds()
    */
-  protected function investigateCandidate($contact_id) {
-    $template = civicrm_api3('Contact', 'getsingle', array('id' => $contact_id));
+  protected function investigateCandidate($contact_id, $signature) {
+    // signature last name should at least have two letters
+    if (!preg_match("/\\w.*\\w/", $signature['last_name'])) return NULL;
 
-    // template last name should at least have two letters
-    if (!preg_match("/\\w.*\\w/", $template['last_name'])) return NULL;
+    // compile members
+    $contact_ids   = explode('||', $signature['contact_ids']);
+    $display_names = explode('||', $signature['display_names']);
+    $gender_ids    = explode('||', $signature['gender_ids']);
+    $members = array();
+    for ($i=0; $i < count($contact_ids); $i++) {
+      $contact_id = $contact_ids[$i];
+      $members[$contact_id] = array(
+        'id' => $contact_id,
+        'display_name'           => $display_names[$i],
+        'gender_id'              => $gender_ids[$i],
+        'last_name'              => $signature['last_name'],
+        'street_address'         => $signature['street_address'],
+        'supplemental_address_1' => $signature['supplemental_address_1'],
+        'supplemental_address_2' => $signature['supplemental_address_2'],
+        'postal_code'            => $signature['postal_code'],
+        'city'                   => $signature['city'],
+        'country_id'             => $signature['country_id'],
+      );
+    }
 
     // load all members
-    $member_result = civicrm_api3('Contact', 'get', array(
-      'last_name'      => $template['last_name'],
-      'street_address' => $template['street_address'],
-      'postal_code'    => $template['postal_code'],
-      'city'           => $template['city'],
-      ));
+    // $members = array();
+    // $member_sql   = "SELECT civicrm_contact.id AS id,
+    //                         civicrm_contact.display_name AS display_name
+    //                  FROM civicrm_address
+    //                  LEFT JOIN civicrm_contact ON civicrm_contact.id = civicrm_address.contact_id
+    //                  WHERE civicrm_address.street_address = %1
+    //                    AND civicrm_address.postal_code = %2
+    //                    AND civicrm_address.city = %3
+    //                    AND civicrm_contact.last_name = %4
+    //                    AND civicrm_contact.contact_type = 'Individual'
+    //                    AND (civicrm_contact.is_deleted IS NULL OR civicrm_contact.is_deleted = 0)";
+    // $member_query = CRM_Core_DAO::executeQuery($member_sql, array(
+    //     1 => array($signature['street_address'], 'String'),
+    //     2 => array($signature['postal_code'], 'String'),
+    //     3 => array($signature['city'], 'String'),
+    //     4 => array($signature['last_name'], 'String')
+    //   ));
+    // while ($member_query->fetch()) {
+    //   $member = $signature;
+    //   $member['id'] = $member_query->id;
+    //   $member['display_name'] = $member_query->display_name;
+    //   $members[$member_query->id] = $member;
+    // }
+    // // TODO: load addresses/contacts separately?
+    // $member_result = civicrm_api3('Contact', 'get', $signature);
 
     // stop here if there's not enough
-    if ($member_result['count'] < CRM_Householdmerge_Logic_Configuration::getMinimumMemberCount()) {
+    if (count($members) < CRM_Householdmerge_Logic_Configuration::getMinimumMemberCount()) {
       return NULL;
     }
-    $members = $member_result['values'];
-
-    
-    // TODO: check if they are already connected to a household
-
 
     $candidate = array(
-      'id'           => $this->createID(),
-      'household_id' => 0,
-      'head_id'      => 0,
-      'member_ids'   => array(),
-      'contacts'     => array()
+      'id'             => $this->createID(),
+      'household_id'   => 0,
+      'head_id'        => 0,
+      'household_name' => '',
+      'member_ids'     => array(),
+      'contacts'       => array(),
+      'address'        => array('street_address'         => $signature['street_address'],
+                                'supplemental_address_1' => $signature['supplemental_address_1'],
+                                'supplemental_address_2' => $signature['supplemental_address_2'],
+                                'postal_code'            => $signature['postal_code'],
+                                'city'                   => $signature['city'],
+                                'country_id'             => $signature['country_id']),
       );
+
     foreach ($members as $member_id => $member) {
       $candidate['member_ids'][] = $member['id'];
       $candidate['contacts'][$member['id']] = $member;
+      $candidate['household_name'] = $member['last_name'];
     }
 
     if ('hierarchy' == CRM_Householdmerge_Logic_Configuration::getHouseholdMode()) {
@@ -102,7 +145,7 @@ class CRM_Householdmerge_Logic_Scanner {
   /**
    * find the contact_ids of some potential candidates
    */
-  protected function findCandidateIDs($count) {
+  protected function findCandidates($count) {
     $minimum_member_count = (int) CRM_Householdmerge_Logic_Configuration::getMinimumMemberCount();
     if ($count == 'all') {
       $limit_clause = '';
@@ -131,10 +174,20 @@ class CRM_Householdmerge_Logic_Scanner {
                             )";
     }
 
-    $candidate_ids = array();
+    $candidates = array();
     $scanner_sql = "
       SELECT *
         FROM (SELECT civicrm_contact.id AS contact_id,
+                     GROUP_CONCAT(civicrm_contact.id SEPARATOR '||') AS contact_ids,
+                     GROUP_CONCAT(civicrm_contact.display_name SEPARATOR '||') AS display_names,
+                     GROUP_CONCAT(civicrm_contact.gender_id SEPARATOR '||') AS gender_ids,
+                     civicrm_contact.last_name AS last_name,
+                     civicrm_address.street_address AS street_address,
+                     civicrm_address.supplemental_address_1 AS supplemental_address_1,
+                     civicrm_address.supplemental_address_2 AS supplemental_address_2,
+                     civicrm_address.postal_code AS postal_code,
+                     civicrm_address.city AS city,
+                     civicrm_address.country_id AS country_id,
                      COUNT(DISTINCT(civicrm_contact.id)) AS mitgliederzahl
               FROM civicrm_contact
               LEFT JOIN civicrm_address ON civicrm_address.contact_id = civicrm_contact.id
@@ -151,9 +204,19 @@ class CRM_Householdmerge_Logic_Scanner {
       ";
     $scanner = CRM_Core_DAO::executeQuery($scanner_sql);
     while ($scanner->fetch()) {
-      $candidate_ids[] = $scanner->contact_id;
+      $candidates[$scanner->contact_id] = array(
+        'contact_ids'            => $scanner->contact_ids,
+        'display_names'          => $scanner->display_names,
+        'gender_ids'             => $scanner->gender_ids,
+        'street_address'         => $scanner->street_address,
+        'supplemental_address_1' => $scanner->supplemental_address_1,
+        'supplemental_address_2' => $scanner->supplemental_address_2,
+        'postal_code'            => $scanner->postal_code,
+        'city'                   => $scanner->city,
+        'country_id'             => $scanner->country_id,
+        'last_name'              => $scanner->last_name);
     }
-    return $candidate_ids;
+    return $candidates;
   }
 
 

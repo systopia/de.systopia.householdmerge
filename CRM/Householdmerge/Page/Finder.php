@@ -36,6 +36,16 @@ class CRM_Householdmerge_Page_Finder extends CRM_Core_Page {
     $scanner = new CRM_Householdmerge_Logic_Scanner();
     $proposals = $scanner->findNewHouseholds($result_count);
 
+    // set the country names
+    $countries = CRM_Core_PseudoConstant::country();
+    foreach ($proposals as $pid => $proposal) {
+      foreach ($proposal['contacts'] as $contact_id => $contact) {
+        if (!empty($contact['country_id'])) {
+          $proposals[$pid]['contacts'][$contact_id]['country'] = $countries[$contact['country_id']];
+        }
+      }
+    }
+
     $this->assign('proposals', $proposals);
     $this->assign('proposals_json', json_encode($proposals));
     $this->assign('result_count', $result_count);

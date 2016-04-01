@@ -41,7 +41,16 @@ function civicrm_api3_contact_create_household($params) {
 
       // now pass the work on the the worker
       $worker = new CRM_Householdmerge_Logic_Worker();
-      $worker->createLinkedHousehold($sanitised_member_ids, $head_id);
+      $household_id = $worker->createLinkedHousehold($params['household_name'], $sanitised_member_ids, $params['address'], $head_id);
+
+      // // also, create the address
+      // if (!empty($params['address']) && is_array($params['address'])) {
+      //   $address_data = $params['address'];
+      //   $address_data['contact_id'] = $household_id;
+      //   $address_data['location_type_id'] = $this->getHHAddressLocationTypeID();
+      //   $address = civicrm_api3('Address', 'create', $address_data);
+      // }
+
       return civicrm_api3_create_success();
     
     default:
@@ -66,6 +75,17 @@ function _civicrm_api3_contact_create_household_spec(&$params) {
   $params['head_id'] = array(
     'title'        => "Contact ID of household head",
     'description'  => "Only used in mode 'hierarchy'",
+    'type'         => CRM_Utils_Type::T_STRING,
+  );
+
+  $params['address'] = array(
+    'title'        => "Address to be created with the household",
+    'description'  => "Only used when a new household is created.",
+  );
+
+  $params['household_name'] = array(
+    'title'        => "name for the household",
+    'description'  => "Only used when a new household is created.",
     'type'         => CRM_Utils_Type::T_STRING,
   );
 }

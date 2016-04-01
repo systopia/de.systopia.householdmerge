@@ -26,32 +26,30 @@ class CRM_Householdmerge_Logic_Worker {
 
 
   /**
-   * Will create (or update) a household
+   * Will create a household
    * linking the member IDs (and head ID if present) to it.
+   *
+   * @return int household_id
    */
-  public function createLinkedHousehold($member_ids, $head_id = NULL, $household_id = NULL) {
-    if (!$household_id) {
-      // look up template
-      $template_id = $head_id?$head_id:reset($member_ids);
-      $template = civicrm_api3('Contact', 'getsingle', array('id' => $template_id));
+  public function createLinkedHousehold($last_name, $member_ids, $household_address, $head_id = NULL) {
+    // create household
+    $household = civicrm_api3('Contact', 'create', array(
+      'contact_type'   => 'Household',
+      'household_name' => $last_name,
+    ));
+    $household_id = $household['id'];
 
-      // create household
-      $household = civicrm_api3('Contact', 'create', array(
-        'contact_type'   => 'Household',
-        'household_name' => $template['last_name'],
-      ));
-      $household_id = $household['id'];
-
-      // also, create the address
+    // also, create the address
+    if ($household_address) {
       $address = civicrm_api3('Address', 'create', array(
         'contact_id'             => $household_id,
         'location_type_id'       => $this->getHHAddressLocationTypeID(),
-        'street_address'         => $template['street_address'],
-        'supplemental_address_1' => $template['supplemental_address_1'],
-        'supplemental_address_2' => $template['supplemental_address_2'],
-        'city'                   => $template['city'],
-        'postal_code'            => $template['postal_code'],
-        'country_id'             => $template['country_id'],
+        'street_address'         => $household_address['street_address'],
+        'supplemental_address_1' => $household_address['supplemental_address_1'],
+        'supplemental_address_2' => $household_address['supplemental_address_2'],
+        'city'                   => $household_address['city'],
+        'postal_code'            => $household_address['postal_code'],
+        'country_id'             => $household_address['country_id'],
         ));
     }
 
@@ -67,6 +65,8 @@ class CRM_Householdmerge_Logic_Worker {
     foreach ($member_ids as $member_id) {
       $this->linkContactToHousehold($member_id, $household_id, $member_relation_id);
     }
+
+    return $household_id;
   }
 
 
