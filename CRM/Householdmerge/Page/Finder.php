@@ -37,6 +37,7 @@ class CRM_Householdmerge_Page_Finder extends CRM_Core_Page {
     $proposals = $scanner->findNewHouseholds($result_count);
 
     $this->assign('proposals', $proposals);
+    $this->assign('proposals_json', json_encode($proposals));
     $this->assign('result_count', $result_count);
 
     parent::run();

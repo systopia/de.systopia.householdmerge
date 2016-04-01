@@ -38,7 +38,7 @@
 {assign var=some_member_id value=$proposal.member_ids|@reset}
 
 <h2><div class="icon crm-icon Household-icon"></div>{ts domain="de.systopia.householdmerge"}New Household:{/ts} {$proposal.contacts.$some_member_id.last_name}</h2>
-<table nostyle="width: 400px">
+<table id="{$proposal.id}" nostyle="width: 400px">
 {if $proposal.head_id}
   {assign var=head_id value=$proposal.head_id}
   <tr>
@@ -79,6 +79,7 @@
 
 <script type="text/javascript">
 var page_url = "{crmURL p='civicrm/household/finder' q="count=__count__"}";
+var proposals = {$proposals_json};
 {literal}
 
 // click on CREATE ALL
@@ -87,8 +88,24 @@ cj("#exec_all").click(function() {
 });
 
 // click on INDIVIDUAL BUTTON
-cj("a.hhcreate").click(function() {
-  alert("Not yet implemented");
+cj("a.hhcreate").click(function(e) {
+  // find ID
+  var identifier = cj(e.currentTarget).closest("table").prop('id');
+
+  // TODO: remove BUTTIN, ADD BUSY ICON
+
+  // build and send query
+  var query = proposals[identifier];
+  delete query['contacts']; // remove contact details 
+  CRM.api('Contact', 'create_household', query,
+    { // SUCCESS HANDLER
+      success: function(data) {
+        // TODO: remove BUSY ICON
+
+        // TODO: if in ALL mode, select next and "click"
+        
+      }
+    });
 });
 
 // click on INDIVIDUAL BUTTON

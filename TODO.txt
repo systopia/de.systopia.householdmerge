@@ -1,3 +1,5 @@
 TODO (for 0.4)
-- implement execution AJAX
+- busy icon
+- loop-through of ID
+- exec all
 

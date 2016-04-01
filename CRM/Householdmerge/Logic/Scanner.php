@@ -15,6 +15,8 @@
 
 class CRM_Householdmerge_Logic_Scanner {
 
+  protected $_lastID = 0;
+
   function __construct() {
   }
 
@@ -37,7 +39,7 @@ class CRM_Householdmerge_Logic_Scanner {
     foreach ($candidates as $contact_id) {
       $proposal = $this->investigateCandidate($contact_id);
       if ($proposal) {
-        $proposals[] = $proposal;
+        $proposals[$proposal['id']] = $proposal;
       }
     }
 
@@ -74,6 +76,7 @@ class CRM_Householdmerge_Logic_Scanner {
 
 
     $candidate = array(
+      'id'           => $this->createID(),
       'household_id' => 0,
       'head_id'      => 0,
       'member_ids'   => array(),
@@ -124,7 +127,7 @@ class CRM_Householdmerge_Logic_Scanner {
                            WHERE relationship_type_id IN ($relationship_id_list)
                              AND (contact_id_a = contact_id OR contact_id_b = contact_id)
                              AND (is_active > 0)
-                             AND (end_date IS NULL or end_date > NOW())
+                             AND (end_date IS NULL OR end_date > NOW())
                             )";
     }
 
@@ -209,5 +212,14 @@ class CRM_Householdmerge_Logic_Scanner {
       error_log("UNDEFINED METHOD TO DETERMINE HEAD: $method");
       return reset(array_keys($members));
     }
+  }
+
+
+  /**
+   * Create a new unique ID for the candidates
+   */
+  protected function createID() {
+    $this->_lastID++;
+    return "hhcandidate{$this->_lastID}";
   }
 }
