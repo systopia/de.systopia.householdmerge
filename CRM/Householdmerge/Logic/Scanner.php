@@ -108,8 +108,27 @@ class CRM_Householdmerge_Logic_Scanner {
       $limit_clause = "LIMIT $count";
     }
 
+    // compile relationship conditions ("NOT ALREADY MEMBER OF")
+    $relationship_condition = '';
+    $member_relation_id = CRM_Householdmerge_Logic_Configuration::getMemberRelationID();
+    $head_relation_id = CRM_Householdmerge_Logic_Configuration::getHeadRelationID();
+    if ($member_relation_id) {
+      $relationship_ids = array($member_relation_id);
+      if ($head_relation_id) {
+        $relationship_ids[] = $head_relation_id;
+      }
+      $relationship_id_list = implode(',', $relationship_ids);
+
+      $relationship_condition = 
+          "AND NOT EXISTS (SELECT id FROM civicrm_relationship 
+                           WHERE relationship_type_id IN ($relationship_id_list)
+                             AND (contact_id_a = contact_id OR contact_id_b = contact_id)
+                             AND (is_active > 0)
+                             AND (end_date IS NULL or end_date > NOW())
+                            )";
+    }
+
     $candidate_ids = array();
-    // TODO: THAT ARE NOT MEMBERS OF...
     $scanner_sql = "
       SELECT *
         FROM (SELECT civicrm_contact.id AS contact_id,
@@ -119,6 +138,10 @@ class CRM_Householdmerge_Logic_Scanner {
               WHERE (civicrm_contact.is_deleted IS NULL OR civicrm_contact.is_deleted = 0)
                 AND civicrm_contact.contact_type = 'Individual'
                 AND civicrm_address.id IS NOT NULL
+                AND (civicrm_address.street_address IS NOT NULL AND civicrm_address.street_address != '')
+                AND (civicrm_address.postal_code IS NOT NULL AND civicrm_address.postal_code != '')
+                AND (civicrm_address.city IS NOT NULL AND civicrm_address.city != '')
+                $relationship_condition
               GROUP BY civicrm_contact.last_name, civicrm_address.street_address, civicrm_address.postal_code, civicrm_address.city) households
         WHERE mitgliederzahl >= $minimum_member_count
         $limit_clause;
