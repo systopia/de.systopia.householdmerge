@@ -43,14 +43,6 @@ function civicrm_api3_contact_create_household($params) {
       $worker = new CRM_Householdmerge_Logic_Worker();
       $household_id = $worker->createLinkedHousehold($params['household_name'], $sanitised_member_ids, $params['address'], $head_id);
 
-      // // also, create the address
-      // if (!empty($params['address']) && is_array($params['address'])) {
-      //   $address_data = $params['address'];
-      //   $address_data['contact_id'] = $household_id;
-      //   $address_data['location_type_id'] = $this->getHHAddressLocationTypeID();
-      //   $address = civicrm_api3('Address', 'create', $address_data);
-      // }
-
       return civicrm_api3_create_success();
     
     default:

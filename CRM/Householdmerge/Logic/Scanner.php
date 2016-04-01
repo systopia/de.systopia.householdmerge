@@ -77,33 +77,6 @@ class CRM_Householdmerge_Logic_Scanner {
       );
     }
 
-    // load all members
-    // $members = array();
-    // $member_sql   = "SELECT civicrm_contact.id AS id,
-    //                         civicrm_contact.display_name AS display_name
-    //                  FROM civicrm_address
-    //                  LEFT JOIN civicrm_contact ON civicrm_contact.id = civicrm_address.contact_id
-    //                  WHERE civicrm_address.street_address = %1
-    //                    AND civicrm_address.postal_code = %2
-    //                    AND civicrm_address.city = %3
-    //                    AND civicrm_contact.last_name = %4
-    //                    AND civicrm_contact.contact_type = 'Individual'
-    //                    AND (civicrm_contact.is_deleted IS NULL OR civicrm_contact.is_deleted = 0)";
-    // $member_query = CRM_Core_DAO::executeQuery($member_sql, array(
-    //     1 => array($signature['street_address'], 'String'),
-    //     2 => array($signature['postal_code'], 'String'),
-    //     3 => array($signature['city'], 'String'),
-    //     4 => array($signature['last_name'], 'String')
-    //   ));
-    // while ($member_query->fetch()) {
-    //   $member = $signature;
-    //   $member['id'] = $member_query->id;
-    //   $member['display_name'] = $member_query->display_name;
-    //   $members[$member_query->id] = $member;
-    // }
-    // // TODO: load addresses/contacts separately?
-    // $member_result = civicrm_api3('Contact', 'get', $signature);
-
     // stop here if there's not enough
     if (count($members) < CRM_Householdmerge_Logic_Configuration::getMinimumMemberCount()) {
       return NULL;

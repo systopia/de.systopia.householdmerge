@@ -22,7 +22,7 @@
     <option {if $result_count eq "50"}selected=selected{/if} value="50">50</option>
     <option {if $result_count eq "100"}selected=selected{/if} value="100">100</option>
     <option {if $result_count eq "500"}selected=selected{/if} value="500">500</option>
-    <option {if $result_count eq "all"}selected=selected{/if} value="all">all</option>
+    <option {if $result_count eq "all"}selected=selected{/if} value="all">{ts domain="de.systopia.householdmerge"}all{ts}</option>
   </select>
 </div>
 <br/>

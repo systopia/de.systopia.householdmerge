@@ -1,5 +1,4 @@
 TODO (for 0.4)
-- busy icon
-- loop-through of ID
 - exec all
+- show/link result
 
