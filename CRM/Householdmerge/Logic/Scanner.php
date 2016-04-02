@@ -128,7 +128,7 @@ class CRM_Householdmerge_Logic_Scanner {
     }
 
     // compile relationship conditions ("NOT ALREADY MEMBER OF")
-    $relationship_condition = '';
+    $RELATIONSHIP_CONDITION = $RELATIONSHIP_JOIN = '';
     $member_relation_id = CRM_Householdmerge_Logic_Configuration::getMemberRelationID();
     $head_relation_id = CRM_Householdmerge_Logic_Configuration::getHeadRelationID();
     if ($member_relation_id) {
@@ -138,13 +138,15 @@ class CRM_Householdmerge_Logic_Scanner {
       }
       $relationship_id_list = implode(',', $relationship_ids);
 
-      $relationship_condition = 
-          "AND NOT EXISTS (SELECT id FROM civicrm_relationship 
-                           WHERE relationship_type_id IN ($relationship_id_list)
-                             AND (contact_id_a = contact_id OR contact_id_b = contact_id)
-                             AND (is_active > 0)
-                             AND (end_date IS NULL OR end_date > NOW())
-                            )";
+      $RELATIONSHIP_JOIN = "
+        LEFT JOIN civicrm_relationship relation_ab ON contact_id = relation_ab.contact_id_a AND relation_ab.relationship_type_id IN ($relationship_id_list)
+        LEFT JOIN civicrm_relationship relation_ba ON contact_id = relation_ba.contact_id_a AND relation_ba.relationship_type_id IN ($relationship_id_list)
+        ";
+
+      $RELATIONSHIP_CONDITION = "
+        AND (relation_ab.id IS NULL OR relation_ab.end_date IS NULL OR relation_ab.end_date > NOW())
+        AND (relation_ba.id IS NULL OR relation_ba.end_date IS NULL OR relation_ba.end_date > NOW())
+        ";
     }
 
     $candidates = array();
@@ -164,13 +166,14 @@ class CRM_Householdmerge_Logic_Scanner {
                      COUNT(DISTINCT(civicrm_contact.id)) AS mitgliederzahl
               FROM civicrm_contact
               LEFT JOIN civicrm_address ON civicrm_address.contact_id = civicrm_contact.id
+              $RELATIONSHIP_JOIN
               WHERE (civicrm_contact.is_deleted IS NULL OR civicrm_contact.is_deleted = 0)
                 AND civicrm_contact.contact_type = 'Individual'
                 AND civicrm_address.id IS NOT NULL
                 AND (civicrm_address.street_address IS NOT NULL AND civicrm_address.street_address != '')
                 AND (civicrm_address.postal_code IS NOT NULL AND civicrm_address.postal_code != '')
                 AND (civicrm_address.city IS NOT NULL AND civicrm_address.city != '')
-                $relationship_condition
+                $RELATIONSHIP_CONDITION
               GROUP BY civicrm_contact.last_name, civicrm_address.street_address, civicrm_address.postal_code, civicrm_address.city) households
         WHERE mitgliederzahl >= $minimum_member_count
         $limit_clause;
