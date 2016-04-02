@@ -138,14 +138,15 @@ class CRM_Householdmerge_Logic_Scanner {
       }
       $relationship_id_list = implode(',', $relationship_ids);
 
+      //  try joining valid, active household relationships...
       $RELATIONSHIP_JOIN = "
-        LEFT JOIN civicrm_relationship relation_ab ON contact_id = relation_ab.contact_id_a AND relation_ab.relationship_type_id IN ($relationship_id_list)
-        LEFT JOIN civicrm_relationship relation_ba ON contact_id = relation_ba.contact_id_a AND relation_ba.relationship_type_id IN ($relationship_id_list)
+              LEFT JOIN civicrm_relationship relation_ab ON contact_id = relation_ab.contact_id_a AND relation_ab.relationship_type_id IN (8,7) AND (relation_ab.end_date IS NULL OR relation_ab.end_date > NOW())
+              LEFT JOIN civicrm_relationship relation_ba ON contact_id = relation_ba.contact_id_b AND relation_ba.relationship_type_id IN (8,7) AND (relation_ba.end_date IS NULL OR relation_ba.end_date > NOW())
         ";
 
+      // ...and then make sure there are none
       $RELATIONSHIP_CONDITION = "
-        AND (relation_ab.id IS NULL OR relation_ab.end_date IS NULL OR relation_ab.end_date > NOW())
-        AND (relation_ba.id IS NULL OR relation_ba.end_date IS NULL OR relation_ba.end_date > NOW())
+              AND relation_ab.id IS NULL AND relation_ba.id IS NULL
         ";
     }
 
