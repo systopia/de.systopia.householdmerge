@@ -27,7 +27,7 @@
 </div>
 <br/>
 <div>
-  <a class="button" id="exec_all">{ts domain="de.systopia.householdmerge" 1=$proposals|@count}Create all %1 households{/ts}</a>
+  <a class="button" id="exec_all">{ts domain="de.systopia.householdmerge"}Create all selected households{/ts}</a>
 <div>
 
 
@@ -37,7 +37,10 @@
 {foreach from=$proposals item=proposal}
 {assign var=some_member_id value=$proposal.member_ids|@reset}
 
-<h2><div class="icon crm-icon Household-icon"></div>{ts domain="de.systopia.householdmerge"}New Household:{/ts} {$proposal.contacts.$some_member_id.last_name}</h2>
+<h2>
+  <input style="float:left;" value="{$proposal.id}" type="checkbox" id="select-{$proposal.id}" class="selector" checked="1" />
+  <div class="icon crm-icon Household-icon"></div>{ts domain="de.systopia.householdmerge"}New Household:{/ts} {$proposal.contacts.$some_member_id.last_name}
+</h2>
 <table id="{$proposal.id}" nostyle="width: 400px">
 {if $proposal.head_id}
   {assign var=head_id value=$proposal.head_id}
@@ -59,7 +62,7 @@
     </td>
     {if $smarty.foreach.memberloop.first}
     <td rowspan="{$proposal.member_ids|@count}">
-      <a class="button hhcreate" style="float:right;">{ts domain="de.systopia.householdmerge"}Create Household{/ts}</a>
+      <a class="button hhcreate" id="button-{$proposal.id}" style="float:right;">{ts domain="de.systopia.householdmerge"}Create Household{/ts}</a>
     </td>
     {/if}
   </tr>
@@ -86,14 +89,33 @@ var proposals = {$proposals_json};
 
 // click on CREATE ALL
 cj("#exec_all").click(function() {
-  alert("Not yet implemented");
+  // mark as busy
+  cj("#exec_all").addClass('disabled');
+
+  // find the next selected item
+  var selectors = cj("input.selector");
+  for (var i = 0; i < selectors.length; i++) {
+    var element = cj(selectors[i]);
+    if (element.prop('checked')) {
+      var button = cj("#button-" + element.prop("value"));
+      button.click();
+      return;
+    }
+  };
+
+  // if we get here, we can enable the button again
+  cj("#exec_all").removeClass('disabled');
 });
 
 // click on INDIVIDUAL BUTTON
 cj("a.hhcreate").click(function(e) {
   // find ID
   var identifier = cj(e.currentTarget).closest("table").prop('id');
-  
+    
+  // untick / disable checkbox
+  cj("#select-" + identifier).prop('checked', false);
+  cj("#select-" + identifier).remove();
+
   // disable button, add busy icon
   cj(e.currentTarget).parent().append('&nbsp;<img class="busyindicator" height="12" src="' + busy_icon_url + '"/>');
   cj(e.currentTarget).remove();
@@ -109,7 +131,10 @@ cj("a.hhcreate").click(function(e) {
 
         // TODO: display/link result?
 
-        // TODO: if "exec_all" trigger
+        // if "exec_all" is active -> trigger next
+        if (cj("#exec_all").hasClass('disabled')) {
+          cj("#exec_all").click();
+        }
       }
     });
 });
