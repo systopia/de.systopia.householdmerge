@@ -29,9 +29,9 @@ function householdmerge_civicrm_searchTasks($objectType, &$tasks) {
     // this object is only available for the 'merge' mode
     if ('merge' == CRM_Householdmerge_Logic_Configuration::getHouseholdMode()) {
       $tasks[] = array(
-          'title' => ts('Merge into Household', array('domain' => 'de.systopia.householdmerge')),
-          'class' => 'CRM_Householdmerge_Form_Task_Merge',
-          'result' => false);      
+          'title'  => ts('Merge into Household', array('domain' => 'de.systopia.householdmerge')),
+          'class'  => 'CRM_Householdmerge_Form_Task_Merge',
+          'result' => false);
     }
   }
 }
