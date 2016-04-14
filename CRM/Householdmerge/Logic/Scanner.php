@@ -219,7 +219,7 @@ class CRM_Householdmerge_Logic_Scanner {
            FROM civicrm_contribution
           WHERE contact_id IN ($contact_ids)
             AND (is_test IS NULL OR is_test = 0)
-            AND (contribution_status_id = 2)
+            AND (contribution_status_id = 1)
             AND (receive_date BETWEEN (NOW() - INTERVAL 2 YEAR) AND NOW())
           GROUP BY contact_id;
           ";
@@ -231,9 +231,9 @@ class CRM_Householdmerge_Logic_Scanner {
       // now determin the head
       $topdonor_id = NULL;
       $topdonor_amount = NULL;
-
+      
       foreach ($donations as $member_id => $donation_amount) {
-        if ($donation_amount > $topdonor_amount  || $topdonor_amount===NULL) {
+        if ($donation_amount > $topdonor_amount || $topdonor_amount===NULL) {
           $topdonor_id     = $member_id;
           $topdonor_amount = $donation_amount;
         } elseif ($donation_amount == $topdonor_amount) {
