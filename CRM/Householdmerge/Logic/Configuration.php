@@ -74,6 +74,19 @@ class CRM_Householdmerge_Logic_Configuration {
     return 2;
   }
 
+  /**
+   * get the "do not *" options that should not not be set with a head
+   */
+  public static function getDontXXXChecks() {
+    return array("do_not_email", "do_not_phone", "do_not_mail", "do_not_sms");
+  }
+
+  /** 
+   * get a list of tag names that a household head should not have
+   */
+  public static function getBadHeadTags() {
+    return array("unbekannt verzogen",  "Annahme verweigert", "Im Ausland");
+  }
 
   /**
    * get the relation ID of the Member relation
