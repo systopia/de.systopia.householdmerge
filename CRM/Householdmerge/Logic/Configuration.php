@@ -121,7 +121,7 @@ class CRM_Householdmerge_Logic_Configuration {
       throw new Exception("Couldn't find activity_type group.");
     }
     
-    $activity = civicrm_api3('OptionValue', 'get', array('name' => self::$HHMERGE_CHECK_HH_NAME, 'option_group_id' => $option_group['id'], 'option.limit' => 1));    
+    $activity = civicrm_api3('OptionValue', 'getsingle', array('name' => self::$HHMERGE_CHECK_HH_NAME, 'option_group_id' => $option_group['id'], 'option.limit' => 1));    
     if (empty($activity['id'])) {
       $activity = civicrm_api3('OptionValue', 'create', array(
         'label'           => ts("Check Household", array('domain' => 'de.systopia.householdmerge')),
@@ -132,8 +132,9 @@ class CRM_Householdmerge_Logic_Configuration {
         'is_active'       => 1,
         'is_reserved'     => 1
       ));
+      $activity = civicrm_api3('OptionValue', 'getsingle', array('id' => $activity['id']));
     }
 
-    return $activity['id'];
+    return $activity['value'];
   }
 }

@@ -12,35 +12,34 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*}
 
-<h3>{ts domain='de.systopia.householdmerge'}Check Household{/ts}</h3>
-
-<p>
-  {ts domain='de.systopia.householdmerge' 1=$change_count}%1 address was changed with address cleanup.{/ts}
-</p>
-<p>
-  {ts domain='de.systopia.householdmerge' 1=$metadata.uri}Cleanup ID was <code>%1</code>).{/ts}
-</p>
+<h3>{ts domain='de.systopia.householdmerge' 1=$problems|@count}The scan revealed %1 problem(s):{/ts}</h3>
+<ul>
+{foreach from=$problems item=problem}
+  <li>{$problem}</li>
+{/foreach}
+</ul>
 <br/>
 
-<h3>{ts domain='de.systopia.householdmerge'}Changes{/ts}</h3>
+
+<h3>{ts domain='de.systopia.householdmerge'}Household Members{/ts}</h3>
 <table>
-{foreach from=$changes item=change}
+{foreach from=$members item=member}
+{assign var=member_id value=$member.id}
   <tr>
-    <td>{$change.label}</td>
-    <td>{$change.old}</td>
-    <td>{$change.new}</td>
+    <td>
+      {if $member.hh_relation eq 'head'}
+        {ts domain="de.systopia.householdmerge"}Head{/ts}
+      {else}
+        {ts domain="de.systopia.householdmerge"}Member{/ts}
+      {/if}
+    </td>
+    <td>
+      <div class="icon crm-icon Individual-icon"></div>
+      <a href="{crmURL p='civicrm/contact/view' q="reset=1&cid=$member_id"}">{$member.display_name} [{$member_id}]</a>
+    </td>
   </tr>
 {/foreach}
 </table>
-<br/>
-
-
-<h3>{ts domain='de.systopia.householdmerge'}Status Codes{/ts}</h3>
-<ul>
-{foreach from=$record.status item=status_text key=status_key}
-  <li>{$status_key}: {$status_text}</li>
-{/foreach}
-</ul>
 <br/>
 
 

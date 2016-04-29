@@ -59,14 +59,14 @@ class CRM_Householdmerge_Logic_Checker {
     $query = CRM_Core_DAO::executeQuery($selector_sql);
     while ($query->fetch()) {
       $last_contact_id_processed = $query->contact_id;
-      $this->checkHousehold($last_contact_id_processed);
+      $this->checkHousehold($last_contact_id_processed, TRUE);
       $max_count--;
     }
 
     // done
     if ($max_count > 0) {
       // we're through the whole list, reset marker
-      CRM_Core_BAO_Setting::setItem(0, CRM_Householdmerge_Logic_Configuration::$HHMERGE_SETTING_DOMAIN, 'hh_check_last_id');
+      CRM_Core_BAO_Setting::setItem('0', CRM_Householdmerge_Logic_Configuration::$HHMERGE_SETTING_DOMAIN, 'hh_check_last_id');
     } else {
       CRM_Core_BAO_Setting::setItem($last_contact_id_processed, CRM_Householdmerge_Logic_Configuration::$HHMERGE_SETTING_DOMAIN, 'hh_check_last_id');
     }
@@ -78,9 +78,16 @@ class CRM_Householdmerge_Logic_Checker {
   /**
    * investigates if the given household still complies
    * with all the requirements for a proper household entity
+   *
+   * @param $activities_checked boolean  set to TRUE if you already verfied 
+   *                                       that the household hasn't got an (active) check activity
    */
-  function checkHousehold($household_id) {
-    error_log("checking household $household_id");
+  function checkHousehold($household_id, $activities_checked = FALSE) {
+    if (!$activities_checked && $this->hasActiveCheckActivity($household_id)) {
+      // in this case, the household still has an active ID
+      return;
+    }
+
     $problems_identified = array();
 
     // load household
@@ -88,13 +95,13 @@ class CRM_Householdmerge_Logic_Checker {
 
     // load members
     $members = $this->getMembers($household_id);
-    
+
     // CHECK 1: number of members
     if (count($members) < CRM_Householdmerge_Logic_Configuration::getMinimumMemberCount()) {
       if (count($members) == 0) {
         $problems_identified[] = ts("Household has no members any more.", array('domain' => 'de.systopia.householdmerge'));
       } else {
-        $problems_identified[] = ts("Household has only %1 members left.", array(1 => count($members), 'domain' => 'de.systopia.householdmerge'));
+        $problems_identified[] = ts("Household has only %1 member(s) left.", array(1 => count($members), 'domain' => 'de.systopia.householdmerge'));
       }
     }
 
@@ -154,8 +161,7 @@ class CRM_Householdmerge_Logic_Checker {
 
 
     if (!empty($problems_identified)) {
-      // $this->createActivity($household, $problems_identified, $members);
-      // error_log(print_r($problems_identified,1));
+      $this->createActivity($household, $problems_identified, $members);
     }
   }
 
@@ -164,8 +170,53 @@ class CRM_Householdmerge_Logic_Checker {
    * Load all the household members
    */
   protected function getMembers($household_id) {
-    
-    // TODO
+    $member_relation_id = CRM_Householdmerge_Logic_Configuration::getMemberRelationID();
+    $head_relation_id   = CRM_Householdmerge_Logic_Configuration::getHeadRelationID();
+    $head_ids   = array();
+    $member_ids = array();
+
+    // load the relationships (both ways)
+    $query = array(
+      'relationship_type_id' => array('IN' => array($member_relation_id, $head_relation_id)),
+      'is_active'            => 1,
+      'contact_id_a'         => $household_id,
+      'option.limit'         => 99999
+      );
+    $member_query = civicrm_api3('Relationship', 'get', $query);
+    foreach ($member_query['values'] as $relationship) {
+      $member_ids[] = $relationship['contact_id_b'];
+      if ($relationship['relationship_type_id'] == $head_relation_id) {
+        $head_ids[] = $relationship['contact_id_b'];
+      }
+    }
+    $query['contact_id_b'] = $household_id;
+    unset($query['contact_id_a']);
+    $member_query = civicrm_api3('Relationship', 'get', $query);
+    foreach ($member_query['values'] as $relationship) {
+      $member_ids[] = $relationship['contact_id_a'];
+      if ($relationship['relationship_type_id'] == $head_relation_id) {
+        $head_ids[] = $relationship['contact_id_a'];
+      }
+    }
+
+    if (!empty($member_ids)) {
+      // and load the memeber contacts
+      $contact_query = civicrm_api3('Contact', 'get', array('id' => array('IN' => $member_ids)));
+      $members = $contact_query['values'];
+
+      // set the relationship type
+      foreach ($members as &$member) {
+        if (in_array($member['id'], $head_ids)) {
+          $member['hh_relation'] = 'head';
+        } else {
+          $member['hh_relation'] = 'member';
+        }
+      }
+
+      return $members;
+    }
+
+    return array();
   }
 
 
@@ -201,6 +252,23 @@ class CRM_Householdmerge_Logic_Checker {
   }
 
   /**
+   * Check if there alread is an (active) 'check' activity with this household
+   */
+  protected function hasActiveCheckActivity($household_id) {
+    $activity_type_id    = $this->getCheckActivityTypeID();
+    $activity_status_ids = $this->getActiveActivityStatusIDs();
+    $selector_sql = "SELECT civicrm_activity.id AS activity_id
+                     FROM civicrm_activity_contact
+                     LEFT JOIN civicrm_activity ON civicrm_activity_contact.activity_id = civicrm_activity.id 
+                     WHERE contact_id = $household_id
+                       AND civicrm_activity.activity_type_id = $activity_type_id 
+                       AND civicrm_activity.status_id IN ($activity_status_ids)";
+    $query = CRM_Core_DAO::executeQuery($selector_sql);
+    return $query->fetch();
+  }
+
+
+  /**
    * Create a new activity with the 
    */
   protected function createActivity($household, $problems, $members) {
@@ -216,7 +284,7 @@ class CRM_Householdmerge_Logic_Checker {
 
     // compile activity
     $activity_data = array();
-    $activity_data['subject']            = ts("Address Cleanup Failed", array('domain' => 'de.systopia.householdmerge'));
+    $activity_data['subject']            = ts("Check Household", array('domain' => 'de.systopia.householdmerge'));
     $activity_data['details']            = $activity_content;
     $activity_data['activity_date_time'] = date("Ymdhis");
     $activity_data['activity_type_id']   = $this->getCheckActivityTypeID();
@@ -226,7 +294,7 @@ class CRM_Householdmerge_Logic_Checker {
 
     $activity = CRM_Activity_BAO_Activity::create($activity_data);
     if (empty($activity->id)) {
-      $this->metadata['application_errors'][] = dpaf_ts("Couldn't create activity for household [%1]", array(1=>$household['id']));
+      throw new Exception("Couldn't create activity for household [{$household['id']}]");
     }
 
   }
