@@ -16,6 +16,7 @@
 class CRM_Householdmerge_Logic_Configuration {
 
   public static $HHMERGE_SETTING_DOMAIN = 'SYSTOPIA Household Extension';
+  public static $HHMERGE_CHECK_HH_NAME  = 'check_household';
 
   /**
    * will return the configured household mode:
@@ -107,5 +108,32 @@ class CRM_Householdmerge_Logic_Configuration {
    */
   public static function setConfigValue($key, $value) {
     CRM_Core_BAO_Setting::setItem($value, self::$HHMERGE_SETTING_DOMAIN, $key);
+  }
+
+
+  /**
+   * Get/create the activity type to be used for 'Check Household' activities
+   */
+  public static function getCheckHouseholdActivityType() {
+    // now make sure that the activity types exist
+    $option_group = civicrm_api3('OptionGroup', 'getsingle', array('name' => 'activity_type'));
+    if ($option_group==NULL) {
+      throw new Exception("Couldn't find activity_type group.");
+    }
+    
+    $activity = civicrm_api3('OptionValue', 'get', array('name' => self::$HHMERGE_CHECK_HH_NAME, 'option_group_id' => $option_group['id'], 'option.limit' => 1));    
+    if (empty($activity['id'])) {
+      $activity = civicrm_api3('OptionValue', 'create', array(
+        'label'           => ts("Check Household", array('domain' => 'de.systopia.householdmerge')),
+        'name'            => self::$HHMERGE_CHECK_HH_NAME,
+        'option_group_id' => $option_group['id'],
+        'is_default'      => 0,
+        'description'     => ts("This activity indicates that there mmight be something wrong with this household, and that (a human) should look into it.", array('domain' => 'de.systopia.householdmerge')),
+        'is_active'       => 1,
+        'is_reserved'     => 1
+      ));
+    }
+
+    return $activity['id'];
   }
 }

@@ -29,14 +29,15 @@ class CRM_Householdmerge_Logic_Checker {
    * If max_count is set, it will stop after that amount,
    * saving the last household id for the next call
    */
-  public static function checkAllHouseholds($max_count = NULL) {
+  public function checkAllHouseholds($max_count = NULL) {
     $max_count = (int) $max_count;
     
     $activity_type_id    = $this->getCheckActivityTypeID();
-    $activity_status_ids = $this->getIgnoreActivityStatusIDs();
+    $activity_status_ids = $this->getActiveActivityStatusIDs();
 
     if ($max_count) {
-      $contact_id_minimum = CRM_Core_BAO_Setting::getItem(CRM_Householdmerge_Logic_Configuration::$HHMERGE_SETTING_DOMAIN, 'hh_check_last_id', 0);
+      $contact_id_minimum = CRM_Core_BAO_Setting::getItem(CRM_Householdmerge_Logic_Configuration::$HHMERGE_SETTING_DOMAIN, 'hh_check_last_id');
+      if (!$contact_id_minimum) $contact_id_minimum = 0;
       $limit_clause = "LIMIT $max_count";
     } else {
       $contact_id_minimum = 0;
@@ -47,7 +48,7 @@ class CRM_Householdmerge_Logic_Checker {
     $selector_sql = "SELECT civicrm_contact.id AS contact_id
                      FROM civicrm_contact
                      LEFT JOIN civicrm_activity_contact ON civicrm_activity_contact.contact_id = civicrm_contact.id
-                     LEFT JOIN civicrm_activity ON civicrm_activity_contact.activity_id = civicrm_activity.id AND civicrm_activity.activity_type_id = $activity_type_id AND civicrm_activity.status_id = IN ($activity_status_ids)
+                     LEFT JOIN civicrm_activity ON civicrm_activity_contact.activity_id = civicrm_activity.id AND civicrm_activity.activity_type_id = $activity_type_id AND civicrm_activity.status_id IN ($activity_status_ids)
                      WHERE contact_type = 'Household'
                        AND civicrm_activity.id IS NULL                       
                        AND (civicrm_contact.is_deleted IS NULL or civicrm_contact.is_deleted = 0)
@@ -153,7 +154,8 @@ class CRM_Householdmerge_Logic_Checker {
 
 
     if (!empty($problems_identified)) {
-      $this->createActivity($household, $problems_identified, $members);
+      // $this->createActivity($household, $problems_identified, $members);
+      // error_log(print_r($problems_identified,1));
     }
   }
 
@@ -187,7 +189,7 @@ class CRM_Householdmerge_Logic_Checker {
    * 
    * @return string  comma separated ids
    */
-  protected function getCheckActivityTypeID() {
+  protected function getActiveActivityStatusIDs() {
     if ($this->_activity_status_ids == NULL) {
       $status_ids = array();
       $status_ids[] = CRM_Core_OptionGroup::getValue('activity_status', 'Scheduled', 'name');
