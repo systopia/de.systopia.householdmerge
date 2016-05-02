@@ -33,7 +33,7 @@ class CRM_Householdmerge_Logic_Scanner {
   public function findNewHouseholds($count) {
     $proposals = array();
 
-    // first, find candidates (will return only one ID)
+    // first, find candidates
     $candidates = $this->findCandidates($count);
 
     // then go through all candidates
@@ -140,8 +140,8 @@ class CRM_Householdmerge_Logic_Scanner {
 
       //  try joining valid, active household relationships...
       $RELATIONSHIP_JOIN = "
-              LEFT JOIN civicrm_relationship relation_ab ON contact_id = relation_ab.contact_id_a AND relation_ab.relationship_type_id IN (8,7) AND (relation_ab.end_date IS NULL OR relation_ab.end_date > NOW())
-              LEFT JOIN civicrm_relationship relation_ba ON contact_id = relation_ba.contact_id_b AND relation_ba.relationship_type_id IN (8,7) AND (relation_ba.end_date IS NULL OR relation_ba.end_date > NOW())
+              LEFT JOIN civicrm_relationship relation_ab ON contact_id = relation_ab.contact_id_a AND relation_ab.relationship_type_id IN ($relationship_id_list) AND (relation_ab.end_date IS NULL OR relation_ab.end_date > NOW())
+              LEFT JOIN civicrm_relationship relation_ba ON contact_id = relation_ba.contact_id_b AND relation_ba.relationship_type_id IN ($relationship_id_list) AND (relation_ba.end_date IS NULL OR relation_ba.end_date > NOW())
         ";
 
       // ...and then make sure there are none
