@@ -147,23 +147,118 @@ class CRM_Householdmerge_Logic_Checker {
       }
 
       // CHECK 6: is the head also head of another household?
-      // TODO
+      foreach ($heads as $head) {
+        $head_relation_id = CRM_Householdmerge_Logic_Configuration::getHeadRelationID();
+        $relationships_a  = civicrm_api3('Relationship', 'get', array('contact_id_a' => $head['id'], 'relationship_type_id' => $head_relation_id, 'is_active' => 1));
+        $relationships_b  = civicrm_api3('Relationship', 'get', array('contact_id_b' => $head['id'], 'relationship_type_id' => $head_relation_id, 'is_active' => 1));
+        if ($relationships_a['count'] + $relationships_b['count'] > 1) {
+          $problems_identified[] = ts("Household head [%1] is head of multiple households.", array(1 => $head['id'], 'domain' => 'de.systopia.householdmerge'));
+        }
+      }
     }
 
     // all member checks
 
     // CHECK 7: does one of the members not have the household address any more?
-    // TODO
-
+    $this->checkAddresses($household, $members, $problems_identified);
 
     // CHECK 8: Is there a potential new member for this household?
-    // TODO
-
+    $this->findNewMembers($household, $members, $problems_identified);
 
     if (!empty($problems_identified)) {
       $this->createActivity($household, $problems_identified, $members);
     }
   }
+
+
+
+  /**
+   * Check if all these members still have the same address as the household
+   */
+  protected function checkAddresses(&$household, &$members, &$problems_identified) {
+    if (empty($members)) return;
+
+    if (empty($household['street_address']) && empty($household['postal_code']) && empty($household['city'])) {
+      // not enough information...
+      return;
+    }
+
+    // build a list of all members...
+    $member_ids = array();
+    foreach ($members as $member) {
+      if (!in_array($member['id'], $member_ids)) {
+        $member_ids[] = $member['id'];
+      }
+    }
+
+    // ...and remove all members that still share the household's main address
+    $addresses = civicrm_api3('Address', 'get', array('contact_id' => array('IN' => $member_ids), 'option.limit' => 999999));
+    foreach ($addresses['values'] as $address) {
+      if (  $address['city'] == $household['city']
+        &&  $address['street_address'] == $household['street_address']
+        &&  $address['postal_code'] == $household['postal_code']
+        &&  in_array($address['contact_id'], $member_ids)) {
+
+        // this contact still has/shares this address, remove him/her from the list
+        unset($member_ids[array_search($address['contact_id'], $member_ids)]);
+      }      
+    }
+
+    // every contact that's still on the list should NOT have the address any more
+    foreach ($member_ids as $member_id) {
+      $problems_identified[] = ts("Household member [%1] does not share the household's address any more.", array(1 => $member_id, 'domain' => 'de.systopia.householdmerge'));
+    }
+  }
+
+    
+  /**
+   * identify potential new household members
+   */
+  protected function findNewMembers(&$household, &$members, &$problems_identified) {
+    if (  empty($household['household_name'])
+       || empty($household['street_address'])
+       || empty($household['postal_code'])
+       || empty($household['city'])) {
+      // not enough information...
+      return;
+    }
+
+    $member_relation_id = CRM_Householdmerge_Logic_Configuration::getMemberRelationID();
+    $head_relation_id   = CRM_Householdmerge_Logic_Configuration::getHeadRelationID();
+    if (!$member_relation_id) return;
+    $relationship_ids = array($member_relation_id);
+    if ($head_relation_id) $relationship_ids[] = $head_relation_id;
+    $relationship_id_list = implode(',', $relationship_ids);
+
+    $search_sql = "SELECT DISTINCT(civicrm_contact.id) AS contact_id
+                     FROM civicrm_contact
+                     LEFT JOIN civicrm_address ON civicrm_address.contact_id = civicrm_contact.id
+                     WHERE (civicrm_contact.is_deleted IS NULL OR civicrm_contact.is_deleted = 0)
+                       AND civicrm_contact.contact_type = 'Individual'
+                       AND civicrm_contact.last_name = %1
+                       AND civicrm_address.street_address = %2
+                       AND civicrm_address.postal_code = %3
+                       AND civicrm_address.city = %4
+                       AND NOT EXISTS (SELECT id 
+                                         FROM civicrm_relationship 
+                                        WHERE (contact_id_a = civicrm_contact.id OR contact_id_b = civicrm_contact.id)
+                                          AND (relationship_type_id IN ($relationship_id_list))
+                                          AND (end_date IS NULL OR end_date > NOW())
+                                          AND (is_active = 1)
+                                        );";
+    $queryParameters = array(
+      1 => array($household['household_name'], 'String'),
+      2 => array($household['street_address'], 'String'),
+      3 => array($household['postal_code'], 'String'),
+      4 => array($household['city'], 'String'),
+    );
+    $new_members = CRM_Core_DAO::executeQuery($search_sql, $queryParameters);
+    while ($new_members->fetch()) {
+      $problems_identified[] = ts("Household should include potential memeber [%1].", array(1 => $new_members->contact_id, 'domain' => 'de.systopia.householdmerge'));
+    }
+  }
+
+
 
 
   /**
@@ -296,6 +391,5 @@ class CRM_Householdmerge_Logic_Checker {
     if (empty($activity->id)) {
       throw new Exception("Couldn't create activity for household [{$household['id']}]");
     }
-
   }
 }
