@@ -106,10 +106,10 @@ class CRM_Householdmerge_Logic_Checker {
     }
 
     // HEAD related checks
-    if ('hierarchy' == CRM_Householdmerge_Logic_Configuration::getHouseholdModeOptions()) {
+    if ('hierarchy' == CRM_Householdmerge_Logic_Configuration::getHouseholdMode()) {
       $heads = array();
       foreach ($members as $member) {
-        if ($member['relation'] == 'head') {
+        if ($member['hh_relation'] == 'head') {
           $heads[] = $member;
         }
       }
@@ -123,7 +123,7 @@ class CRM_Householdmerge_Logic_Checker {
       if (count($heads) > 1) {
         $problems_identified[] = ts("Household has multiple heads.", array('domain' => 'de.systopia.householdmerge'));
       }
-
+      
       // CHECK 4: does the head have a DO NOT mail/phone/sms/email
       $donts = CRM_Householdmerge_Logic_Configuration::getDontXXXChecks();
       foreach ($heads as $head) {
@@ -138,7 +138,7 @@ class CRM_Householdmerge_Logic_Checker {
       // CHECK 5: does the head have certain tags
       $bad_tags = CRM_Householdmerge_Logic_Configuration::getBadHeadTags();
       foreach ($heads as $head) {
-        $tags = CRM_Core_BAO_EntityTag::getContactTags($contact_id);
+        $tags = CRM_Core_BAO_EntityTag::getContactTags($head['id']);
         foreach ($tags as $tag) {
           if (in_array($tag, $bad_tags)) {
             $problems_identified[] = ts("Household head has tag '%1'.", array(1 => $tag, 'domain' => 'de.systopia.householdmerge'));
@@ -320,7 +320,7 @@ class CRM_Householdmerge_Logic_Checker {
    */
   protected function getCheckActivityTypeID() {
     if ($this->_activity_type_id == NULL) {
-      $this->_activity_type_id = CRM_Householdmerge_Logic_Configuration::getCheckHouseholdActivityType();
+      $this->_activity_type_id = CRM_Householdmerge_Logic_Configuration::getCheckHouseholdActivityTypeID();
     }
 
     if ($this->_activity_type_id == NULL) {

@@ -114,27 +114,27 @@ class CRM_Householdmerge_Logic_Configuration {
   /**
    * Get/create the activity type to be used for 'Check Household' activities
    */
-  public static function getCheckHouseholdActivityType() {
+  public static function getCheckHouseholdActivityTypeID() {
     // now make sure that the activity types exist
     $option_group = civicrm_api3('OptionGroup', 'getsingle', array('name' => 'activity_type'));
     if ($option_group==NULL) {
       throw new Exception("Couldn't find activity_type group.");
     }
     
-    $activity = civicrm_api3('OptionValue', 'getsingle', array('name' => self::$HHMERGE_CHECK_HH_NAME, 'option_group_id' => $option_group['id'], 'option.limit' => 1));    
-    if (empty($activity['id'])) {
-      $activity = civicrm_api3('OptionValue', 'create', array(
+    $activities = civicrm_api3('OptionValue', 'get', array('name' => self::$HHMERGE_CHECK_HH_NAME, 'option_group_id' => $option_group['id'], 'option.limit' => 1));
+    if (empty($activities['id']) || $activities['count'] != 1) {
+      $activities = civicrm_api3('OptionValue', 'create', array(
         'label'           => ts("Check Household", array('domain' => 'de.systopia.householdmerge')),
         'name'            => self::$HHMERGE_CHECK_HH_NAME,
         'option_group_id' => $option_group['id'],
         'is_default'      => 0,
-        'description'     => ts("This activity indicates that there mmight be something wrong with this household, and that (a human) should look into it.", array('domain' => 'de.systopia.householdmerge')),
+        'description'     => ts("This activity indicates that there might be something wrong with this household, and that (a human) should look into it.", array('domain' => 'de.systopia.householdmerge')),
         'is_active'       => 1,
         'is_reserved'     => 1
       ));
-      $activity = civicrm_api3('OptionValue', 'getsingle', array('id' => $activity['id']));
+      $activities = civicrm_api3('OptionValue', 'get', array('id' => $activities['id']));
     }
-
-    return $activity['value'];
+    
+    return $activities['values'][$activities['id']]['value'];
   }
 }
