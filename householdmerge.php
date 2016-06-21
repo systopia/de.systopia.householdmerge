@@ -166,3 +166,10 @@ function householdmerge_civicrm_merge($type, &$data, $mainId = NULL, $otherId = 
     $hhmerge_controller->resolveConflicts($type, $data, $mainId, $otherId);
   }
 }
+
+/**
+ * Set permissions for runner/engine API call
+ */
+function householdmerge_civicrm_alterAPIPermissions($entity, $action, &$params, &$permissions) {
+  $permissions['contact']['create_household'] = CRM_Householdmerge_Logic_Configuration::getCreateHouseholdPermission();
+}

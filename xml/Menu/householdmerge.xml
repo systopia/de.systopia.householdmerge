@@ -24,6 +24,6 @@
     <path>civicrm/household/finder</path>
     <page_callback>CRM_Householdmerge_Page_Finder</page_callback>
     <title>Finder</title>
-    <access_arguments>administer CiviCRM</access_arguments>
+    <access_arguments>import contacts;administer CiviCRM</access_arguments>
   </item>
 </menu>

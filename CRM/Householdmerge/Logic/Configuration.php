@@ -110,6 +110,13 @@ class CRM_Householdmerge_Logic_Configuration {
     CRM_Core_BAO_Setting::setItem($value, self::$HHMERGE_SETTING_DOMAIN, $key);
   }
 
+  /**
+   * get the relation ID of the HEAD relation
+   */
+  public static function getCreateHouseholdPermission() {
+    return array('import contacts', 'administer CiviCRM');
+  }
+
 
   /**
    * Get/create the activity type to be used for 'Check Household' activities
