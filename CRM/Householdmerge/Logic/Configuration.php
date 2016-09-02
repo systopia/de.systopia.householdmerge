@@ -114,7 +114,8 @@ class CRM_Householdmerge_Logic_Configuration {
    * get the relation ID of the HEAD relation
    */
   public static function getCreateHouseholdPermission() {
-    return array('import contacts', 'administer CiviCRM');
+    // nested array = OR
+    return array(array('import contacts', 'administer CiviCRM'));
   }
 
 
