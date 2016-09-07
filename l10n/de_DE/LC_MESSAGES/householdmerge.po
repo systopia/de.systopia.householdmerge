@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: de.systopia.householdmerge\n"
-"POT-Creation-Date: 2016-04-02 09:38+0200\n"
+"POT-Creation-Date: 2016-09-07 08:51+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Bjoern Endres <Bjoern.Endres@didonai.com>\n"
 "Language-Team: SYSTOPIA <endres@systopia.de>\n"
@@ -88,6 +88,50 @@ msgstr "Im Haushaltskontakt zusammengeführt"
 msgid "Most contribtutions in the last 2 years, male preferred"
 msgstr "Höchstes Spendenaufkommen in den letzten 2 Jahren, männlich bevorzugt"
 
+#: CRM/Householdmerge/Logic/Configuration.php
+msgid "Check Household"
+msgstr "Haushaltsprüfung"
+
+#: CRM/Householdmerge/Logic/Configuration.php
+msgid "This activity indicates that there might be something wrong with this household, and that (a human) should look into it."
+msgstr "Diese Aktivität markiert ein Problem das die automatische Überprüfung von Haushalten ergeben hat."
+
+#: CRM/Householdmerge/Logic/Problem.php
+msgid "Household has no members any more."
+msgstr "Haushalt hat keine Mitglieder mehr"
+
+#: CRM/Householdmerge/Logic/Problem.php
+msgid "Household has only {count} member(s) left"
+msgstr "Haushalt hat nur noch {count} Mitglieder"
+
+#: CRM/Householdmerge/Logic/Problem.php
+msgid "Household has no head any more"
+msgstr "Haushalt hat keinen Vorstand mehr"
+
+#: CRM/Householdmerge/Logic/Problem.php
+msgid "Household has multiple heads"
+msgstr "Haushalt hat mehrere Vorstände"
+
+#: CRM/Householdmerge/Logic/Problem.php
+msgid "Household head has one of the 'do not contact' attributes set"
+msgstr "Haushaltsvorstand hat Kontaktsperren"
+
+#: CRM/Householdmerge/Logic/Problem.php
+msgid "Household head has tag '{tag}'"
+msgstr "Haushaltsvorstand hat Tag '{tag}'"
+
+#: CRM/Householdmerge/Logic/Problem.php
+msgid "Household head is head of multiple households"
+msgstr "Haushaltsvorstand hat mehrere Haushalte"
+
+#: CRM/Householdmerge/Logic/Problem.php
+msgid "Household member does not share the household's address any more"
+msgstr "Haushaltsmitglied hat abweichende Adresse"
+
+#: CRM/Householdmerge/Logic/Problem.php
+msgid "New household member detected"
+msgstr "Neues Haushaltsmitglied gefunden"
+
 #: CRM/Householdmerge/Page/Finder.php
 msgid "Household Finder"
 msgstr "Haushalts-Scanner"
@@ -111,6 +155,24 @@ msgstr "Kontakte in Haushalt mergen"
 #: templates/CRM/Admin/Form/Setting/Household.tpl
 msgid "Household-Module Settings"
 msgstr "Einstellungen Haushalts-Modul"
+
+#: templates/CRM/Householdmerge/Checker/Activity.tpl
+msgid "The scan revealed %1 problem(s):"
+msgstr "Die Prüfung hat %1 Probleme erkannt."
+
+#: templates/CRM/Householdmerge/Checker/Activity.tpl
+msgid "Household Members"
+msgstr "Haushaltsmitglieder"
+
+#: templates/CRM/Householdmerge/Checker/Activity.tpl
+#: templates/CRM/Householdmerge/Page/Finder.tpl
+msgid "Head"
+msgstr "Vorstand"
+
+#: templates/CRM/Householdmerge/Checker/Activity.tpl
+#: templates/CRM/Householdmerge/Page/Finder.tpl
+msgid "Member"
+msgstr "Mitglied"
 
 #: templates/CRM/Householdmerge/Form/Task/Merge.tpl
 msgid "(%1 selected contacts have been ignored)"
@@ -155,8 +217,8 @@ msgid "all"
 msgstr "alle"
 
 #: templates/CRM/Householdmerge/Page/Finder.tpl
-msgid "Create all %1 households"
-msgstr "Alle %1 Haushalte erstellen"
+msgid "Create all selected households"
+msgstr "Alle Haushalte erstellen"
 
 #: templates/CRM/Householdmerge/Page/Finder.tpl
 msgid "Results"
@@ -165,14 +227,6 @@ msgstr "Gefundene Haushalte"
 #: templates/CRM/Householdmerge/Page/Finder.tpl
 msgid "New Household:"
 msgstr "Neuer Haushalt:"
-
-#: templates/CRM/Householdmerge/Page/Finder.tpl
-msgid "Head"
-msgstr "Vorstand"
-
-#: templates/CRM/Householdmerge/Page/Finder.tpl
-msgid "Member"
-msgstr "Mitglied"
 
 #: templates/CRM/Householdmerge/Page/Finder.tpl
 msgid "Create Household"

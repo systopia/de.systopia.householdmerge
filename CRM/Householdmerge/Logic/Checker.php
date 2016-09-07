@@ -99,9 +99,9 @@ class CRM_Householdmerge_Logic_Checker {
     // CHECK 1: number of members
     if (count($members) < CRM_Householdmerge_Logic_Configuration::getMinimumMemberCount()) {
       if (count($members) == 0) {
-        $problems_identified[] = ts("Household has no members any more.", array('domain' => 'de.systopia.householdmerge'));
+        $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HOM0', $household_id);
       } else {
-        $problems_identified[] = ts("Household has only %1 member(s) left.", array(1 => count($members), 'domain' => 'de.systopia.householdmerge'));
+        $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HOMX', $household_id, array('count' => count($members)));
       }
     }
 
@@ -116,12 +116,12 @@ class CRM_Householdmerge_Logic_Checker {
 
       // CHECK 2: is there still a head?
       if (empty($heads)) {
-        $problems_identified[] = ts("Household has no head any more.", array('domain' => 'de.systopia.householdmerge'));
+        $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HHN0', $household_id);
       }
 
       // CHECK 3: is there more than one head?
       if (count($heads) > 1) {
-        $problems_identified[] = ts("Household has multiple heads.", array('domain' => 'de.systopia.householdmerge'));
+        $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HHN2', $household_id);
       }
       
       // CHECK 4: does the head have a DO NOT mail/phone/sms/email
@@ -129,7 +129,7 @@ class CRM_Householdmerge_Logic_Checker {
       foreach ($heads as $head) {
         foreach ($donts as $field_name) {
           if (!empty($head[$field_name])) {
-            $problems_identified[] = ts("Household head has one of the 'do not contact' attributes set.", array('domain' => 'de.systopia.householdmerge'));
+            $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HHNC', $household_id);
             break;
           }
         }
@@ -141,7 +141,7 @@ class CRM_Householdmerge_Logic_Checker {
         $tags = CRM_Core_BAO_EntityTag::getContactTags($head['id']);
         foreach ($tags as $tag) {
           if (in_array($tag, $bad_tags)) {
-            $problems_identified[] = ts("Household head has tag '%1'.", array(1 => $tag, 'domain' => 'de.systopia.householdmerge'));
+            $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HHTG', $household_id, array('tag' => $tag));
           }
         }
       }
@@ -152,7 +152,7 @@ class CRM_Householdmerge_Logic_Checker {
         $relationships_a  = civicrm_api3('Relationship', 'get', array('contact_id_a' => $head['id'], 'relationship_type_id' => $head_relation_id, 'is_active' => 1));
         $relationships_b  = civicrm_api3('Relationship', 'get', array('contact_id_b' => $head['id'], 'relationship_type_id' => $head_relation_id, 'is_active' => 1));
         if ($relationships_a['count'] + $relationships_b['count'] > 1) {
-          $problems_identified[] = ts("Household head [%1] is head of multiple households.", array(1 => $head['id'], 'domain' => 'de.systopia.householdmerge'));
+          $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HHMM', $household_id);
         }
       }
     }
@@ -165,8 +165,11 @@ class CRM_Householdmerge_Logic_Checker {
     // CHECK 8: Is there a potential new member for this household?
     $this->findNewMembers($household, $members, $problems_identified);
 
-    if (!empty($problems_identified)) {
-      $this->createActivity($household, $problems_identified, $members);
+    // if (!empty($problems_identified)) {
+    //   $this->createActivity($household, $problems_identified, $members);
+    // }
+    foreach ($problems_identified as $problem) {
+      $problem->createActivity();
     }
   }
 
@@ -206,7 +209,7 @@ class CRM_Householdmerge_Logic_Checker {
 
     // every contact that's still on the list should NOT have the address any more
     foreach ($member_ids as $member_id) {
-      $problems_identified[] = ts("Household member [%1] does not share the household's address any more.", array(1 => $member_id, 'domain' => 'de.systopia.householdmerge'));
+      $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HMBA', $household_id, array('member_id' => $member_id));
     }
   }
 
@@ -254,7 +257,7 @@ class CRM_Householdmerge_Logic_Checker {
     );
     $new_members = CRM_Core_DAO::executeQuery($search_sql, $queryParameters);
     while ($new_members->fetch()) {
-      $problems_identified[] = ts("Household should include potential memeber [%1].", array(1 => $new_members->contact_id, 'domain' => 'de.systopia.householdmerge'));
+      $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HMNW', $household_id, array('member' => $new_members->contact_id));
     }
   }
 
@@ -314,82 +317,4 @@ class CRM_Householdmerge_Logic_Checker {
     return array();
   }
 
-
-  /**
-   * get the activty type ID for the "Check Households" activity
-   */
-  protected function getCheckActivityTypeID() {
-    if ($this->_activity_type_id == NULL) {
-      $this->_activity_type_id = CRM_Householdmerge_Logic_Configuration::getCheckHouseholdActivityTypeID();
-    }
-
-    if ($this->_activity_type_id == NULL) {
-      throw new API_Exception("Couldn't find activity type for 'check household' activity.");
-    }
-
-    return $this->_activity_type_id;
-  }
-
-  /**
-   * get the activty status IDs that are considered to be relevant for skipping
-   * 
-   * @return string  comma separated ids
-   */
-  protected function getActiveActivityStatusIDs() {
-    if ($this->_activity_status_ids == NULL) {
-      $status_ids = array();
-      $status_ids[] = CRM_Core_OptionGroup::getValue('activity_status', 'Scheduled', 'name');
-      $status_ids[] = CRM_Core_OptionGroup::getValue('activity_status', 'Not Required', 'name');
-      $this->_activity_status_ids = implode(',', $status_ids);
-    }
-
-    return $this->_activity_status_ids;
-  }
-
-  /**
-   * Check if there alread is an (active) 'check' activity with this household
-   */
-  protected function hasActiveCheckActivity($household_id) {
-    $activity_type_id    = $this->getCheckActivityTypeID();
-    $activity_status_ids = $this->getActiveActivityStatusIDs();
-    $selector_sql = "SELECT civicrm_activity.id AS activity_id
-                     FROM civicrm_activity_contact
-                     LEFT JOIN civicrm_activity ON civicrm_activity_contact.activity_id = civicrm_activity.id 
-                     WHERE contact_id = $household_id
-                       AND civicrm_activity.activity_type_id = $activity_type_id 
-                       AND civicrm_activity.status_id IN ($activity_status_ids)";
-    $query = CRM_Core_DAO::executeQuery($selector_sql);
-    return $query->fetch();
-  }
-
-
-  /**
-   * Create a new activity with the 
-   */
-  protected function createActivity($household, $problems, $members) {
-    // render the content
-    $smarty = CRM_Core_Smarty::singleton();
-    $smarty->pushScope(array(
-      'household'  => $household,
-      'problems'   => $problems,
-      'members'    => $members,
-      ));
-    $activity_content = $smarty->fetch('CRM/Householdmerge/Checker/Activity.tpl');
-    $smarty->popScope();
-
-    // compile activity
-    $activity_data = array();
-    $activity_data['subject']            = ts("Check Household", array('domain' => 'de.systopia.householdmerge'));
-    $activity_data['details']            = $activity_content;
-    $activity_data['activity_date_time'] = date("Ymdhis");
-    $activity_data['activity_type_id']   = $this->getCheckActivityTypeID();
-    $activity_data['status_id']          = CRM_Core_OptionGroup::getValue('activity_status', 'Scheduled', 'name');
-    $activity_data['target_contact_id']  = (int) $household['id'];
-    $activity_data['source_contact_id']  = (int) $household['id'];
-
-    $activity = CRM_Activity_BAO_Activity::create($activity_data);
-    if (empty($activity->id)) {
-      throw new Exception("Couldn't create activity for household [{$household['id']}]");
-    }
-  }
 }
