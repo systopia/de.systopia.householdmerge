@@ -125,13 +125,14 @@ class CRM_Householdmerge_Logic_Problem {
     $activity_data['subject']            = $this->getTitle();
     // $activity_data['details']            = $activity_content;
     $activity_data['activity_date_time'] = date("Ymdhis");
-    $activity_data['activity_type_id']   = $this->getCheckActivityTypeID();
+    $activity_data['activity_type_id']   = CRM_Householdmerge_Logic_Configuration::getCheckHouseholdActivityTypeID();
     $activity_data['status_id']          = CRM_Core_OptionGroup::getValue('activity_status', 'Scheduled', 'name');
-    $activity_data['target_contact_id']  = array((int) $household['id']);
-    if (!empty($params['member_id'])) {
-      $activity_data['target_contact_id'][] = (int) $params['member_id'];
+    $activity_data['target_contact_id']  = array((int) $this->household_id);
+    if (!empty($this->params['member_id'])) {
+      $activity_data['target_contact_id'][] = (int) $this->params['member_id'];
     }
-
+    $activity_data['source_contact_id']  = (int) $this->household_id;
+    
     $activity = CRM_Activity_BAO_Activity::create($activity_data);
     if (empty($activity->id)) {
       throw new Exception("Couldn't create activity for household [{$household['id']}]");
@@ -149,16 +150,16 @@ class CRM_Householdmerge_Logic_Problem {
     foreach ($this->params as $key => $value) {
       $template = str_replace('{'.$key.'}', $value, $template);
     }
-    return "[{$this->code}] $title";
+    return "[{$this->code}] $template";
   }
 
   /**
    * Check if there alread is an (active) 'check' activity with this household
    */
   protected function hasLiveActivity() {
-    $activity_type_id    = (int) $this->getCheckActivityTypeID();
+    $activity_type_id    = (int) CRM_Householdmerge_Logic_Configuration::getCheckHouseholdActivityTypeID();
     $household_id        = (int) $this->household_id;
-    $activity_status_ids = $this->getActiveActivityStatusIDs();
+    $activity_status_ids = CRM_Householdmerge_Logic_Configuration::getLiveActivityStatusIDs();
     $sentinel            = "[{$this->code}] %";
     if (empty($this->params['member_id'])) {
       $member_clause = "";
@@ -167,56 +168,17 @@ class CRM_Householdmerge_Logic_Problem {
       $member_clause = "AND EXISTS (SELECT id FROM civicrm_activity_contact WHERE activity_id = civicrm_activity.id AND contact_id = $member_id AND record_type_id = 3)";
     }
 
-    // $selector_sql = "SELECT civicrm_activity.id AS activity_id
-    //                  FROM civicrm_activity
-    //                  LEFT JOIN civicrm_activity_contact target ON civicrm_activity_contact.activity_id = civicrm_activity.id AND civicrm_activity_contact.record_type_id = 3
-    //                  WHERE civicrm_activity.activity_type_id = $activity_type_id 
-    //                    AND civicrm_activity.status_id IN ($activity_status_ids)
-    //                    AND source.contact_id = $household_id
-    //                    $member_clause ;";
     $selector_sql = "SELECT civicrm_activity.id AS activity_id
                      FROM civicrm_activity
-                     LEFT JOIN civicrm_activity_contact target ON civicrm_activity_contact.activity_id = civicrm_activity.id AND civicrm_activity_contact.record_type_id = 3
+                     LEFT JOIN civicrm_activity_contact target ON target.activity_id = civicrm_activity.id AND target.record_type_id = 3
                      WHERE civicrm_activity.activity_type_id = $activity_type_id 
                        AND civicrm_activity.status_id IN ($activity_status_ids)
                        AND civicrm_activity.subject LIKE %1
                        AND target.contact_id = $household_id
                        $member_clause ;";
     $selector_params = array(1 => array($sentinel, 'String'));
-    error_log($selector_sql);
     $query = CRM_Core_DAO::executeQuery($selector_sql, $selector_params);
     return $query->fetch();
-  }
-
-  /**
-   * get the activty status IDs that are considered to be relevant for skipping
-   * 
-   * @return string  comma separated ids
-   */
-  protected function getLiveActivityStatusIDs() {
-    if (self::$live_activity_status_ids == NULL) {
-      $status_ids = array();
-      $status_ids[] = CRM_Core_OptionGroup::getValue('activity_status', 'Scheduled', 'name');
-      $status_ids[] = CRM_Core_OptionGroup::getValue('activity_status', 'Not Required', 'name');
-      self::$live_activity_status_ids = implode(',', $status_ids);
-    }
-
-    return self::$live_activity_status_ids;
-  }
-
-  /**
-   * get the activty type ID for the "Check Households" activity
-   */
-  protected function getCheckActivityTypeID() {
-    if (self::$activity_type_id == NULL) {
-      self::$activity_type_id = CRM_Householdmerge_Logic_Configuration::getCheckHouseholdActivityTypeID();
-    }
-
-    if (self::$activity_type_id == NULL) {
-      throw new API_Exception("Couldn't find activity type for 'check household' activity.");
-    }
-
-    return self::$activity_type_id;
   }
 
 }

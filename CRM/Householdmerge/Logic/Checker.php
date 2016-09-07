@@ -32,8 +32,8 @@ class CRM_Householdmerge_Logic_Checker {
   public function checkAllHouseholds($max_count = NULL) {
     $max_count = (int) $max_count;
     
-    $activity_type_id    = $this->getCheckActivityTypeID();
-    $activity_status_ids = $this->getActiveActivityStatusIDs();
+    $activity_type_id    = CRM_Householdmerge_Logic_Configuration::getCheckHouseholdActivityTypeID();
+    $activity_status_ids = CRM_Householdmerge_Logic_Configuration::getLiveActivityStatusIDs();
 
     if ($max_count) {
       $contact_id_minimum = CRM_Core_BAO_Setting::getItem(CRM_Householdmerge_Logic_Configuration::$HHMERGE_SETTING_DOMAIN, 'hh_check_last_id');
@@ -59,7 +59,7 @@ class CRM_Householdmerge_Logic_Checker {
     $query = CRM_Core_DAO::executeQuery($selector_sql);
     while ($query->fetch()) {
       $last_contact_id_processed = $query->contact_id;
-      $this->checkHousehold($last_contact_id_processed, TRUE);
+      $this->checkHousehold($last_contact_id_processed);
       $max_count--;
     }
 
@@ -79,15 +79,8 @@ class CRM_Householdmerge_Logic_Checker {
    * investigates if the given household still complies
    * with all the requirements for a proper household entity
    *
-   * @param $activities_checked boolean  set to TRUE if you already verfied 
-   *                                       that the household hasn't got an (active) check activity
    */
-  function checkHousehold($household_id, $activities_checked = FALSE) {
-    if (!$activities_checked && $this->hasActiveCheckActivity($household_id)) {
-      // in this case, the household still has an active ID
-      return;
-    }
-
+  function checkHousehold($household_id) {
     $problems_identified = array();
 
     // load household
@@ -209,7 +202,7 @@ class CRM_Householdmerge_Logic_Checker {
 
     // every contact that's still on the list should NOT have the address any more
     foreach ($member_ids as $member_id) {
-      $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HMBA', $household_id, array('member_id' => $member_id));
+      $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HMBA', $household['id'], array('member_id' => $member_id));
     }
   }
 
@@ -257,7 +250,7 @@ class CRM_Householdmerge_Logic_Checker {
     );
     $new_members = CRM_Core_DAO::executeQuery($search_sql, $queryParameters);
     while ($new_members->fetch()) {
-      $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HMNW', $household_id, array('member' => $new_members->contact_id));
+      $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HMNW', $household['id'], array('member' => $new_members->contact_id));
     }
   }
 
