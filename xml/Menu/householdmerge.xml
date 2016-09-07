@@ -3,7 +3,13 @@
   <item>
     <path>civicrm/household/merge</path>
     <page_callback>CRM_Householdmerge_Form_Task_Merge</page_callback>
-    <title>Task_Merge</title>
+    <title>Merge Households</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/household/fix</path>
+    <page_callback>CRM_Householdmerge_Form_Task_Fix</page_callback>
+    <title>Automatic Correction of Household Problems</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
   <item>

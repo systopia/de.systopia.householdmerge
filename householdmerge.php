@@ -34,6 +34,17 @@ function householdmerge_civicrm_searchTasks($objectType, &$tasks) {
           'result' => false);
     }
   }
+
+  // add "Fix Problems" task for activities
+  if ($objectType == 'activity') {
+    // this object is only available for the 'merge' mode
+    $tasks[] = array(
+        'title'  => ts('Fix Household Problems', array('domain' => 'de.systopia.householdmerge')),
+        'class'  => 'CRM_Householdmerge_Form_Task_Fix',
+        'result' => false);
+  }
+
+  
 }
 
 /**
