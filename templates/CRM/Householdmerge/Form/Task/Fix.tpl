@@ -22,23 +22,17 @@
     </div>
     <div>
       <h2>{ts domain="de.systopia.householdmerge"}Overview{/ts}</h2>
-      <table>
+      <table style="width:auto;">
         <tr>
           <td>{ts domain="de.systopia.householdmerge"}Total activities{/ts}</td>
+          <td>{$total_activities}</td>          
         </tr>
         <tr>
           <td>{ts domain="de.systopia.householdmerge"}Household problem activities{/ts}</td>
-        </tr>
-        <tr>
-          <td>{ts domain="de.systopia.householdmerge"}Number of problem classes{/ts}</td>
-        </tr>
-        <tr>
-          <td>{$total_activities}</td>
-        </tr>
-        <tr>
           <td>{$relevant_activities}</td>
         </tr>
         <tr>
+          <td>{ts domain="de.systopia.householdmerge"}Number of problem classes{/ts}</td>
           <td>{$class_count}</td>
         </tr>
       </table>

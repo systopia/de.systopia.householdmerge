@@ -81,7 +81,20 @@ class CRM_Householdmerge_Logic_Problem {
    * extract a problem from a given activity
    */
   public static function extractProblem($activity_id) {
-    // TODO:
+    $activity = civicrm_api3('Activity', 'getsingle', array('id' => $activity_id));
+    if ($activity['activity_type_id'] != CRM_Householdmerge_Logic_Configuration::getCheckHouseholdActivityTypeID()) {
+      return NULL;
+    }
+
+    $fixable_status_ids = explode(',', CRM_Householdmerge_Logic_Configuration::getFixableActivityStatusIDs());
+    if (!in_array($activity['status_id'], $fixable_status_ids)) {
+      return NULL;
+    }
+
+    $code = substr($activity['subject'], 1, 4);
+
+    // TODO: load member at this point?
+    return self::createProblem($code, $activity['source_contact_id'], array('activity_id' => $activity_id));
   } 
 
 
@@ -98,6 +111,31 @@ class CRM_Householdmerge_Logic_Problem {
     $this->household_id = $household_id;
     $this->params = $params;
   }
+
+
+  /**
+   * Try to automatically fix a problem
+   * 
+   * @return TRUE if fix was successful
+   */
+  public function fix($close_activity = TRUE) {
+    switch ($this->code) {
+      case 'HMNW':
+        $fixed = CRM_Householdmerge_Logic_Fixer::fixHMNW($this);
+        break;
+      
+      default:
+        $fixed = FALSE;
+    }
+
+    if ($fixed && $close_activity && !empty($this->params['activity_id'])) {
+      // mark activity as completed
+      civicrm_api3('Activity','create', array(
+        'id'        => $this->params['activity_id'],
+        'status_id' => CRM_Householdmerge_Logic_Configuration::getCompletedActivityStatusID()));
+    }
+  }
+
 
   /** 
    *

@@ -21,6 +21,8 @@ class CRM_Householdmerge_Logic_Configuration {
   /** cache some parameters */
   protected static $activity_type_id = NULL;
   protected static $live_activity_status_ids = NULL;
+  protected static $fixable_activity_status_ids = NULL;
+  
 
   /**
    * will return the configured household mode:
@@ -168,5 +170,29 @@ class CRM_Householdmerge_Logic_Configuration {
     }
 
     return self::$live_activity_status_ids;
+  }
+
+  /**
+   * get the activty status IDs that are considered to be live and fixable
+   * 
+   * @return string  comma separated ids
+   */
+  public static function getFixableActivityStatusIDs() {
+    if (self::$fixable_activity_status_ids === NULL) {
+      $status_ids = array();
+      $status_ids[] = CRM_Core_OptionGroup::getValue('activity_status', 'Scheduled', 'name');
+      self::$fixable_activity_status_ids = implode(',', $status_ids);
+    }
+
+    return self::$fixable_activity_status_ids;
+  }
+
+  /**
+   * get the activty status ID for closed/processed activities
+   * 
+   * @return int ID
+   */
+  public static function getCompletedActivityStatusID() {
+    return CRM_Core_OptionGroup::getValue('activity_status', 'Completed', 'name');
   }
 }
