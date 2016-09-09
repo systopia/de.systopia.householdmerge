@@ -128,14 +128,33 @@ class CRM_Householdmerge_Logic_Problem {
         $fixed = FALSE;
     }
 
-    if ($fixed && $close_activity && !empty($this->params['activity_id'])) {
+    if ($fixed && $close_activity && $this->getActivityID()) {
       // mark activity as completed
       civicrm_api3('Activity','create', array(
-        'id'        => $this->params['activity_id'],
+        'id'        => $this->getActivityID(),
         'status_id' => CRM_Householdmerge_Logic_Configuration::getCompletedActivityStatusID()));
+    }
+
+    return $fixed;
+  }
+
+  /**
+   * get the id of the activity (if exists) associated with this problem
+   */
+  public function getActivityID() {
+    if (empty($this->params['activity_id'])) {
+      return NULL;
+    } else {
+      return (int) $this->params['activity_id'];
     }
   }
 
+  /**
+   * get the id of the activity (if exists) associated with this problem
+   */
+  public function getHouseholdID() {
+    return $this->household_id;
+  }
 
   /** 
    *
@@ -175,6 +194,7 @@ class CRM_Householdmerge_Logic_Problem {
     if (empty($activity->id)) {
       throw new Exception("Couldn't create activity for household [{$household['id']}]");
     } else {
+      $this->params['activity_id'] = $activity->id;
       return $activity->id;
     }
   }

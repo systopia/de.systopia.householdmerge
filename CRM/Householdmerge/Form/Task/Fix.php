@@ -77,8 +77,10 @@ class CRM_Householdmerge_Form_Task_Fix extends CRM_Activity_Form_Task {
     }
 
     // show stats
-    CRM_Core_Session::setStatus(ts('%1 of the %2 selected activities were processed, %3 of them could be fixed.', array(1 => $activities_detected, 2 => $activities_total, 3 => $activities_fixed, 'domain' => 'de.systopia.householdmerge')), 
-      ts('Problems Processed', array('domain' => 'de.systopia.householdmerge')), 'error');
+    CRM_Core_Session::setStatus(
+      ts('%1 of the %2 selected activities were processed, %3 of them could be fixed.', array(1 => $activities_detected, 2 => $activities_total, 3 => $activities_fixed, 'domain' => 'de.systopia.householdmerge')), 
+      ts('%1 Household Problems Fixed', array(1 => $activities_fixed, 'domain' => 'de.systopia.householdmerge')), 
+      ($activities_fixed > 0)? 'info' : 'warn');
 
     parent::postProcess();
   }
