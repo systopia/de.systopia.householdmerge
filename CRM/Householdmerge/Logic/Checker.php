@@ -250,7 +250,7 @@ class CRM_Householdmerge_Logic_Checker {
     );
     $new_members = CRM_Core_DAO::executeQuery($search_sql, $queryParameters);
     while ($new_members->fetch()) {
-      $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HMNW', $household['id'], array('member' => $new_members->contact_id));
+      $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HMNW', $household['id'], array('member_id' => $new_members->contact_id));
     }
   }
 
@@ -292,7 +292,10 @@ class CRM_Householdmerge_Logic_Checker {
 
     if (!empty($member_ids)) {
       // and load the memeber contacts
-      $contact_query = civicrm_api3('Contact', 'get', array('id' => array('IN' => $member_ids)));
+      $contact_query = civicrm_api3('Contact', 'get', array(
+          'id'           => array('IN' => $member_ids),
+          'contact_type' => 'Individual',
+          'is_deleted'   => 0));
       $members = $contact_query['values'];
 
       // set the relationship type
