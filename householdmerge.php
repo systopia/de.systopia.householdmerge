@@ -28,7 +28,7 @@ function householdmerge_civicrm_searchTasks($objectType, &$tasks) {
   if ($objectType == 'contact') {
     // this object is only available for the 'merge' mode
     if ('merge' == CRM_Householdmerge_Logic_Configuration::getHouseholdMode()) {
-      $tasks[] = array(
+      $tasks['hh_merge'] = array(
           'title'  => ts('Merge into Household', array('domain' => 'de.systopia.householdmerge')),
           'class'  => 'CRM_Householdmerge_Form_Task_Merge',
           'result' => false);
@@ -38,7 +38,7 @@ function householdmerge_civicrm_searchTasks($objectType, &$tasks) {
   // add "Fix Problems" task for activities
   if ($objectType == 'activity') {
     // this object is only available for the 'merge' mode
-    $tasks[] = array(
+    $tasks['hh_merge_fixer'] = array(
         'title'  => ts('Fix Household Problems', array('domain' => 'de.systopia.householdmerge')),
         'class'  => 'CRM_Householdmerge_Form_Task_Fix',
         'result' => false);
