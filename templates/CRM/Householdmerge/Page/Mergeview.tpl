@@ -1,7 +1,7 @@
 {*-------------------------------------------------------+
 | SYSTOPIA Donation Receipts Extension                   |
 | Household Merger Extension                             |
-| Copyright (C) 2015 SYSTOPIA                            |
+| Copyright (C) 2015-2018 SYSTOPIA                       |
 | Author: B. Endres (endres@systopia.de)                 |
 | http://www.systopia.de/                                |
 +--------------------------------------------------------+

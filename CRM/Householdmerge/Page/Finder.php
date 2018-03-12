@@ -1,7 +1,7 @@
 <?php
 /*-------------------------------------------------------+
 | Household Merger Extension                             |
-| Copyright (C) 2015 SYSTOPIA                            |
+| Copyright (C) 2015-2018 SYSTOPIA                       |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
@@ -16,7 +16,7 @@
 require_once 'CRM/Core/Page.php';
 
 class CRM_Householdmerge_Page_Finder extends CRM_Core_Page {
-  
+
   public function run() {
     CRM_Utils_System::setTitle(ts('Household Finder'));
 

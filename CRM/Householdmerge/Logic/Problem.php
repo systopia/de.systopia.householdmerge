@@ -1,7 +1,7 @@
 <?php
 /*-------------------------------------------------------+
 | Household Merger Extension                             |
-| Copyright (C) 2016 SYSTOPIA                            |
+| Copyright (C) 2016-2018 SYSTOPIA                       |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
@@ -19,7 +19,7 @@ class CRM_Householdmerge_Logic_Problem {
    * This is the list of all known problems
    */
   static $_problem_classes = NULL;
-  
+
   public static function getProblemClasses() {
     if (self::$_problem_classes === NULL) {
       self::$_problem_classes = array(
@@ -63,7 +63,7 @@ class CRM_Householdmerge_Logic_Problem {
     }
     return self::$_problem_classes;
   }
-    
+
   /**
    * create a problem instance defined by the given code
    */
@@ -95,7 +95,7 @@ class CRM_Householdmerge_Logic_Problem {
 
     // TODO: load member at this point?
     return self::createProblem($code, $activity['source_contact_id'], array('activity_id' => $activity_id));
-  } 
+  }
 
 
 
@@ -115,7 +115,7 @@ class CRM_Householdmerge_Logic_Problem {
 
   /**
    * Try to automatically fix a problem
-   * 
+   *
    * @return TRUE if fix was successful
    */
   public function fix($close_activity = TRUE) {
@@ -123,7 +123,7 @@ class CRM_Householdmerge_Logic_Problem {
       case 'HMNW':
         $fixed = CRM_Householdmerge_Logic_Fixer::fixHMNW($this);
         break;
-      
+
       default:
         $fixed = FALSE;
     }
@@ -156,7 +156,7 @@ class CRM_Householdmerge_Logic_Problem {
     return $this->household_id;
   }
 
-  /** 
+  /**
    *
    * @return activity_id if a new activity was created
    */
@@ -189,7 +189,7 @@ class CRM_Householdmerge_Logic_Problem {
       $activity_data['target_contact_id'][] = (int) $this->params['member_id'];
     }
     $activity_data['source_contact_id']  = (int) $this->household_id;
-    
+
     $activity = CRM_Activity_BAO_Activity::create($activity_data);
     if (empty($activity->id)) {
       throw new Exception("Couldn't create activity for household [{$household['id']}]");
@@ -229,7 +229,7 @@ class CRM_Householdmerge_Logic_Problem {
     $selector_sql = "SELECT civicrm_activity.id AS activity_id
                      FROM civicrm_activity
                      LEFT JOIN civicrm_activity_contact target ON target.activity_id = civicrm_activity.id AND target.record_type_id = 3
-                     WHERE civicrm_activity.activity_type_id = $activity_type_id 
+                     WHERE civicrm_activity.activity_type_id = $activity_type_id
                        AND civicrm_activity.status_id IN ($activity_status_ids)
                        AND civicrm_activity.subject LIKE %1
                        AND target.contact_id = $household_id

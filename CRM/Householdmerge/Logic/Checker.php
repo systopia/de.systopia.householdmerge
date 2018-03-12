@@ -1,7 +1,7 @@
 <?php
 /*-------------------------------------------------------+
 | Household Merger Extension                             |
-| Copyright (C) 2015 SYSTOPIA                            |
+| Copyright (C) 2015-2018 SYSTOPIA                       |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
@@ -31,7 +31,7 @@ class CRM_Householdmerge_Logic_Checker {
    */
   public function checkAllHouseholds($max_count = NULL) {
     $max_count = (int) $max_count;
-    
+
     $activity_type_id    = CRM_Householdmerge_Logic_Configuration::getCheckHouseholdActivityTypeID();
     $activity_status_ids = CRM_Householdmerge_Logic_Configuration::getLiveActivityStatusIDs();
 
@@ -50,7 +50,7 @@ class CRM_Householdmerge_Logic_Checker {
                      LEFT JOIN civicrm_activity_contact ON civicrm_activity_contact.contact_id = civicrm_contact.id
                      LEFT JOIN civicrm_activity ON civicrm_activity_contact.activity_id = civicrm_activity.id AND civicrm_activity.activity_type_id = $activity_type_id AND civicrm_activity.status_id IN ($activity_status_ids)
                      WHERE contact_type = 'Household'
-                       AND civicrm_activity.id IS NULL                       
+                       AND civicrm_activity.id IS NULL
                        AND (civicrm_contact.is_deleted IS NULL or civicrm_contact.is_deleted = 0)
                        AND civicrm_contact.id > $contact_id_minimum
                      GROUP BY civicrm_contact.id
@@ -116,7 +116,7 @@ class CRM_Householdmerge_Logic_Checker {
       if (count($heads) > 1) {
         $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HHN2', $household_id);
       }
-      
+
       // CHECK 4: does the head have a DO NOT mail/phone/sms/email
       $donts = CRM_Householdmerge_Logic_Configuration::getDontXXXChecks();
       foreach ($heads as $head) {
@@ -197,7 +197,7 @@ class CRM_Householdmerge_Logic_Checker {
 
         // this contact still has/shares this address, remove him/her from the list
         unset($member_ids[array_search($address['contact_id'], $member_ids)]);
-      }      
+      }
     }
 
     // every contact that's still on the list should NOT have the address any more
@@ -206,7 +206,7 @@ class CRM_Householdmerge_Logic_Checker {
     }
   }
 
-    
+
   /**
    * identify potential new household members
    */
@@ -235,8 +235,8 @@ class CRM_Householdmerge_Logic_Checker {
                        AND civicrm_address.street_address = %2
                        AND civicrm_address.postal_code = %3
                        AND civicrm_address.city = %4
-                       AND NOT EXISTS (SELECT id 
-                                         FROM civicrm_relationship 
+                       AND NOT EXISTS (SELECT id
+                                         FROM civicrm_relationship
                                         WHERE (contact_id_a = civicrm_contact.id OR contact_id_b = civicrm_contact.id)
                                           AND (relationship_type_id IN ($relationship_id_list))
                                           AND (end_date IS NULL OR end_date > NOW())
