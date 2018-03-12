@@ -1,7 +1,7 @@
 <?php
 /*-------------------------------------------------------+
 | Household Merger Extension                             |
-| Copyright (C) 2015 SYSTOPIA                            |
+| Copyright (C) 2015-2018 SYSTOPIA                       |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
@@ -22,7 +22,45 @@ class CRM_Householdmerge_Logic_Configuration {
   protected static $activity_type_id = NULL;
   protected static $live_activity_status_ids = NULL;
   protected static $fixable_activity_status_ids = NULL;
-  
+  protected static $settings_bucket = NULL;
+
+
+  /**
+   * Get HH setting
+   */
+  public static function getSettings() {
+    if (self::$settings_bucket === NULL) {
+      self::$settings_bucket = CRM_Core_BAO_Setting::getItem(self::$HHMERGE_SETTING_DOMAIN, 'householdmerge');
+      if (!is_array(self::$settings_bucket)) {
+        self::$settings_bucket = array();
+      }
+    }
+    return self::$settings_bucket;
+  }
+
+  /**
+   * Get HH setting
+   */
+  public static function getSetting($name) {
+    $settings = self::getSettings();
+    if (isset($settings[$name])) {
+      return $settings[$name];
+    } else {
+      return NULL;
+    }
+  }
+
+  /**
+   * Set HH setting
+   */
+  public static function setSetting($name, $value) {
+    $old_value = self::getSetting($name);
+    if ($old_value !== $value) {
+      self::$settings_bucket[$name] = $value;
+      CRM_Core_BAO_Setting::setItem(self::$settings_bucket, self::$HHMERGE_SETTING_DOMAIN, 'householdmerge');
+    }
+  }
+
 
   /**
    * will return the configured household mode:
@@ -33,7 +71,12 @@ class CRM_Householdmerge_Logic_Configuration {
    * @return string
    */
   public static function getHouseholdMode() {
-    return CRM_Core_BAO_Setting::getItem(self::$HHMERGE_SETTING_DOMAIN, 'hh_mode', NULL, 'merge');
+    $hh_mode = self::getSetting('hh_mode');
+    if (empty($hh_mode)) {
+      return 'merge';
+    } else {
+      return $hh_mode;
+    }
   }
 
   /**
@@ -58,7 +101,12 @@ class CRM_Householdmerge_Logic_Configuration {
    * @return string
    */
   public static function getHouseholdHeadMode() {
-    return CRM_Core_BAO_Setting::getItem(self::$HHMERGE_SETTING_DOMAIN, 'hh_head_mode', NULL, 'topdonor2y_m');
+    $hh_head_mode = self::getSetting('hh_head_mode');
+    if (empty($hh_head_mode)) {
+      return 'topdonor2y_m'; // default
+    } else {
+      return $hh_head_mode;
+    }
   }
 
   /**
@@ -88,7 +136,7 @@ class CRM_Householdmerge_Logic_Configuration {
     return array("do_not_email", "do_not_phone", "do_not_mail", "do_not_sms");
   }
 
-  /** 
+  /**
    * get a list of tag names that a household head should not have
    */
   public static function getBadHeadTags() {
@@ -99,28 +147,28 @@ class CRM_Householdmerge_Logic_Configuration {
    * get the relation ID of the Member relation
    */
   public static function getMemberRelationID() {
-    return CRM_Core_BAO_Setting::getItem(self::$HHMERGE_SETTING_DOMAIN, 'hh_member_relation');
+    return self::getSetting('hh_member_relation');
   }
 
   /**
    * get the relation ID of the HEAD relation
    */
   public static function getHeadRelationID() {
-    return CRM_Core_BAO_Setting::getItem(self::$HHMERGE_SETTING_DOMAIN, 'hh_head_relation');
+    return self::getSetting('hh_head_relation');
   }
 
   /**
    * store a config option
    */
   public static function setConfigValue($key, $value) {
-    CRM_Core_BAO_Setting::setItem($value, self::$HHMERGE_SETTING_DOMAIN, $key);
+    self::setSetting($key, $value);
   }
 
   /**
    * get the relation ID of the HEAD relation
    */
   public static function getCreateHouseholdPermission() {
-    // nested array = OR
+    // nested array means 'OR'
     return array(array('import contacts', 'administer CiviCRM'));
   }
 
@@ -135,7 +183,7 @@ class CRM_Householdmerge_Logic_Configuration {
       if ($option_group==NULL) {
         throw new Exception("Couldn't find activity_type group.");
       }
-      
+
       $activities = civicrm_api3('OptionValue', 'get', array('name' => self::$HHMERGE_CHECK_HH_NAME, 'option_group_id' => $option_group['id'], 'option.limit' => 1));
       if (empty($activities['id']) || $activities['count'] != 1) {
         $activities = civicrm_api3('OptionValue', 'create', array(
@@ -149,7 +197,7 @@ class CRM_Householdmerge_Logic_Configuration {
         ));
         $activities = civicrm_api3('OptionValue', 'get', array('id' => $activities['id']));
       }
-      
+
       self::$activity_type_id = $activities['values'][$activities['id']]['value'];
     }
 
@@ -158,7 +206,7 @@ class CRM_Householdmerge_Logic_Configuration {
 
   /**
    * get the activty status IDs that are considered to be relevant for skipping
-   * 
+   *
    * @return string  comma separated ids
    */
   public static function getLiveActivityStatusIDs() {
@@ -174,7 +222,7 @@ class CRM_Householdmerge_Logic_Configuration {
 
   /**
    * get the activty status IDs that are considered to be live and fixable
-   * 
+   *
    * @return string  comma separated ids
    */
   public static function getFixableActivityStatusIDs() {
@@ -189,7 +237,7 @@ class CRM_Householdmerge_Logic_Configuration {
 
   /**
    * get the activty status ID for closed/processed activities
-   * 
+   *
    * @return int ID
    */
   public static function getCompletedActivityStatusID() {
