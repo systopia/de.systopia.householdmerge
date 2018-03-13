@@ -1,7 +1,7 @@
 <?php
 /*-------------------------------------------------------+
 | Household Merger Extension                             |
-| Copyright (C) 2015 SYSTOPIA                            |
+| Copyright (C) 2015-2018 SYSTOPIA                       |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
@@ -25,7 +25,7 @@ function civicrm_api3_contact_check_household($params) {
     if ($household_id) {
       $checker->checkHousehold($household_id);
     }
-  
+
   } else {
     $max_count = NULL;
     if (!empty($params['max_count'])) {

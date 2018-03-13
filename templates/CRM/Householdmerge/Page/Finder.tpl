@@ -1,7 +1,7 @@
 {*-------------------------------------------------------+
 | SYSTOPIA Donation Receipts Extension                   |
 | Household Merger Extension                             |
-| Copyright (C) 2015 SYSTOPIA                            |
+| Copyright (C) 2015-2018 SYSTOPIA                       |
 | Author: B. Endres (endres@systopia.de)                 |
 | http://www.systopia.de/                                |
 +--------------------------------------------------------+
@@ -111,7 +111,7 @@ cj("#exec_all").click(function() {
 cj("a.hhcreate").click(function(e) {
   // find ID
   var identifier = cj(e.currentTarget).closest("table").prop('id');
-    
+
   // untick / disable checkbox
   cj("#select-" + identifier).prop('checked', false);
   cj("#select-" + identifier).remove();
@@ -122,7 +122,7 @@ cj("a.hhcreate").click(function(e) {
 
   // build and send query
   var query = proposals[identifier];
-  delete query['contacts']; // remove contact details 
+  delete query['contacts']; // remove contact details
   CRM.api('Contact', 'create_household', query,
     { // SUCCESS HANDLER
       success: function(data) {

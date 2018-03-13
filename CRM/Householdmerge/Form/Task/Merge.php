@@ -1,7 +1,7 @@
 <?php
 /*-------------------------------------------------------+
 | Household Merger Extension                             |
-| Copyright (C) 2015 SYSTOPIA                            |
+| Copyright (C) 2015-2018 SYSTOPIA                       |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
@@ -21,7 +21,7 @@ require_once 'CRM/Core/Form.php';
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
  */
 class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
-  
+
   function buildQuickForm() {
     // first: sort out the contacts
     $contacts      = array();
@@ -172,7 +172,7 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
         $first_part = implode(', ', array_slice($first_names, 0, $first_names_count-1));
         $patterns[1] = $first_part.' '.$and.' '.$first_names[$first_names_count-1].' '.$last_name;
       } else {
-        $patterns[1] = implode(' '.$and.' ', $first_names).' '.$last_name;        
+        $patterns[1] = implode(' '.$and.' ', $first_names).' '.$last_name;
       }
     }
 

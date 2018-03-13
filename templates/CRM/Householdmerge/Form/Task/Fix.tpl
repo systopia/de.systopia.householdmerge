@@ -1,7 +1,7 @@
 {*-------------------------------------------------------+
 | SYSTOPIA Donation Receipts Extension                   |
 | Household Merger Extension                             |
-| Copyright (C) 2015 SYSTOPIA                            |
+| Copyright (C) 2015-2018 SYSTOPIA                       |
 | Author: B. Endres (endres@systopia.de)                 |
 | http://www.systopia.de/                                |
 +--------------------------------------------------------+
@@ -25,7 +25,7 @@
       <table style="width:auto;">
         <tr>
           <td>{ts domain="de.systopia.householdmerge"}Total activities{/ts}</td>
-          <td>{$total_activities}</td>          
+          <td>{$total_activities}</td>
         </tr>
         <tr>
           <td>{ts domain="de.systopia.householdmerge"}Household problem activities{/ts}</td>

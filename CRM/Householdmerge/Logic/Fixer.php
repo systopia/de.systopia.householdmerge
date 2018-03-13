@@ -1,7 +1,7 @@
 <?php
 /*-------------------------------------------------------+
 | Household Merger Extension                             |
-| Copyright (C) 2015 SYSTOPIA                            |
+| Copyright (C) 2015-2018 SYSTOPIA                       |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
@@ -52,21 +52,21 @@ class CRM_Householdmerge_Logic_Fixer {
     $relation_ids[] = CRM_Householdmerge_Logic_Configuration::getMemberRelationID();
     $relation_ids[] = CRM_Householdmerge_Logic_Configuration::getHeadRelationID();
     $existing_relationship = civicrm_api3('Relationship', 'get', array(
-      'contact_id_a'         => $new_contact_id, 
-      'contact_id_b'         => $problem->getHouseholdID(), 
-      'relationship_type_id' => array('IN' => $relation_ids), 
+      'contact_id_a'         => $new_contact_id,
+      'contact_id_b'         => $problem->getHouseholdID(),
+      'relationship_type_id' => array('IN' => $relation_ids),
       'is_active'            => 1));
     if ($existing_relationship['count']) {
       // there already is a relationship, the problem IS fixed already...
     } else {
       // create a new relationship
       civicrm_api3('Relationship', 'create', array(
-        'contact_id_a'         => $new_contact_id, 
-        'contact_id_b'         => $problem->getHouseholdID(), 
+        'contact_id_a'         => $new_contact_id,
+        'contact_id_b'         => $problem->getHouseholdID(),
         'relationship_type_id' => CRM_Householdmerge_Logic_Configuration::getMemberRelationID(),
         'is_active'            => 1));
     }
 
-    return TRUE; 
+    return TRUE;
   }
 }

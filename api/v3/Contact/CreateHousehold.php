@@ -1,7 +1,7 @@
 <?php
 /*-------------------------------------------------------+
 | Household Merger Extension                             |
-| Copyright (C) 2015 SYSTOPIA                            |
+| Copyright (C) 2015-2018 SYSTOPIA                       |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
@@ -20,7 +20,7 @@ function civicrm_api3_contact_create_household($params) {
   if (empty($params['mode'])) {
     $params['mode'] = CRM_Householdmerge_Logic_Configuration::getHouseholdMode();
   }
-  
+
   $head_id = NULL;
   switch ($params['mode']) {
     case 'hierarchy':
@@ -44,7 +44,7 @@ function civicrm_api3_contact_create_household($params) {
       $household_id = $worker->createLinkedHousehold($params['household_name'], $sanitised_member_ids, $params['address'], $head_id);
 
       return civicrm_api3_create_success();
-    
+
     default:
       return civicrm_api3_create_error("Contact.create_household cannot process mode '{$params['mode']}'.");
   }
@@ -61,7 +61,7 @@ function _civicrm_api3_contact_create_household_spec(&$params) {
   $params['member_ids'] = array(
     'title'        => "New members' contact IDs",
     'description'  => "list of contact IDs",
-    // 'type'         => CRM_Utils_Type::T_STRING, 
+    // 'type'         => CRM_Utils_Type::T_STRING,
   );
 
   $params['head_id'] = array(

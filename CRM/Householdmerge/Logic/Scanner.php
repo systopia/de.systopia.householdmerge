@@ -1,7 +1,7 @@
 <?php
 /*-------------------------------------------------------+
 | Household Merger Extension                             |
-| Copyright (C) 2015 SYSTOPIA                            |
+| Copyright (C) 2015-2018 SYSTOPIA                       |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
@@ -24,9 +24,9 @@ class CRM_Householdmerge_Logic_Scanner {
    * find a number of prposed households.
    *
    * @return: array(array( 'id'           => string
-   *                       'household_id' => int, 
-   *                       'member_ids'   => array(int), 
-   *                       'head_id'      => int, 
+   *                       'household_id' => int,
+   *                       'member_ids'   => array(int),
+   *                       'head_id'      => int,
    *                       'address'      => array(<address data>)
    *                       'contacts'     => array(int=>contact_data)
    */
@@ -199,7 +199,7 @@ class CRM_Householdmerge_Logic_Scanner {
 
   /**
    * Identify the contact to be considered the HEAD under the given member_data objects
-   * 
+   *
    * @return int  contact_id of the head
    */
   protected function identifyHead(&$members) {
@@ -214,7 +214,7 @@ class CRM_Householdmerge_Logic_Scanner {
 
       $contact_ids = implode(',', array_keys($members));
       $td_amounts_sql = "
-          SELECT contact_id AS contact_id, 
+          SELECT contact_id AS contact_id,
                  SUM(total_amount) AS amount
            FROM civicrm_contribution
           WHERE contact_id IN ($contact_ids)
@@ -231,7 +231,7 @@ class CRM_Householdmerge_Logic_Scanner {
       // now determin the head
       $topdonor_id = NULL;
       $topdonor_amount = NULL;
-      
+
       foreach ($donations as $member_id => $donation_amount) {
         if ($donation_amount > $topdonor_amount || $topdonor_amount===NULL) {
           $topdonor_id     = $member_id;
