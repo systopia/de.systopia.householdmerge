@@ -24,9 +24,9 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
 
   function buildQuickForm() {
     // first: sort out the contacts
-    $contacts      = array();
-    $households    = array();
-    $organisations = array();
+    $contacts      = [];
+    $households    = [];
+    $organisations = [];
 
     foreach ($this->_contactIds as $contact_id) {
       $contact = civicrm_api3('Contact', 'getsingle', array('id' => $contact_id));
@@ -136,11 +136,11 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
    ************************************************/
 
   function calculatePatterns(&$contacts) {
-    $patterns = array();
+    $patterns = [];
 
     // first do some analysis
-    $first_names = array();
-    $last_names = array();
+    $first_names = [];
+    $last_names = [];
     $common_last = NULL;
     foreach ($contacts as $contact_id => $contact) {
       if (!empty($contact['first_name'])) {
@@ -188,7 +188,7 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
 
 
     // transform patterns into selection list
-    $pattern_selection = array();
+    $pattern_selection = [];
     foreach ($patterns as $pattern) {
       $pattern_selection[$pattern] = $pattern;
     }

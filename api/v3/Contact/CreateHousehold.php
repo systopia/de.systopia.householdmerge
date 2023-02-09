@@ -31,7 +31,7 @@ function civicrm_api3_contact_create_household($params) {
       if (is_string($member_ids)) $member_ids = explode(',', $member_ids);
 
       // sanitise member IDs
-      $sanitised_member_ids = array();
+      $sanitised_member_ids = [];
       foreach ($member_ids as $member_id) {
         $sanitised_member_id = (int) $member_id;
         if ($sanitised_member_id) {

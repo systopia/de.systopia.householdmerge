@@ -30,9 +30,9 @@ class CRM_Householdmerge_Logic_Configuration {
    */
   public static function getSettings() {
     if (self::$settings_bucket === NULL) {
-      self::$settings_bucket = CRM_Core_BAO_Setting::getItem(self::$HHMERGE_SETTING_DOMAIN, 'householdmerge');
+      self::$settings_bucket = Civi::settings()->get('householdmerge');
       if (!is_array(self::$settings_bucket)) {
-        self::$settings_bucket = array();
+        self::$settings_bucket = [];
       }
     }
     return self::$settings_bucket;
@@ -211,7 +211,7 @@ class CRM_Householdmerge_Logic_Configuration {
    */
   public static function getLiveActivityStatusIDs() {
     if (self::$live_activity_status_ids === NULL) {
-      $status_ids = array();
+      $status_ids = [];
       $status_ids[] = CRM_Core_OptionGroup::getValue('activity_status', 'Scheduled', 'name');
       $status_ids[] = CRM_Core_OptionGroup::getValue('activity_status', 'Not Required', 'name');
       self::$live_activity_status_ids = implode(',', $status_ids);
@@ -227,7 +227,7 @@ class CRM_Householdmerge_Logic_Configuration {
    */
   public static function getFixableActivityStatusIDs() {
     if (self::$fixable_activity_status_ids === NULL) {
-      $status_ids = array();
+      $status_ids = [];
       $status_ids[] = CRM_Core_OptionGroup::getValue('activity_status', 'Scheduled', 'name');
       self::$fixable_activity_status_ids = implode(',', $status_ids);
     }

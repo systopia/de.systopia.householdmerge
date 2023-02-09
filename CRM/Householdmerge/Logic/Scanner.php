@@ -31,7 +31,7 @@ class CRM_Householdmerge_Logic_Scanner {
    *                       'contacts'     => array(int=>contact_data)
    */
   public function findNewHouseholds($count) {
-    $proposals = array();
+    $proposals = [];
 
     // first, find candidates
     $candidates = $this->findCandidates($count);
@@ -60,7 +60,7 @@ class CRM_Householdmerge_Logic_Scanner {
     $contact_ids   = explode('||', $signature['contact_ids']);
     $display_names = explode('||', $signature['display_names']);
     $gender_ids    = explode('||', $signature['gender_ids']);
-    $members = array();
+    $members = [];
     for ($i=0; $i < count($contact_ids); $i++) {
       $contact_id = $contact_ids[$i];
       $members[$contact_id] = array(
@@ -87,8 +87,8 @@ class CRM_Householdmerge_Logic_Scanner {
       'household_id'   => 0,
       'head_id'        => 0,
       'household_name' => '',
-      'member_ids'     => array(),
-      'contacts'       => array(),
+      'member_ids'     => [],
+      'contacts'       => [],
       'address'        => array('street_address'         => $signature['street_address'],
                                 'supplemental_address_1' => $signature['supplemental_address_1'],
                                 'supplemental_address_2' => $signature['supplemental_address_2'],
@@ -150,7 +150,7 @@ class CRM_Householdmerge_Logic_Scanner {
         ";
     }
 
-    $candidates = array();
+    $candidates = [];
     $scanner_sql = "
       SELECT *
         FROM (SELECT civicrm_contact.id AS contact_id,
@@ -207,7 +207,7 @@ class CRM_Householdmerge_Logic_Scanner {
     if ($method == 'topdonor2y_m') {
 
       // init donations array
-      $donations = array();
+      $donations = [];
       foreach ($members as $member_id => $member) {
         $donations[$member_id] = 0;
       }

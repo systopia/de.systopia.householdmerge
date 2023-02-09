@@ -67,7 +67,7 @@ class CRM_Householdmerge_Logic_Problem {
   /**
    * create a problem instance defined by the given code
    */
-  public static function createProblem($code, $household_id, $params = array()) {
+  public static function createProblem($code, $household_id, $params = []) {
     $problem_classes = self::getProblemClasses();
     if (isset($problem_classes[$code])) {
       return new CRM_Householdmerge_Logic_Problem($code, $household_id, $params);
@@ -106,7 +106,7 @@ class CRM_Householdmerge_Logic_Problem {
   protected static $live_activity_status_ids = NULL;
   protected static $activity_type_id = NULL;
 
-  protected function __construct($code, $household_id, $params = array()) {
+  protected function __construct($code, $household_id, $params = []) {
     $this->code = $code;
     $this->household_id = $household_id;
     $this->params = $params;
@@ -178,7 +178,7 @@ class CRM_Householdmerge_Logic_Problem {
     // $smarty->popScope();
 
     // compile activity
-    $activity_data = array();
+    $activity_data = [];
     $activity_data['subject']            = $this->getTitle();
     // $activity_data['details']            = $activity_content;
     $activity_data['activity_date_time'] = date("Ymdhis");
