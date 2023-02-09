@@ -183,7 +183,7 @@ class CRM_Householdmerge_Logic_Problem {
     // $activity_data['details']            = $activity_content;
     $activity_data['activity_date_time'] = date("Ymdhis");
     $activity_data['activity_type_id']   = CRM_Householdmerge_Logic_Configuration::getCheckHouseholdActivityTypeID();
-    $activity_data['status_id']          = CRM_Core_OptionGroup::getValue('activity_status', 'Scheduled', 'name');
+    $activity_data['status_id']          = CRM_Householdmerge_Logic_Configuration::getScheduledActivityStatusID();
     $activity_data['target_contact_id']  = array((int) $this->household_id);
     if (!empty($this->params['member_id'])) {
       $activity_data['target_contact_id'][] = (int) $this->params['member_id'];
@@ -192,7 +192,7 @@ class CRM_Householdmerge_Logic_Problem {
 
     $activity = CRM_Activity_BAO_Activity::create($activity_data);
     if (empty($activity->id)) {
-      throw new Exception("Couldn't create activity for household [{$household['id']}]");
+      throw new Exception("Couldn't create activity for household [{$this->household_id}]");
     } else {
       $this->params['activity_id'] = $activity->id;
       return $activity->id;
