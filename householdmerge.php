@@ -56,17 +56,6 @@ function householdmerge_civicrm_config(&$config) {
 }
 
 /**
- * Implements hook_civicrm_xmlMenu().
- *
- * @param $files array(string)
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_xmlMenu
- */
-function householdmerge_civicrm_xmlMenu(&$files) {
-  _householdmerge_civix_civicrm_xmlMenu($files);
-}
-
-/**
  * Implements hook_civicrm_install().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
@@ -119,54 +108,6 @@ function householdmerge_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
 }
 
 /**
- * Implements hook_civicrm_managed().
- *
- * Generate a list of entities to create/deactivate/delete when this module
- * is installed, disabled, uninstalled.
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_managed
- */
-function householdmerge_civicrm_managed(&$entities) {
-  _householdmerge_civix_civicrm_managed($entities);
-}
-
-/**
- * Implements hook_civicrm_caseTypes().
- *
- * Generate a list of case-types
- *
- * Note: This hook only runs in CiviCRM 4.4+.
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_caseTypes
- */
-function householdmerge_civicrm_caseTypes(&$caseTypes) {
-  _householdmerge_civix_civicrm_caseTypes($caseTypes);
-}
-
-/**
- * Implements hook_civicrm_angularModules().
- *
- * Generate a list of Angular modules.
- *
- * Note: This hook only runs in CiviCRM 4.5+. It may
- * use features only available in v4.6+.
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_caseTypes
- */
-function householdmerge_civicrm_angularModules(&$angularModules) {
-  _householdmerge_civix_civicrm_angularModules($angularModules);
-}
-
-/**
- * Implements hook_civicrm_alterSettingsFolders().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_alterSettingsFolders
- */
-function householdmerge_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
-  _householdmerge_civix_civicrm_alterSettingsFolders($metaDataFolders);
-}
-
-/**
  * merge hook for 'merge' mode households
  */
 function householdmerge_civicrm_merge($type, &$data, $mainId = NULL, $otherId = NULL, $tables = NULL) {
@@ -182,4 +123,22 @@ function householdmerge_civicrm_merge($type, &$data, $mainId = NULL, $otherId = 
  */
 function householdmerge_civicrm_alterAPIPermissions($entity, $action, &$params, &$permissions) {
   $permissions['contact']['create_household'] = CRM_Householdmerge_Logic_Configuration::getCreateHouseholdPermission();
+}
+
+/**
+ * Implements hook_civicrm_postInstall().
+ *
+ * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_postInstall
+ */
+function householdmerge_civicrm_postInstall() {
+  _householdmerge_civix_civicrm_postInstall();
+}
+
+/**
+ * Implements hook_civicrm_entityTypes().
+ *
+ * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_entityTypes
+ */
+function householdmerge_civicrm_entityTypes(&$entityTypes) {
+  _householdmerge_civix_civicrm_entityTypes($entityTypes);
 }

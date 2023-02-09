@@ -1,7 +1,7 @@
 <?php
 /*-------------------------------------------------------+
 | Household Merger Extension                             |
-| Copyright (C) 2015-2018 SYSTOPIA                       |
+| Copyright (C) 2015-2023 SYSTOPIA                       |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
@@ -81,7 +81,7 @@ class CRM_Householdmerge_Logic_Checker {
    *
    */
   function checkHousehold($household_id) {
-    $problems_identified = array();
+    $problems_identified = [];
 
     // load household
     $household = civicrm_api3('Contact', 'getsingle', array('id' => $household_id));
@@ -100,7 +100,7 @@ class CRM_Householdmerge_Logic_Checker {
 
     // HEAD related checks
     if ('hierarchy' == CRM_Householdmerge_Logic_Configuration::getHouseholdMode()) {
-      $heads = array();
+      $heads = [];
       foreach ($members as $member) {
         if ($member['hh_relation'] == 'head') {
           $heads[] = $member;
@@ -180,7 +180,7 @@ class CRM_Householdmerge_Logic_Checker {
     }
 
     // build a list of all members...
-    $member_ids = array();
+    $member_ids = [];
     foreach ($members as $member) {
       if (!in_array($member['id'], $member_ids)) {
         $member_ids[] = $member['id'];
@@ -263,8 +263,8 @@ class CRM_Householdmerge_Logic_Checker {
   protected function getMembers($household_id) {
     $member_relation_id = CRM_Householdmerge_Logic_Configuration::getMemberRelationID();
     $head_relation_id   = CRM_Householdmerge_Logic_Configuration::getHeadRelationID();
-    $head_ids   = array();
-    $member_ids = array();
+    $head_ids   = [];
+    $member_ids = [];
 
     // load the relationships (both ways)
     $query = array(
@@ -310,7 +310,7 @@ class CRM_Householdmerge_Logic_Checker {
       return $members;
     }
 
-    return array();
+    return [];
   }
 
 }

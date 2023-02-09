@@ -1,7 +1,7 @@
 <?php
 /*-------------------------------------------------------+
 | Household Merger Extension                             |
-| Copyright (C) 2015-2018 SYSTOPIA                       |
+| Copyright (C) 2015-2023 SYSTOPIA                       |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
@@ -30,9 +30,9 @@ class CRM_Householdmerge_Logic_Configuration {
    */
   public static function getSettings() {
     if (self::$settings_bucket === NULL) {
-      self::$settings_bucket = CRM_Core_BAO_Setting::getItem(self::$HHMERGE_SETTING_DOMAIN, 'householdmerge');
+      self::$settings_bucket = Civi::settings()->get('householdmerge');
       if (!is_array(self::$settings_bucket)) {
-        self::$settings_bucket = array();
+        self::$settings_bucket = [];
       }
     }
     return self::$settings_bucket;
@@ -211,9 +211,14 @@ class CRM_Householdmerge_Logic_Configuration {
    */
   public static function getLiveActivityStatusIDs() {
     if (self::$live_activity_status_ids === NULL) {
-      $status_ids = array();
-      $status_ids[] = CRM_Core_OptionGroup::getValue('activity_status', 'Scheduled', 'name');
-      $status_ids[] = CRM_Core_OptionGroup::getValue('activity_status', 'Not Required', 'name');
+      $status_ids = [];
+      $activity_status_list = civicrm_api3('OptionValue', 'get', [
+          'option_group_id' => 'activity_status',
+          'name' => ['IN' => ["Scheduled", "Not Required"]],
+      ]);
+      foreach ($activity_status_list as $activity_status) {
+        $status_ids[] = $activity_status['value'];
+      }
       self::$live_activity_status_ids = implode(',', $status_ids);
     }
 
@@ -227,8 +232,14 @@ class CRM_Householdmerge_Logic_Configuration {
    */
   public static function getFixableActivityStatusIDs() {
     if (self::$fixable_activity_status_ids === NULL) {
-      $status_ids = array();
-      $status_ids[] = CRM_Core_OptionGroup::getValue('activity_status', 'Scheduled', 'name');
+      $status_ids = [];
+      $activity_status_list = civicrm_api3('OptionValue', 'get', [
+          'option_group_id' => 'activity_status',
+          'name' => ['IN' => ["Scheduled"]],
+      ]);
+      foreach ($activity_status_list as $activity_status) {
+        $status_ids[] = $activity_status['value'];
+      }
       self::$fixable_activity_status_ids = implode(',', $status_ids);
     }
 
@@ -241,6 +252,31 @@ class CRM_Householdmerge_Logic_Configuration {
    * @return int ID
    */
   public static function getCompletedActivityStatusID() {
-    return CRM_Core_OptionGroup::getValue('activity_status', 'Completed', 'name');
+    static $completed_status_id = null;
+    if ($completed_status_id === null) {
+      $completed_status_id = (string) civicrm_api3('OptionValue', 'getvalue', [
+          'return' => 'value',
+          'name' => 'Completed',
+          'option_group_id' => 'activity_status',
+      ]);
+    }
+    return $completed_status_id;
+  }
+
+  /**
+   * get the activty status ID for closed/processed activities
+   *
+   * @return int ID
+   */
+  public static function getScheduledActivityStatusID() {
+    static $completed_status_id = null;
+    if ($completed_status_id === null) {
+      $completed_status_id = (string) civicrm_api3('OptionValue', 'getvalue', [
+          'return' => 'value',
+          'name' => 'Scheduled',
+          'option_group_id' => 'activity_status',
+      ]);
+    }
+    return $completed_status_id;
   }
 }

@@ -1,7 +1,7 @@
 <?php
 /*-------------------------------------------------------+
 | Household Merger Extension                             |
-| Copyright (C) 2015-2018 SYSTOPIA                       |
+| Copyright (C) 2015-2023 SYSTOPIA                       |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
@@ -16,7 +16,7 @@
 class CRM_Householdmerge_Logic_Worker {
 
   /** will store information on the relation types */
-  protected $_relationID2fields = array();
+  protected $_relationID2fields = [];
 
   /** will store information on the location types to be used for the address */
   protected $_household_address_location_type_id = NULL;
@@ -110,7 +110,7 @@ class CRM_Householdmerge_Logic_Worker {
     if ($this->_household_address_location_type_id == NULL) {
       $types = civicrm_api3('LocationType', 'get', array('is_default' => 1));
       if ($types['count'] == 0) {
-        $types = civicrm_api3('LocationType', 'get', array());
+        $types = civicrm_api3('LocationType', 'get', []);
       }
       $type = reset($types['values']);
       $this->_household_address_location_type_id = $type['id'];

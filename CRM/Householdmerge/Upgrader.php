@@ -1,7 +1,7 @@
 <?php
 /*-------------------------------------------------------+
 | Household Merger Extension                             |
-| Copyright (C) 2015-2018 SYSTOPIA                       |
+| Copyright (C) 2015-2023 SYSTOPIA                       |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
@@ -30,11 +30,11 @@ class CRM_Householdmerge_Upgrader extends CRM_Householdmerge_Upgrader_Base {
     $settings = CRM_Householdmerge_Logic_Configuration::getSettings();
     if (empty($settings)) {
       // migrate settings
-      $settings['hh_head_mode']       = CRM_Core_BAO_Setting::getItem(CRM_Householdmerge_Logic_Configuration::$HHMERGE_SETTING_DOMAIN, 'hh_head_mode', NULL, 'topdonor2y_m');
-      $settings['hh_mode']            = CRM_Core_BAO_Setting::getItem(CRM_Householdmerge_Logic_Configuration::$HHMERGE_SETTING_DOMAIN, 'hh_mode', NULL, 'merge');
-      $settings['hh_member_relation'] = CRM_Core_BAO_Setting::getItem(CRM_Householdmerge_Logic_Configuration::$HHMERGE_SETTING_DOMAIN, 'hh_member_relation');
-      $settings['hh_head_relation']   = CRM_Core_BAO_Setting::getItem(CRM_Householdmerge_Logic_Configuration::$HHMERGE_SETTING_DOMAIN, 'hh_head_relation');
-      CRM_Core_BAO_Setting::setItem($settings, CRM_Householdmerge_Logic_Configuration::$HHMERGE_SETTING_DOMAIN, 'householdmerge');
+      $settings['hh_head_mode']       = Civi::settings()->get('hh_head_mode') ?? 'topdonor2y_m';
+      $settings['hh_mode']            = Civi::settings()->get('hh_mode') ?? 'merge';
+      $settings['hh_member_relation'] = Civi::settings()->get('hh_member_relation');
+      $settings['hh_head_relation']   = Civi::settings()->get('hh_head_relation');
+      Civi::settings()->set('householdmerge', $settings);
     }
 
     return TRUE;

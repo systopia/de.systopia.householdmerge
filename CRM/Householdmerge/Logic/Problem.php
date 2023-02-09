@@ -67,7 +67,7 @@ class CRM_Householdmerge_Logic_Problem {
   /**
    * create a problem instance defined by the given code
    */
-  public static function createProblem($code, $household_id, $params = array()) {
+  public static function createProblem($code, $household_id, $params = []) {
     $problem_classes = self::getProblemClasses();
     if (isset($problem_classes[$code])) {
       return new CRM_Householdmerge_Logic_Problem($code, $household_id, $params);
@@ -106,7 +106,7 @@ class CRM_Householdmerge_Logic_Problem {
   protected static $live_activity_status_ids = NULL;
   protected static $activity_type_id = NULL;
 
-  protected function __construct($code, $household_id, $params = array()) {
+  protected function __construct($code, $household_id, $params = []) {
     $this->code = $code;
     $this->household_id = $household_id;
     $this->params = $params;
@@ -178,12 +178,12 @@ class CRM_Householdmerge_Logic_Problem {
     // $smarty->popScope();
 
     // compile activity
-    $activity_data = array();
+    $activity_data = [];
     $activity_data['subject']            = $this->getTitle();
     // $activity_data['details']            = $activity_content;
     $activity_data['activity_date_time'] = date("Ymdhis");
     $activity_data['activity_type_id']   = CRM_Householdmerge_Logic_Configuration::getCheckHouseholdActivityTypeID();
-    $activity_data['status_id']          = CRM_Core_OptionGroup::getValue('activity_status', 'Scheduled', 'name');
+    $activity_data['status_id']          = CRM_Householdmerge_Logic_Configuration::getScheduledActivityStatusID();
     $activity_data['target_contact_id']  = array((int) $this->household_id);
     if (!empty($this->params['member_id'])) {
       $activity_data['target_contact_id'][] = (int) $this->params['member_id'];
@@ -192,7 +192,7 @@ class CRM_Householdmerge_Logic_Problem {
 
     $activity = CRM_Activity_BAO_Activity::create($activity_data);
     if (empty($activity->id)) {
-      throw new Exception("Couldn't create activity for household [{$household['id']}]");
+      throw new Exception("Couldn't create activity for household [{$this->household_id}]");
     } else {
       $this->params['activity_id'] = $activity->id;
       return $activity->id;

@@ -1,7 +1,7 @@
 <?php
 /*-------------------------------------------------------+
 | Household Merger Extension                             |
-| Copyright (C) 2015-2018 SYSTOPIA                       |
+| Copyright (C) 2015-2023 SYSTOPIA                       |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
@@ -15,6 +15,8 @@
 
 require_once 'CRM/Core/Form.php';
 
+use CRM_Householdmerge_ExtensionUtil as E;
+
 /**
  * Form controller class
  *
@@ -22,30 +24,30 @@ require_once 'CRM/Core/Form.php';
  */
 class CRM_Admin_Form_Setting_Household extends CRM_Admin_Form_Setting {
   public function buildQuickForm() {
-    // load realtionships
+    // load relationships
     $relationshipOptions = $this->getEligibleRelationships();
 
     $this->addElement('select',
                     'hh_mode',
-                    ts('Household Mode', array('domain' => 'de.systopia.householdmerge')),
+                    E::ts('Household Mode'),
                     CRM_Householdmerge_Logic_Configuration::getHouseholdModeOptions(),
                     array('class' => 'crm-select2 huge'));
 
     $this->addElement('select',
                     'hh_head_mode',
-                    ts('Household Head Mode', array('domain' => 'de.systopia.householdmerge')),
+                    E::ts('Household Head Mode'),
                     CRM_Householdmerge_Logic_Configuration::getHouseholdHeadModeOptions(),
                     array('class' => 'crm-select2 huge'));
 
     $this->addElement('select',
                     'hh_member_relation',
-                    ts('Household Member Relationship', array('domain' => 'de.systopia.householdmerge')),
+                    E::ts('Household Member Relationship'),
                     $relationshipOptions,
                     array('class' => 'crm-select2 huge'));
 
     $this->addElement('select',
                     'hh_head_relation',
-                    ts('Household Head Relationship', array('domain' => 'de.systopia.householdmerge')),
+                    E::ts('Household Head Relationship'),
                     $relationshipOptions,
                     array('class' => 'crm-select2 huge'));
 
@@ -85,7 +87,7 @@ class CRM_Admin_Form_Setting_Household extends CRM_Admin_Form_Setting {
    * load all Individual<->Household Relationships
    */
   protected function getEligibleRelationships() {
-    $relationship_types = array();
+    $relationship_types = [];
 
     $list_ab = civicrm_api3('RelationshipType', 'get', array('contact_type_a' => 'Individual', 'contact_type_b' => 'Household'));
     foreach ($list_ab['values'] as $index => $relationship_type) {

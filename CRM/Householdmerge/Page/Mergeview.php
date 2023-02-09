@@ -1,7 +1,7 @@
 <?php
 /*-------------------------------------------------------+
 | Household Merger Extension                             |
-| Copyright (C) 2015-2018 SYSTOPIA                       |
+| Copyright (C) 2015-2023 SYSTOPIA                       |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
@@ -29,7 +29,7 @@ class CRM_Householdmerge_Page_Mergeview extends CRM_Core_Page {
 
     // extract IDs
     $household_id = (int) CRM_Utils_Array::value('hid', $_REQUEST);
-    $other_ids    = array();
+    $other_ids    = [];
     $oids = preg_split('#,#', CRM_Utils_Array::value('oids', $_REQUEST, ""));
     foreach ($oids as $oid) {
       $oid = (int) $oid;
@@ -48,7 +48,7 @@ class CRM_Householdmerge_Page_Mergeview extends CRM_Core_Page {
     // NOW: load all contacts
     $household = civicrm_api3('Contact', 'getsingle', array('id' => $household_id));
 
-    $other_contacts = array();
+    $other_contacts = [];
     foreach ($other_ids as $other_id) {
       $other_contact = civicrm_api3('Contact', 'getsingle', array('id' => $other_id));
       $other_contact['was_merged'] = (bool) !empty($other_contact['contact_is_deleted']);
@@ -62,9 +62,9 @@ class CRM_Householdmerge_Page_Mergeview extends CRM_Core_Page {
     $merge_complete = TRUE;
     foreach ($other_contacts as &$other_contact) {
       if ($other_contact['was_merged']) continue;
-      $cacheParams = array();
+      $cacheParams = [];
       $mode = 'safe';
-      $dupePairs = array();
+      $dupePairs = [];
       $dupePairs[] = array('srcID' => $other_contact['id'], 'dstID' => $household_id);
 
       $result = CRM_Dedupe_Merger::merge($dupePairs, $cacheParams, $mode, FALSE);
