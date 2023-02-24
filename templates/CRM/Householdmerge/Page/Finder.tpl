@@ -83,7 +83,7 @@
 <script type="text/javascript">
 var page_url = "{crmURL p='civicrm/household/finder' q="count=__count__"}";
 var busy_icon_url = "{$config->resourceBase}i/loading.gif";
-var check_icon_url = "{$config->resourceBase}i/check.gif";
+var check_icon_url = "{$config->resourceBase}i/contact_house.png";
 var proposals = {$proposals_json};
 {literal}
 

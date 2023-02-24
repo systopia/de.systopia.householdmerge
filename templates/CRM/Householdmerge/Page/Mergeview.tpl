@@ -28,7 +28,7 @@
         <td>{if !$contact.was_merged}{$contact.conflict_count} {ts domain="de.systopia.householdmerge"}Conflicts{/ts}{/if}</td>
         <td>
           {if $contact.was_merged}
-          <img width="14" src="{$config->resourceBase}i/check.gif"/>&nbsp;{ts domain="de.systopia.householdmerge"}merged{/ts}
+          <img width="14" src="{$config->resourceBase}i/contact_house.png"/>&nbsp;{ts domain="de.systopia.householdmerge"}merged{/ts}
           {else}
           <img width="14" src="{$config->resourceBase}i/Error.gif"/>&nbsp;{ts domain="de.systopia.householdmerge"}not merged{/ts}
           {/if}
