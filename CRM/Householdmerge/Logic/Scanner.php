@@ -144,7 +144,7 @@ class CRM_Householdmerge_Logic_Scanner {
                                                          AND relation_ab.relationship_type_id IN ($relationship_id_list) 
                                                          AND (relation_ab.end_date IS NULL OR relation_ab.end_date > NOW()) 
                                                          AND relation_ab.is_active = 1
-                                                         AND (relation_ab.contact_id_a IN (SELECT id FROM civicrm_contact WHERE is_deleted = 0))
+                                                         AND (relation_ab.contact_id_b IN (SELECT id FROM civicrm_contact WHERE is_deleted = 0))
               LEFT JOIN civicrm_relationship relation_ba ON contact_id = relation_ba.contact_id_b 
                                                          AND relation_ba.relationship_type_id IN ($relationship_id_list) 
                                                          AND (relation_ba.end_date IS NULL OR relation_ba.end_date > NOW()) 
