@@ -148,10 +148,8 @@ class CRM_Householdmerge_Logic_Scanner {
 
       // ...and then make sure there are none
       $RELATIONSHIP_CONDITION = "
-              AND relation_ab.id IS NULL AND relation_ba.id IS NULL  -- NO ACTIVE HH RELATIONSHIP EXISTS
-              AND (relation_ab_contact.is_deleted = 0 OR relation_ab_contact.is_deleted IS NULL) 
-              AND (relation_ba_contact.is_deleted = 0 OR relation_ba_contact.is_deleted IS NULL)
-        ";
+              AND (relation_ab_contact.is_deleted IS NULL OR relation_ab_contact.is_deleted = 0)  -- NO RELATIONSHIP WITH DELETED CONTACT A EXISTS
+              AND (relation_ba_contact.is_deleted IS NULL OR relation_ba_contact.is_deleted = 0)  -- NO RELATIONSHIP WITH DELETED CONTACT B EXISTS";
     }
 
     $candidates = [];
