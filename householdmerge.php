@@ -126,6 +126,17 @@ function householdmerge_civicrm_alterAPIPermissions($entity, $action, &$params, 
 }
 
 /**
+ * Implements hook_civicrm_xmlMenu().
+ *
+ * @param array $files
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_xmlMenu
+ */
+function householdmerge_civicrm_xmlMenu(&$files) {
+  _householdmerge_civix_civicrm_xmlMenu($files);
+}
+
+/**
  * Implements hook_civicrm_postInstall().
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_postInstall

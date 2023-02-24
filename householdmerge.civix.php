@@ -108,6 +108,19 @@ function _householdmerge_civix_civicrm_config(&$config = NULL) {
 }
 
 /**
+ * (Delegated) Implements hook_civicrm_xmlMenu().
+ *
+ * @param $files array(string)
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_xmlMenu
+ */
+function _householdmerge_civix_civicrm_xmlMenu(&$files) {
+  foreach (_householdmerge_civix_glob(__DIR__ . '/xml/Menu/*.xml') as $file) {
+    $files[] = $file;
+  }
+}
+
+/**
  * Implements hook_civicrm_install().
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_install
@@ -295,4 +308,22 @@ function _householdmerge_civix_fixNavigationMenuItems(&$nodes, &$maxNavID, $pare
  */
 function _householdmerge_civix_civicrm_entityTypes(&$entityTypes) {
   $entityTypes = array_merge($entityTypes, []);
+}
+
+/**
+ * Glob wrapper which is guaranteed to return an array.
+ *
+ * The documentation for glob() says, "On some systems it is impossible to
+ * distinguish between empty match and an error." Anecdotally, the return
+ * result for an empty match is sometimes array() and sometimes FALSE.
+ * This wrapper provides consistency.
+ *
+ * @link http://php.net/glob
+ * @param string $pattern
+ *
+ * @return array
+ */
+function _householdmerge_civix_glob($pattern) {
+  $result = glob($pattern);
+  return is_array($result) ? $result : [];
 }
