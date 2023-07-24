@@ -140,14 +140,14 @@ class CRM_Householdmerge_Logic_Scanner {
 
       //  try joining valid, active household relationships...
       $RELATIONSHIP_JOIN = "
-              LEFT JOIN civicrm_relationship relation_ab ON contact_id = relation_ab.contact_id_a 
-                                                         AND relation_ab.relationship_type_id IN ($relationship_id_list) 
-                                                         AND (relation_ab.end_date IS NULL OR relation_ab.end_date > NOW()) 
+              LEFT JOIN civicrm_relationship relation_ab ON contact_id = relation_ab.contact_id_a
+                                                         AND relation_ab.relationship_type_id IN ($relationship_id_list)
+                                                         AND (relation_ab.end_date IS NULL OR relation_ab.end_date > NOW())
                                                          AND relation_ab.is_active = 1
                                                          AND (relation_ab.contact_id_b IN (SELECT id FROM civicrm_contact WHERE is_deleted = 0))
-              LEFT JOIN civicrm_relationship relation_ba ON contact_id = relation_ba.contact_id_b 
-                                                         AND relation_ba.relationship_type_id IN ($relationship_id_list) 
-                                                         AND (relation_ba.end_date IS NULL OR relation_ba.end_date > NOW()) 
+              LEFT JOIN civicrm_relationship relation_ba ON contact_id = relation_ba.contact_id_b
+                                                         AND relation_ba.relationship_type_id IN ($relationship_id_list)
+                                                         AND (relation_ba.end_date IS NULL OR relation_ba.end_date > NOW())
                                                          AND relation_ba.is_active = 1
                                                          AND (relation_ba.contact_id_a IN (SELECT id FROM civicrm_contact WHERE is_deleted = 0))
         ";
@@ -187,6 +187,7 @@ class CRM_Householdmerge_Logic_Scanner {
         WHERE mitgliederzahl >= $minimum_member_count
         $limit_clause;
       ";
+    CRM_Core_Error::debug_log_message("Scanner Query:\n" . $scanner_sql);
     $scanner = CRM_Core_DAO::executeQuery($scanner_sql);
     while ($scanner->fetch()) {
       $candidates[$scanner->contact_id] = array(
