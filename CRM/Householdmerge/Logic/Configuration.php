@@ -216,7 +216,7 @@ class CRM_Householdmerge_Logic_Configuration {
           'option_group_id' => 'activity_status',
           'name' => ['IN' => ["Scheduled", "Not Required"]],
       ]);
-      foreach ($activity_status_list as $activity_status) {
+      foreach ($activity_status_list['values'] as $activity_status) {
         $status_ids[] = $activity_status['value'];
       }
       self::$live_activity_status_ids = implode(',', $status_ids);
@@ -226,7 +226,7 @@ class CRM_Householdmerge_Logic_Configuration {
   }
 
   /**
-   * get the activty status IDs that are considered to be live and fixable
+   * get the activity status IDs that are considered to be live and fixable
    *
    * @return string  comma separated ids
    */
@@ -237,7 +237,7 @@ class CRM_Householdmerge_Logic_Configuration {
           'option_group_id' => 'activity_status',
           'name' => ['IN' => ["Scheduled"]],
       ]);
-      foreach ($activity_status_list as $activity_status) {
+      foreach ($activity_status_list['values'] as $activity_status) {
         $status_ids[] = $activity_status['value'];
       }
       self::$fixable_activity_status_ids = implode(',', $status_ids);
