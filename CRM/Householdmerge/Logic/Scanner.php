@@ -197,7 +197,7 @@ class CRM_Householdmerge_Logic_Scanner {
         WHERE mitgliederzahl >= $minimum_member_count
         $limit_clause;
       ";
-     CRM_Core_Error::debug_log_message("Scanner Query:\n" . $scanner_sql);
+     //CRM_Core_Error::debug_log_message("Scanner Query:\n" . $scanner_sql);
     $scanner = CRM_Core_DAO::executeQuery($scanner_sql);
     while ($scanner->fetch()) {
       $candidates[$scanner->contact_id] = array(
