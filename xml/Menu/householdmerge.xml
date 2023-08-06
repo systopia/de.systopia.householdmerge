@@ -22,6 +22,7 @@
     <path>civicrm/admin/setting/household</path>
     <page_callback>CRM_Admin_Form_Setting_Household</page_callback>
     <title>Household Settings</title>
+    <desc>Configuration of the Household Tools extension</desc>
     <access_arguments>administer CiviCRM</access_arguments>
     <adminGroup>CiviContribute</adminGroup>
     <icon>admin/small/06.png</icon>
@@ -29,7 +30,8 @@
   <item>
     <path>civicrm/household/finder</path>
     <page_callback>CRM_Householdmerge_Page_Finder</page_callback>
-    <title>Finder</title>
+    <title>Household Finder</title>
+    <desc>Run a scanner to detect new household candidates</desc>
     <access_arguments>import contacts;administer CiviCRM</access_arguments>
   </item>
 </menu>

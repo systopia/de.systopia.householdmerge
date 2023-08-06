@@ -57,7 +57,7 @@ class CRM_Householdmerge_Logic_Configuration {
     $old_value = self::getSetting($name);
     if ($old_value !== $value) {
       self::$settings_bucket[$name] = $value;
-      CRM_Core_BAO_Setting::setItem(self::$settings_bucket, self::$HHMERGE_SETTING_DOMAIN, 'householdmerge');
+      Civi::settings()->set('householdmerge', self::$settings_bucket);
     }
   }
 
@@ -106,6 +106,21 @@ class CRM_Householdmerge_Logic_Configuration {
       return 'topdonor2y_m'; // default
     } else {
       return $hh_head_mode;
+    }
+  }
+
+  /**
+   * Get the list of location types configured to be relevant for
+   *   household detection
+   *
+   * @return array
+   */
+  public static function getSelectedLocationTypes() {
+    $location_types = self::getSetting('hh_location_types');
+    if (!empty($location_types) || is_array($location_types)) {
+      return (array) $location_types;
+    } else {
+      return [];
     }
   }
 
@@ -244,6 +259,26 @@ class CRM_Householdmerge_Logic_Configuration {
     }
 
     return self::$fixable_activity_status_ids;
+  }
+
+  /**
+   * Get location types
+   *
+   * @return array location types (id => label)
+   */
+  public static function getLocationTypeOptions() {
+    static $location_types_list = null;
+    if ($location_types_list === null) {
+      $location_types_list = [];
+      $location_type_query = civicrm_api3('LocationType', 'get', [
+        'return' => 'id,display_name',
+        'option.limit' => 0,
+      ]);
+      foreach ($location_type_query['values'] as $location_type) {
+        $location_types_list[$location_type['id']] = $location_type['display_name'];
+      }
+    }
+    return $location_types_list ?? [];
   }
 
   /**
