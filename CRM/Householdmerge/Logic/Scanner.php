@@ -158,6 +158,15 @@ class CRM_Householdmerge_Logic_Scanner {
         ";
     }
 
+    // add location_type restrictions (if any)
+    $location_types = CRM_Householdmerge_Logic_Configuration::getSelectedLocationTypes();
+    if ($location_types) {
+      $location_type_term = implode(',', $location_types);
+      $AND_LOCATION_TYPE_CONSIDERED = "AND civicrm_address.location_type_id IN ({$location_type_term})";
+    } else {
+      $AND_LOCATION_TYPE_CONSIDERED = '';
+    }
+
     $candidates = [];
     $scanner_sql = "
       SELECT *
@@ -182,12 +191,13 @@ class CRM_Householdmerge_Logic_Scanner {
                 AND (civicrm_address.street_address IS NOT NULL AND civicrm_address.street_address != '')
                 AND (civicrm_address.postal_code IS NOT NULL AND civicrm_address.postal_code != '')
                 AND (civicrm_address.city IS NOT NULL AND civicrm_address.city != '')
-                $RELATIONSHIP_CONDITION
+                {$AND_LOCATION_TYPE_CONSIDERED}
+                {$RELATIONSHIP_CONDITION}
               GROUP BY civicrm_contact.last_name, civicrm_address.street_address, civicrm_address.postal_code, civicrm_address.city) households
         WHERE mitgliederzahl >= $minimum_member_count
         $limit_clause;
       ";
-    CRM_Core_Error::debug_log_message("Scanner Query:\n" . $scanner_sql);
+     //CRM_Core_Error::debug_log_message("Scanner Query:\n" . $scanner_sql);
     $scanner = CRM_Core_DAO::executeQuery($scanner_sql);
     while ($scanner->fetch()) {
       $candidates[$scanner->contact_id] = array(

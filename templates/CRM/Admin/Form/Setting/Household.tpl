@@ -36,6 +36,11 @@
   <div class="content">{$form.hh_head_mode.html}</div>
   <div class="clear"></div>
 </div>
+<div class="crm-section">
+  <div class="label">{$form.hh_location_types.label}</div>
+  <div class="content">{$form.hh_location_types.html}</div>
+  <div class="clear"></div>
+</div>
 
 <br/>
 {* FOOTER *}

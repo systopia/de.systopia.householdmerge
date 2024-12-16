@@ -51,6 +51,11 @@ class CRM_Admin_Form_Setting_Household extends CRM_Admin_Form_Setting {
                     $relationshipOptions,
                     array('class' => 'crm-select2 huge'));
 
+    $this->addElement('select',
+                    'hh_location_types',
+                    E::ts('Address Location Types to consider'),
+                    CRM_Householdmerge_Logic_Configuration::getLocationTypeOptions(),
+                    ['class' => 'crm-select2 huge', 'multiple' => true, 'placeholder' => E::ts('all location types')]);
 
     parent::buildQuickForm();
   }
@@ -66,6 +71,7 @@ class CRM_Admin_Form_Setting_Household extends CRM_Admin_Form_Setting {
     $defaults['hh_head_mode']       = CRM_Householdmerge_Logic_Configuration::getHouseholdHeadMode();
     $defaults['hh_member_relation'] = CRM_Householdmerge_Logic_Configuration::getMemberRelationID();
     $defaults['hh_head_relation']   = CRM_Householdmerge_Logic_Configuration::getHeadRelationID();
+    $defaults['hh_location_types']  = CRM_Householdmerge_Logic_Configuration::getSelectedLocationTypes();
 
     return $defaults;
   }
@@ -74,7 +80,7 @@ class CRM_Admin_Form_Setting_Household extends CRM_Admin_Form_Setting {
     $values = $this->exportValues();
 
     // store settings
-    $expected_values = array('hh_mode', 'hh_head_mode', 'hh_member_relation', 'hh_head_relation');
+    $expected_values = array('hh_mode', 'hh_head_mode', 'hh_member_relation', 'hh_head_relation', 'relationship_type', 'hh_location_types');
     foreach ($expected_values as $key) {
       if (isset($values[$key])) {
         CRM_Householdmerge_Logic_Configuration::setConfigValue($key, $values[$key]);

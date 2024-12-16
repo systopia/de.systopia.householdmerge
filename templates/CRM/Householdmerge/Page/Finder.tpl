@@ -28,7 +28,7 @@
 <br/>
 <div>
   <a class="button" id="exec_all">{ts domain="de.systopia.householdmerge"}Create all selected households{/ts}</a>
-<div>
+</div>
 
 
 <br/><br/><br/>
@@ -81,10 +81,10 @@
 
 
 <script type="text/javascript">
-var page_url = "{crmURL p='civicrm/household/finder' q="count=__count__"}";
-var busy_icon_url = "{$config->resourceBase}i/loading.gif";
-var check_icon_url = "{$config->resourceBase}i/contact_house.png";
-var proposals = {$proposals_json};
+let page_url = "{crmURL p='civicrm/household/finder' q="count=__count__"}";
+let busy_icon_url = "{$config->resourceBase}i/loading.gif";
+let check_icon_url = "{$config->resourceBase}i/contact_house.png";
+let proposals = {$proposals_json};
 {literal}
 
 // click on CREATE ALL
@@ -93,15 +93,15 @@ cj("#exec_all").click(function() {
   cj("#exec_all").addClass('disabled');
 
   // find the next selected item
-  var selectors = cj("input.selector");
-  for (var i = 0; i < selectors.length; i++) {
-    var element = cj(selectors[i]);
+  let selectors = cj("input.selector");
+  for (let i = 0; i < selectors.length; i++) {
+    let element = cj(selectors[i]);
     if (element.prop('checked')) {
-      var button = cj("#button-" + element.prop("value"));
+      let button = cj("#button-" + element.prop("value"));
       button.click();
       return;
     }
-  };
+  }
 
   // if we get here, we can enable the button again
   cj("#exec_all").removeClass('disabled');
@@ -110,7 +110,7 @@ cj("#exec_all").click(function() {
 // click on INDIVIDUAL BUTTON
 cj("a.hhcreate").click(function(e) {
   // find ID
-  var identifier = cj(e.currentTarget).closest("table").prop('id');
+  let identifier = cj(e.currentTarget).closest("table").prop('id');
 
   // untick / disable checkbox
   cj("#select-" + identifier).prop('checked', false);
@@ -121,7 +121,7 @@ cj("a.hhcreate").click(function(e) {
   cj(e.currentTarget).remove();
 
   // build and send query
-  var query = proposals[identifier];
+  let query = proposals[identifier];
   delete query['contacts']; // remove contact details
   CRM.api('Contact', 'create_household', query,
     { // SUCCESS HANDLER
@@ -141,8 +141,7 @@ cj("a.hhcreate").click(function(e) {
 
 // change result count
 cj("#result_count").change(function() {
-  var url = page_url.replace('__count__', cj("#result_count").val());
-  window.location = url;
+  window.location = page_url.replace('__count__', cj("#result_count").val());
 });
 
 </script>

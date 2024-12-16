@@ -15,6 +15,8 @@
 
 require_once 'householdmerge.civix.php';
 
+use CRM_Householdmerge_ExtensionUtil as E;
+
 /**
 * Add an action for creating donation receipts after doing a search
 *
@@ -43,7 +45,7 @@ function householdmerge_civicrm_searchTasks($objectType, &$tasks) {
         'result' => false);
   }
 
-  
+
 }
 
 /**
