@@ -16,7 +16,7 @@
 class CRM_Householdmerge_Logic_Fixer {
 
   /**
-   * Fix a "new houshold member" problem by connecting
+   * Fix a "new household member" problem by connecting
    * the new contact to the household, unless he's already
    * connected
    */
@@ -30,6 +30,8 @@ class CRM_Householdmerge_Logic_Fixer {
 
     // load all contacts
     $new_contact_id = NULL;
+    $contact_id_list = implode(',', $contact_ids);
+    Civi::log()->debug("civicrm_api3('Contact', 'get', array('id' => array('IN' => {$contact_id_list})))");
     $contact_data = civicrm_api3('Contact', 'get', array('id' => array('IN' => $contact_ids)));
     foreach ($contact_data['values'] as $contact_id => $contact) {
       if ($contact['contact_type'] == 'Individual') {
@@ -84,16 +86,18 @@ class CRM_Householdmerge_Logic_Fixer {
 
     // find all target contact IDs for this activity
     $activityTargetContacts = \Civi\Api4\ActivityContact::get(FALSE)
-      ->addSelect('activity_id.target_contact_id', 'activity_id')
+      ->addSelect('activity_id.target_contact_id')
       ->addWhere('activity_id', '=', $activity_id)
-      ->addWhere('record_type_id', '=', 3)
+      ->addWhere('record_type_id:name', '=', 'Activity Targets')
       ->execute();
 
     // and return as an array
     $targetIds = [];
-    foreach ($activityTargetContacts as $activityTargetContact) {
-      $targetIds[] = $activityTargetContact['activity_id.target_contact_id'];
+    foreach ($activityTargetContacts as $activity_record) {
+      $targetIds[] = $activity_record['activity_id.target_contact_id'];
     }
+    $targetIds = array_unique($targetIds);
+    Civi::log()->debug(json_encode($targetIds));
     return $targetIds;
   }
 }
