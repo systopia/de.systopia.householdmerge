@@ -25,7 +25,7 @@ class CRM_Householdmerge_Logic_Fixer {
     if (empty($activity_id)) return FALSE;
 
     // get all target contacts
-    $contact_ids = CRM_Activity_BAO_ActivityTarget::retrieveTargetIdsByActivityId($activity_id);
+    $contact_ids = CRM_Householdmerge_Logic_Fixer::retrieveTargetIdsByActivityId($activity_id);
     if (empty($contact_ids)) return FALSE;
 
     // load all contacts
@@ -68,5 +68,32 @@ class CRM_Householdmerge_Logic_Fixer {
     }
 
     return TRUE;
+  }
+
+  /**
+   * Get all the target contact IDs for the given activity_id
+   *
+   * @param int $activity_id
+   *
+   * @return array list of contact IDs
+   */
+  public static function retrieveTargetIdsByActivityId($activity_id) {
+    if (empty($activity_id)) {
+      return [];
+    }
+
+    // find all target contact IDs for this activity
+    $activityTargetContacts = \Civi\Api4\ActivityContact::get(FALSE)
+      ->addSelect('activity_id.target_contact_id', 'activity_id')
+      ->addWhere('activity_id', '=', $activity_id)
+      ->addWhere('record_type_id', '=', 3)
+      ->execute();
+
+    // and return as an array
+    $targetIds = [];
+    foreach ($activityTargetContacts as $activityTargetContact) {
+      $targetIds[] = $activityTargetContact['activity_id.target_contact_id'];
+    }
+    return $targetIds;
   }
 }
