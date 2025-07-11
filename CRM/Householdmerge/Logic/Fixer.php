@@ -31,7 +31,6 @@ class CRM_Householdmerge_Logic_Fixer {
     // load all contacts
     $new_contact_id = NULL;
     $contact_id_list = implode(',', $contact_ids);
-    Civi::log()->debug("civicrm_api3('Contact', 'get', array('id' => array('IN' => {$contact_id_list})))");
     $contact_data = civicrm_api3('Contact', 'get', array('id' => array('IN' => $contact_ids)));
     foreach ($contact_data['values'] as $contact_id => $contact) {
       if ($contact['contact_type'] == 'Individual') {
@@ -79,7 +78,7 @@ class CRM_Householdmerge_Logic_Fixer {
    *
    * @return array list of contact IDs
    */
-  public static function retrieveTargetIdsByActivityId($activity_id) {
+  public static function retrieveTargetIdsByActivityId(int $activity_id) : array {
     if (empty($activity_id)) {
       return [];
     }
@@ -94,10 +93,8 @@ class CRM_Householdmerge_Logic_Fixer {
     // and return as an array
     $targetIds = [];
     foreach ($activityTargetContacts as $activity_record) {
-      $targetIds[] = $activity_record['activity_id.target_contact_id'];
+      $targetIds = array_merge($targetIds, $activity_record['activity_id.target_contact_id']);
     }
-    $targetIds = array_unique($targetIds);
-    Civi::log()->debug(json_encode($targetIds));
-    return $targetIds;
+    return array_unique($targetIds);
   }
 }
