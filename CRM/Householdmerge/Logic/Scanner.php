@@ -269,7 +269,8 @@ class CRM_Householdmerge_Logic_Scanner {
 
     } else {
       error_log("UNDEFINED METHOD TO DETERMINE HEAD: $method");
-      return reset(array_keys($members));
+      $member_keys = array_keys($members);
+      return reset($member_keys);
     }
   }
 

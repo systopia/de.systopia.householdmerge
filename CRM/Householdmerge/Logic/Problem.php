@@ -158,7 +158,7 @@ class CRM_Householdmerge_Logic_Problem {
 
   /**
    *
-   * @return activity_id if a new activity was created
+   * @return ?int activity_id if a new activity was created
    */
   public function createActivity() {
     // only create if no live activity exists (don't create the same one over and over)

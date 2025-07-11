@@ -96,7 +96,7 @@ class CRM_Householdmerge_MergeController {
    * redirect back to an existing (ongoing) household merge process.
    */
   public function goBackToHHMerge($household_id) {
-    $contact_ids = $this->session->get($mainId, 'hhmerge');
+    $contact_ids = $this->session->get($household_id, 'hhmerge');
     if (!empty($contact_ids)) {
       $mergeview_url = CRM_Utils_System::url('civicrm/household/mergeview', "hid=$household_id&oids=$contact_ids");
       CRM_Utils_System::redirect($mergeview_url);
