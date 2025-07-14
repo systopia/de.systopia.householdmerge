@@ -18,7 +18,7 @@ use CRM_Householdmerge_ExtensionUtil as E;
 /**
  * Collection of upgrade steps.
  */
-class CRM_Householdmerge_Upgrader extends CRM_Householdmerge_Upgrader_Base {
+class CRM_Householdmerge_Upgrader extends CRM_Extension_Upgrader_Base {
 
   /**
    * Migrate individual settings into bucket
