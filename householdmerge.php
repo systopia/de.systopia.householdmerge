@@ -92,14 +92,3 @@ function householdmerge_civicrm_merge($type, &$data, $mainId = NULL, $otherId = 
 function householdmerge_civicrm_alterAPIPermissions($entity, $action, &$params, &$permissions) {
   $permissions['contact']['create_household'] = CRM_Householdmerge_Logic_Configuration::getCreateHouseholdPermission();
 }
-
-/**
- * Implements hook_civicrm_xmlMenu().
- *
- * @param array $files
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_xmlMenu
- */
-function householdmerge_civicrm_xmlMenu(&$files) {
-  _householdmerge_civix_civicrm_xmlMenu($files);
-}
