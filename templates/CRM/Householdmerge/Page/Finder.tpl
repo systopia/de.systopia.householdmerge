@@ -35,7 +35,7 @@
 
 <h3>{ts domain="de.systopia.householdmerge"}Results{/ts}</h3>
 {foreach from=$proposals item=proposal}
-{assign var=some_member_id value=$proposal.member_ids|@reset}
+{assign var=some_member_id value=$proposal.member_ids[0]}
 
 <h2>
   <input style="float:left;" value="{$proposal.id}" type="checkbox" id="select-{$proposal.id}" class="selector" checked="1" />
