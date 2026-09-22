@@ -25,7 +25,7 @@ class CRM_Householdmerge_Page_Mergeview extends CRM_Core_Page {
    * @param (via URL) oids other contact IDs, comma separated, to be merged int hid
    */
   public function run() {
-    CRM_Utils_System::setTitle(ts('Merge Contacts into Household', array('domain' => 'de.systopia.householdmerge')));
+    CRM_Utils_System::setTitle(ts('Merge Contacts into Household', ['domain' => 'de.systopia.householdmerge']));
 
     // extract IDs
     $household_id = (int) CRM_Utils_Array::value('hid', $_REQUEST);
@@ -40,17 +40,17 @@ class CRM_Householdmerge_Page_Mergeview extends CRM_Core_Page {
 
     // verify parameters
     if (empty($household_id) || empty($other_ids)) {
-      CRM_Core_Session::setStatus(ts('Household-Merge page cannot be called without "hid" or "oids" parameter.', array('domain' => 'de.systopia.householdmerge')), ts('Error', array('domain' => 'de.systopia.householdmerge')), 'error');
+      CRM_Core_Session::setStatus(ts('Household-Merge page cannot be called without "hid" or "oids" parameter.', ['domain' => 'de.systopia.householdmerge']), ts('Error', ['domain' => 'de.systopia.householdmerge']), 'error');
       CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/dashboard'));
       return;
     }
 
     // NOW: load all contacts
-    $household = civicrm_api3('Contact', 'getsingle', array('id' => $household_id));
+    $household = civicrm_api3('Contact', 'getsingle', ['id' => $household_id]);
 
     $other_contacts = [];
     foreach ($other_ids as $other_id) {
-      $other_contact = civicrm_api3('Contact', 'getsingle', array('id' => $other_id));
+      $other_contact = civicrm_api3('Contact', 'getsingle', ['id' => $other_id]);
       $other_contact['was_merged'] = (bool) !empty($other_contact['contact_is_deleted']);
       $other_contacts[] = $other_contact;
     }
@@ -65,7 +65,7 @@ class CRM_Householdmerge_Page_Mergeview extends CRM_Core_Page {
       $cacheParams = [];
       $mode = 'safe';
       $dupePairs = [];
-      $dupePairs[] = array('srcID' => $other_contact['id'], 'dstID' => $household_id);
+      $dupePairs[] = ['srcID' => $other_contact['id'], 'dstID' => $household_id];
 
       $result = CRM_Dedupe_Merger::merge($dupePairs, $cacheParams, $mode, FALSE);
 

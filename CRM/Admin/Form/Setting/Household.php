@@ -31,25 +31,25 @@ class CRM_Admin_Form_Setting_Household extends CRM_Admin_Form_Setting {
                     'hh_mode',
                     E::ts('Household Mode'),
                     CRM_Householdmerge_Logic_Configuration::getHouseholdModeOptions(),
-                    array('class' => 'crm-select2 huge'));
+                    ['class' => 'crm-select2 huge']);
 
     $this->addElement('select',
                     'hh_head_mode',
                     E::ts('Household Head Mode'),
                     CRM_Householdmerge_Logic_Configuration::getHouseholdHeadModeOptions(),
-                    array('class' => 'crm-select2 huge'));
+                    ['class' => 'crm-select2 huge']);
 
     $this->addElement('select',
                     'hh_member_relation',
                     E::ts('Household Member Relationship'),
                     $relationshipOptions,
-                    array('class' => 'crm-select2 huge'));
+                    ['class' => 'crm-select2 huge']);
 
     $this->addElement('select',
                     'hh_head_relation',
                     E::ts('Household Head Relationship'),
                     $relationshipOptions,
-                    array('class' => 'crm-select2 huge'));
+                    ['class' => 'crm-select2 huge']);
 
     $this->addElement('select',
                     'hh_location_types',
@@ -80,7 +80,7 @@ class CRM_Admin_Form_Setting_Household extends CRM_Admin_Form_Setting {
     $values = $this->exportValues();
 
     // store settings
-    $expected_values = array('hh_mode', 'hh_head_mode', 'hh_member_relation', 'hh_head_relation', 'relationship_type', 'hh_location_types');
+    $expected_values = ['hh_mode', 'hh_head_mode', 'hh_member_relation', 'hh_head_relation', 'relationship_type', 'hh_location_types'];
     foreach ($expected_values as $key) {
       if (isset($values[$key])) {
         CRM_Householdmerge_Logic_Configuration::setConfigValue($key, $values[$key]);
@@ -95,11 +95,11 @@ class CRM_Admin_Form_Setting_Household extends CRM_Admin_Form_Setting {
   protected function getEligibleRelationships() {
     $relationship_types = [];
 
-    $list_ab = civicrm_api3('RelationshipType', 'get', array('contact_type_a' => 'Individual', 'contact_type_b' => 'Household'));
+    $list_ab = civicrm_api3('RelationshipType', 'get', ['contact_type_a' => 'Individual', 'contact_type_b' => 'Household']);
     foreach ($list_ab['values'] as $index => $relationship_type) {
       $relationship_types[$relationship_type['id']] = $relationship_type['label_a_b'];
     }
-    $list_ba = civicrm_api3('RelationshipType', 'get', array('contact_type_b' => 'Individual', 'contact_type_a' => 'Household'));
+    $list_ba = civicrm_api3('RelationshipType', 'get', ['contact_type_b' => 'Individual', 'contact_type_a' => 'Household']);
     foreach ($list_ba['values'] as $index => $relationship_type) {
       $relationship_types[$relationship_type['id']] = $relationship_type['label_b_a'];
     }

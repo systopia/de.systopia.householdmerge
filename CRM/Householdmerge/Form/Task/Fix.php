@@ -23,8 +23,8 @@ require_once 'CRM/Core/Form.php';
 class CRM_Householdmerge_Form_Task_Fix extends CRM_Activity_Form_Task {
 
   function buildQuickForm() {
-    CRM_Utils_System::setTitle(ts("Automatic Correction of Household Problems", array('domain' => 'de.systopia.householdmerge')));
-    $this->addDefaultButtons(ts("Try to fix", array('domain' => 'de.systopia.householdmerge')), 'done');
+    CRM_Utils_System::setTitle(ts("Automatic Correction of Household Problems", ['domain' => 'de.systopia.householdmerge']));
+    $this->addDefaultButtons(ts("Try to fix", ['domain' => 'de.systopia.householdmerge']), 'done');
 
     // calculate some stats
     $activity_type_id    = (int) CRM_Householdmerge_Logic_Configuration::getCheckHouseholdActivityTypeID();
@@ -78,8 +78,8 @@ class CRM_Householdmerge_Form_Task_Fix extends CRM_Activity_Form_Task {
 
     // show stats
     CRM_Core_Session::setStatus(
-      ts('%1 of the %2 selected activities were processed, %3 of them could be fixed.', array(1 => $activities_detected, 2 => $activities_total, 3 => $activities_fixed, 'domain' => 'de.systopia.householdmerge')),
-      ts('%1 Household Problems Fixed', array(1 => $activities_fixed, 'domain' => 'de.systopia.householdmerge')),
+      ts('%1 of the %2 selected activities were processed, %3 of them could be fixed.', [1 => $activities_detected, 2 => $activities_total, 3 => $activities_fixed, 'domain' => 'de.systopia.householdmerge']),
+      ts('%1 Household Problems Fixed', [1 => $activities_fixed, 'domain' => 'de.systopia.householdmerge']),
       ($activities_fixed > 0)? 'info' : 'warn');
 
     parent::postProcess();

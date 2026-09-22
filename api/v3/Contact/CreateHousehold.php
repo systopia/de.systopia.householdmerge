@@ -52,33 +52,33 @@ function civicrm_api3_contact_create_household($params) {
 
 
 function _civicrm_api3_contact_create_household_spec(&$params) {
-  $params['mode'] = array(
+  $params['mode'] = [
     'title'        => "Household Mode",
     'description'  => "See CRM_Householdmerge_Logic_Configuration for valid modes. If omitted, the configured mode will be used.",
     'type'         => CRM_Utils_Type::T_STRING,
-  );
+  ];
 
-  $params['member_ids'] = array(
+  $params['member_ids'] = [
     'title'        => "New members' contact IDs",
     'description'  => "list of contact IDs",
     // 'type'         => CRM_Utils_Type::T_STRING,
-  );
+  ];
 
-  $params['head_id'] = array(
+  $params['head_id'] = [
     'title'        => "Contact ID of household head",
     'description'  => "Only used in mode 'hierarchy'",
     'type'         => CRM_Utils_Type::T_STRING,
-  );
+  ];
 
-  $params['address'] = array(
+  $params['address'] = [
     'title'        => "Address to be created with the household",
     'description'  => "Only used when a new household is created.",
-  );
+  ];
 
-  $params['household_name'] = array(
+  $params['household_name'] = [
     'title'        => "name for the household",
     'description'  => "Only used when a new household is created.",
     'type'         => CRM_Utils_Type::T_STRING,
-  );
+  ];
 }
 

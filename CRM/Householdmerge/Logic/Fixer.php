@@ -31,7 +31,7 @@ class CRM_Householdmerge_Logic_Fixer {
     // load all contacts
     $new_contact_id = NULL;
     $contact_id_list = implode(',', $contact_ids);
-    $contact_data = civicrm_api3('Contact', 'get', array('id' => array('IN' => $contact_ids)));
+    $contact_data = civicrm_api3('Contact', 'get', ['id' => ['IN' => $contact_ids]]);
     foreach ($contact_data['values'] as $contact_id => $contact) {
       if ($contact['contact_type'] == 'Individual') {
         if ($new_contact_id === NULL) {
@@ -52,20 +52,20 @@ class CRM_Householdmerge_Logic_Fixer {
     // check if there is already a relationship
     $relation_ids[] = CRM_Householdmerge_Logic_Configuration::getMemberRelationID();
     $relation_ids[] = CRM_Householdmerge_Logic_Configuration::getHeadRelationID();
-    $existing_relationship = civicrm_api3('Relationship', 'get', array(
+    $existing_relationship = civicrm_api3('Relationship', 'get', [
       'contact_id_a'         => $new_contact_id,
       'contact_id_b'         => $problem->getHouseholdID(),
-      'relationship_type_id' => array('IN' => $relation_ids),
-      'is_active'            => 1));
+      'relationship_type_id' => ['IN' => $relation_ids],
+      'is_active'            => 1]);
     if ($existing_relationship['count']) {
       // there already is a relationship, the problem IS fixed already...
     } else {
       // create a new relationship
-      civicrm_api3('Relationship', 'create', array(
+      civicrm_api3('Relationship', 'create', [
         'contact_id_a'         => $new_contact_id,
         'contact_id_b'         => $problem->getHouseholdID(),
         'relationship_type_id' => CRM_Householdmerge_Logic_Configuration::getMemberRelationID(),
-        'is_active'            => 1));
+        'is_active'            => 1]);
     }
 
     return TRUE;

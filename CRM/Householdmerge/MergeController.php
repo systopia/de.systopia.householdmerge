@@ -81,7 +81,7 @@ class CRM_Householdmerge_MergeController {
 
       // automatically "resolve" some of the problems of merging an individual into a household
       $conflicts = &$data['fields_in_conflict'];
-      $fields_to_ignore = array('move_first_name', 'move_last_name', 'move_gender_id', 'move_birth_date', 'move_prefix_id');
+      $fields_to_ignore = ['move_first_name', 'move_last_name', 'move_gender_id', 'move_birth_date', 'move_prefix_id'];
       foreach ($conflicts as $key => $value) {
         if (in_array($key, $fields_to_ignore)) {
           unset($conflicts[$key]);

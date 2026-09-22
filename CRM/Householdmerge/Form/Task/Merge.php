@@ -29,7 +29,7 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
     $organisations = [];
 
     foreach ($this->_contactIds as $contact_id) {
-      $contact = civicrm_api3('Contact', 'getsingle', array('id' => $contact_id));
+      $contact = civicrm_api3('Contact', 'getsingle', ['id' => $contact_id]);
       if ($contact['contact_type'] == 'Individual') {
         $contacts[$contact_id] = $contact;
       } elseif ($contact['contact_type'] == 'Household') {
@@ -44,10 +44,10 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
     $this->assign('ignored',    $organisations);
 
     $patterns = $this->calculatePatterns($contacts);
-    $patterns['custom'] = ts("Custom Name", array('domain' => 'de.systopia.householdmerge'));
+    $patterns['custom'] = ts("Custom Name", ['domain' => 'de.systopia.householdmerge']);
 
     // adjust title
-    CRM_Utils_System::setTitle(ts("Merge %1 contacts into a Household", array(1=>count($contacts), 'domain' => 'de.systopia.householdmerge')));
+    CRM_Utils_System::setTitle(ts("Merge %1 contacts into a Household", [1=>count($contacts), 'domain' => 'de.systopia.householdmerge']));
 
     // Add switch and ID list
     $this->add('hidden', 'hh_option');
@@ -57,15 +57,15 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
     $this->add(
       'text',
       'household_name',
-      ts('Household Name', array('domain' => 'de.systopia.householdmerge')),
-      array('size' => 32, 'placeholder' => ts("Enter household name", array('domain' => 'de.systopia.householdmerge'))),
+      ts('Household Name', ['domain' => 'de.systopia.householdmerge']),
+      ['size' => 32, 'placeholder' => ts("Enter household name", ['domain' => 'de.systopia.householdmerge'])],
       FALSE
     );
 
     $pattern_select = $this->add(
       'select',
       'household_name_pattern',
-      ts('Household Name', array('domain' => 'de.systopia.householdmerge')),
+      ts('Household Name', ['domain' => 'de.systopia.householdmerge']),
       $patterns,
       TRUE
     );
@@ -75,24 +75,24 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
     $this->add(
       'text',
       'existing_household',
-      ts('Enter Household ID', array('domain' => 'de.systopia.householdmerge')),
-      array('size' => 5),
+      ts('Enter Household ID', ['domain' => 'de.systopia.householdmerge']),
+      ['size' => 5],
       false
     );
 
 
-    $this->addButtons(array(
-      array(
+    $this->addButtons([
+      [
         'type' => 'submit',
-        'name' => ts('Merge', array('domain' => 'de.systopia.householdmerge')),
+        'name' => ts('Merge', ['domain' => 'de.systopia.householdmerge']),
         'isDefault' => TRUE,
-      ),
-      array(
+      ],
+      [
         'type' => 'cancel',
-        'name' => ts('Abort', array('domain' => 'de.systopia.householdmerge')),
+        'name' => ts('Abort', ['domain' => 'de.systopia.householdmerge']),
         'isDefault' => FALSE,
-      ),
-    ));
+      ],
+    ]);
 
     parent::buildQuickForm();
   }
@@ -108,10 +108,10 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
       } else {
         $household_name = $values['household_name_pattern'];
       }
-      $household = civicrm_api3('Contact', 'create', array(
+      $household = civicrm_api3('Contact', 'create', [
          'contact_type'   => 'Household',
          'household_name' => $household_name,
-        ));
+        ]);
       $household_id = $household['id'];
     } elseif ($values['hh_option'] == 'existing') {
       $household_id = (int) $values['existing_household'];
@@ -167,7 +167,7 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
         $last_name = implode('-', $last_names);
       }
       $first_names_count = count($first_names);
-      $and = ts('and', array('domain' => 'de.systopia.householdmerge'));
+      $and = ts('and', ['domain' => 'de.systopia.householdmerge']);
       if ($first_names_count > 2) {
         $first_part = implode(', ', array_slice($first_names, 0, $first_names_count-1));
         $patterns[1] = $first_part.' '.$and.' '.$first_names[$first_names_count-1].' '.$last_name;
@@ -178,12 +178,12 @@ class CRM_Householdmerge_Form_Task_Merge extends CRM_Contact_Form_Task {
 
     // OPTION 2: "The Examples"
     if ($common_last) {
-      $patterns[2] = ts("The %1s", array(1=>$common_last, 'domain' => 'de.systopia.householdmerge'));
+      $patterns[2] = ts("The %1s", [1=>$common_last, 'domain' => 'de.systopia.householdmerge']);
     }
 
     // OPTION 3: "Example Family"
     if ($common_last) {
-      $patterns[3] = ts("%1 Family", array(1=>$common_last, 'domain' => 'de.systopia.householdmerge'));
+      $patterns[3] = ts("%1 Family", [1=>$common_last, 'domain' => 'de.systopia.householdmerge']);
     }
 
 

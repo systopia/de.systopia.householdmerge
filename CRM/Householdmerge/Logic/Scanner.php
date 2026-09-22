@@ -63,7 +63,7 @@ class CRM_Householdmerge_Logic_Scanner {
     $members = [];
     for ($i=0; $i < count($contact_ids); $i++) {
       $contact_id = $contact_ids[$i];
-      $members[$contact_id] = array(
+      $members[$contact_id] = [
         'id' => $contact_id,
         'display_name'           => $display_names[$i],
         'gender_id'              => $gender_ids[$i],
@@ -74,7 +74,7 @@ class CRM_Householdmerge_Logic_Scanner {
         'postal_code'            => $signature['postal_code'],
         'city'                   => $signature['city'],
         'country_id'             => $signature['country_id'],
-      );
+      ];
     }
 
     // stop here if there's not enough
@@ -82,20 +82,20 @@ class CRM_Householdmerge_Logic_Scanner {
       return NULL;
     }
 
-    $candidate = array(
+    $candidate = [
       'id'             => $this->createID(),
       'household_id'   => 0,
       'head_id'        => 0,
       'household_name' => '',
       'member_ids'     => [],
       'contacts'       => [],
-      'address'        => array('street_address'         => $signature['street_address'],
+      'address'        => ['street_address'         => $signature['street_address'],
                                 'supplemental_address_1' => $signature['supplemental_address_1'],
                                 'supplemental_address_2' => $signature['supplemental_address_2'],
                                 'postal_code'            => $signature['postal_code'],
                                 'city'                   => $signature['city'],
-                                'country_id'             => $signature['country_id']),
-      );
+                                'country_id'             => $signature['country_id']],
+      ];
 
     foreach ($members as $member_id => $member) {
       $candidate['member_ids'][] = $member['id'];
@@ -132,7 +132,7 @@ class CRM_Householdmerge_Logic_Scanner {
     $member_relation_id = CRM_Householdmerge_Logic_Configuration::getMemberRelationID();
     $head_relation_id = CRM_Householdmerge_Logic_Configuration::getHeadRelationID();
     if ($member_relation_id) {
-      $relationship_ids = array($member_relation_id);
+      $relationship_ids = [$member_relation_id];
       if ($head_relation_id) {
         $relationship_ids[] = $head_relation_id;
       }
@@ -200,7 +200,7 @@ class CRM_Householdmerge_Logic_Scanner {
      //CRM_Core_Error::debug_log_message("Scanner Query:\n" . $scanner_sql);
     $scanner = CRM_Core_DAO::executeQuery($scanner_sql);
     while ($scanner->fetch()) {
-      $candidates[$scanner->contact_id] = array(
+      $candidates[$scanner->contact_id] = [
         'contact_ids'            => $scanner->contact_ids,
         'display_names'          => $scanner->display_names,
         'gender_ids'             => $scanner->gender_ids,
@@ -210,7 +210,7 @@ class CRM_Householdmerge_Logic_Scanner {
         'postal_code'            => $scanner->postal_code,
         'city'                   => $scanner->city,
         'country_id'             => $scanner->country_id,
-        'last_name'              => $scanner->last_name);
+        'last_name'              => $scanner->last_name];
     }
     return $candidates;
   }
