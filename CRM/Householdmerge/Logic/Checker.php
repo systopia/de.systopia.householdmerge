@@ -84,7 +84,7 @@ class CRM_Householdmerge_Logic_Checker {
     $problems_identified = [];
 
     // load household
-    $household = civicrm_api3('Contact', 'getsingle', array('id' => $household_id));
+    $household = civicrm_api3('Contact', 'getsingle', ['id' => $household_id]);
 
     // load members
     $members = $this->getMembers($household_id);
@@ -94,7 +94,7 @@ class CRM_Householdmerge_Logic_Checker {
       if (count($members) == 0) {
         $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HOM0', $household_id);
       } else {
-        $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HOMX', $household_id, array('count' => count($members)));
+        $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HOMX', $household_id, ['count' => count($members)]);
       }
     }
 
@@ -134,7 +134,7 @@ class CRM_Householdmerge_Logic_Checker {
         $tags = CRM_Core_BAO_EntityTag::getContactTags($head['id']);
         foreach ($tags as $tag) {
           if (in_array($tag, $bad_tags)) {
-            $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HHTG', $household_id, array('tag' => $tag));
+            $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HHTG', $household_id, ['tag' => $tag]);
           }
         }
       }
@@ -142,8 +142,8 @@ class CRM_Householdmerge_Logic_Checker {
       // CHECK 6: is the head also head of another household?
       foreach ($heads as $head) {
         $head_relation_id = CRM_Householdmerge_Logic_Configuration::getHeadRelationID();
-        $relationships_a  = civicrm_api3('Relationship', 'get', array('contact_id_a' => $head['id'], 'relationship_type_id' => $head_relation_id, 'is_active' => 1));
-        $relationships_b  = civicrm_api3('Relationship', 'get', array('contact_id_b' => $head['id'], 'relationship_type_id' => $head_relation_id, 'is_active' => 1));
+        $relationships_a  = civicrm_api3('Relationship', 'get', ['contact_id_a' => $head['id'], 'relationship_type_id' => $head_relation_id, 'is_active' => 1]);
+        $relationships_b  = civicrm_api3('Relationship', 'get', ['contact_id_b' => $head['id'], 'relationship_type_id' => $head_relation_id, 'is_active' => 1]);
         if ($relationships_a['count'] + $relationships_b['count'] > 1) {
           $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HHMM', $household_id);
         }
@@ -188,7 +188,7 @@ class CRM_Householdmerge_Logic_Checker {
     }
 
     // ...and remove all members that still share the household's main address
-    $addresses = civicrm_api3('Address', 'get', array('contact_id' => array('IN' => $member_ids), 'option.limit' => 999999));
+    $addresses = civicrm_api3('Address', 'get', ['contact_id' => ['IN' => $member_ids], 'option.limit' => 999999]);
     foreach ($addresses['values'] as $address) {
       if (  $address['city'] == $household['city']
         &&  $address['street_address'] == $household['street_address']
@@ -202,7 +202,7 @@ class CRM_Householdmerge_Logic_Checker {
 
     // every contact that's still on the list should NOT have the address any more
     foreach ($member_ids as $member_id) {
-      $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HMBA', $household['id'], array('member_id' => $member_id));
+      $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HMBA', $household['id'], ['member_id' => $member_id]);
     }
   }
 
@@ -222,7 +222,7 @@ class CRM_Householdmerge_Logic_Checker {
     $member_relation_id = CRM_Householdmerge_Logic_Configuration::getMemberRelationID();
     $head_relation_id   = CRM_Householdmerge_Logic_Configuration::getHeadRelationID();
     if (!$member_relation_id) return;
-    $relationship_ids = array($member_relation_id);
+    $relationship_ids = [$member_relation_id];
     if ($head_relation_id) $relationship_ids[] = $head_relation_id;
     $relationship_id_list = implode(',', $relationship_ids);
 
@@ -242,15 +242,15 @@ class CRM_Householdmerge_Logic_Checker {
                                           AND (end_date IS NULL OR end_date > NOW())
                                           AND (is_active = 1)
                                         );";
-    $queryParameters = array(
-      1 => array($household['household_name'], 'String'),
-      2 => array($household['street_address'], 'String'),
-      3 => array($household['postal_code'], 'String'),
-      4 => array($household['city'], 'String'),
-    );
+    $queryParameters = [
+      1 => [$household['household_name'], 'String'],
+      2 => [$household['street_address'], 'String'],
+      3 => [$household['postal_code'], 'String'],
+      4 => [$household['city'], 'String'],
+    ];
     $new_members = CRM_Core_DAO::executeQuery($search_sql, $queryParameters);
     while ($new_members->fetch()) {
-      $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HMNW', $household['id'], array('member_id' => $new_members->contact_id));
+      $problems_identified[] = CRM_Householdmerge_Logic_Problem::createProblem('HMNW', $household['id'], ['member_id' => $new_members->contact_id]);
     }
   }
 
@@ -267,12 +267,12 @@ class CRM_Householdmerge_Logic_Checker {
     $member_ids = [];
 
     // load the relationships (both ways)
-    $query = array(
-      'relationship_type_id' => array('IN' => array($member_relation_id, $head_relation_id)),
+    $query = [
+      'relationship_type_id' => ['IN' => [$member_relation_id, $head_relation_id]],
       'is_active'            => 1,
       'contact_id_a'         => $household_id,
       'option.limit'         => 99999
-      );
+      ];
     $member_query = civicrm_api3('Relationship', 'get', $query);
     foreach ($member_query['values'] as $relationship) {
       $member_ids[] = $relationship['contact_id_b'];
@@ -292,10 +292,10 @@ class CRM_Householdmerge_Logic_Checker {
 
     if (!empty($member_ids)) {
       // and load the memeber contacts
-      $contact_query = civicrm_api3('Contact', 'get', array(
-          'id'           => array('IN' => $member_ids),
+      $contact_query = civicrm_api3('Contact', 'get', [
+          'id'           => ['IN' => $member_ids],
           'contact_type' => 'Individual',
-          'is_deleted'   => 0));
+          'is_deleted'   => 0]);
       $members = $contact_query['values'];
 
       // set the relationship type

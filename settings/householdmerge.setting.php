@@ -16,8 +16,8 @@
 /*
 * Settings metadata file
 */
-return array(
-  'householdmerge' => array(
+return [
+  'householdmerge' => [
     'group_name' => 'SYSTOPIA Household Extension',
     'group' => 'de.systopia.householdmerge',
     'name' => 'householdmerge',
@@ -27,5 +27,5 @@ return array(
     'is_domain' => 1,
     'is_contact' => 0,
     'description' => 'SYSTOPIA Household Merge settings'
-  )
-);
+  ]
+];

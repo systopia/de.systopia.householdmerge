@@ -33,15 +33,15 @@ class CRM_Householdmerge_Logic_Worker {
    */
   public function createLinkedHousehold($last_name, $member_ids, $household_address, $head_id = NULL) {
     // create household
-    $household = civicrm_api3('Contact', 'create', array(
+    $household = civicrm_api3('Contact', 'create', [
       'contact_type'   => 'Household',
       'household_name' => $last_name,
-    ));
+    ]);
     $household_id = $household['id'];
 
     // also, create the address
     if ($household_address) {
-      $address = civicrm_api3('Address', 'create', array(
+      $address = civicrm_api3('Address', 'create', [
         'contact_id'             => $household_id,
         'location_type_id'       => $this->getHHAddressLocationTypeID(),
         'street_address'         => $household_address['street_address'],
@@ -50,7 +50,7 @@ class CRM_Householdmerge_Logic_Worker {
         'city'                   => $household_address['city'],
         'postal_code'            => $household_address['postal_code'],
         'country_id'             => $household_address['country_id'],
-        ));
+        ]);
     }
 
     // link head (if present)
@@ -81,26 +81,26 @@ class CRM_Householdmerge_Logic_Worker {
 
     // look up the right parameters (direction)
     if (!isset($this->_relationID2fields[$relation_type_id])) {
-      $relation_type = civicrm_api3('RelationshipType', 'getsingle', array('id' => $relation_type_id));
+      $relation_type = civicrm_api3('RelationshipType', 'getsingle', ['id' => $relation_type_id]);
       if ($relation_type['contact_type_a'] == 'Household') {
-        $this->_relationID2fields[$relation_type_id] = array(
+        $this->_relationID2fields[$relation_type_id] = [
           'household' => 'contact_id_a',
-          'contact'   => 'contact_id_b');
+          'contact'   => 'contact_id_b'];
       } else {
-        $this->_relationID2fields[$relation_type_id] = array(
+        $this->_relationID2fields[$relation_type_id] = [
           'household' => 'contact_id_b',
-          'contact'   => 'contact_id_a');
+          'contact'   => 'contact_id_a'];
       }
     }
 
     // finally create the relationship
     $rspec = $this->_relationID2fields[$relation_type_id];
-    civicrm_api3('Relationship', 'create', array(
+    civicrm_api3('Relationship', 'create', [
       'relationship_type_id' => $relation_type_id,
       $rspec['household']    => $household_id,
       $rspec['contact']      => $contact_id,
       'is_active'            => 1,
-    ));
+    ]);
   }
 
   /**
@@ -108,7 +108,7 @@ class CRM_Householdmerge_Logic_Worker {
    */
   public function getHHAddressLocationTypeID() {
     if ($this->_household_address_location_type_id == NULL) {
-      $types = civicrm_api3('LocationType', 'get', array('is_default' => 1));
+      $types = civicrm_api3('LocationType', 'get', ['is_default' => 1]);
       if ($types['count'] == 0) {
         $types = civicrm_api3('LocationType', 'get', []);
       }

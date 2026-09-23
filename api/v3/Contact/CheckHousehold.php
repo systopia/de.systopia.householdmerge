@@ -40,16 +40,16 @@ function civicrm_api3_contact_check_household($params) {
 
 
 function _civicrm_api3_contact_check_household_spec(&$params) {
-  $params['max_count'] = array(
+  $params['max_count'] = [
     'title'        => "Household Mode",
     'description'  => "See CRM_Householdmerge_Logic_Configuration for valid modes. If omitted, the configured mode will be used.",
     'type'         => CRM_Utils_Type::T_STRING,
-  );
+  ];
 
-  $params['household_id'] = array(
+  $params['household_id'] = [
     'title'        => "Household Mode",
     'description'  => "See CRM_Householdmerge_Logic_Configuration for valid modes. If omitted, the configured mode will be used.",
     'type'         => CRM_Utils_Type::T_STRING,
-  );
+  ];
 }
 

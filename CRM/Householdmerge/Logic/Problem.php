@@ -22,44 +22,44 @@ class CRM_Householdmerge_Logic_Problem {
 
   public static function getProblemClasses() {
     if (self::$_problem_classes === NULL) {
-      self::$_problem_classes = array(
-      'HOM0' => array(
+      self::$_problem_classes = [
+      'HOM0' => [
                   'code'  => 'HOM0',
-                  'title' => ts("Household has no members any more", array('domain' => 'de.systopia.householdmerge')),
-                  ),
-      'HOMX' => array(
+                  'title' => ts("Household has no members any more", ['domain' => 'de.systopia.householdmerge']),
+                  ],
+      'HOMX' => [
                   'code'  => 'HOMX',
-                  'title' => ts("Household has only {count} member(s) left", array('domain' => 'de.systopia.householdmerge')),
-                  ),
-      'HHN0' => array(
+                  'title' => ts("Household has only {count} member(s) left", ['domain' => 'de.systopia.householdmerge']),
+                  ],
+      'HHN0' => [
                   'code'  => 'HHN0',
-                  'title' => ts("Household has no head any more", array('domain' => 'de.systopia.householdmerge')),
-                  ),
-      'HHN2' => array(
+                  'title' => ts("Household has no head any more", ['domain' => 'de.systopia.householdmerge']),
+                  ],
+      'HHN2' => [
                   'code'  => 'HHN2',
-                  'title' => ts("Household has multiple heads", array('domain' => 'de.systopia.householdmerge')),
-                  ),
-      'HHNC' => array(
+                  'title' => ts("Household has multiple heads", ['domain' => 'de.systopia.householdmerge']),
+                  ],
+      'HHNC' => [
                   'code'  => 'HHNC',
-                  'title' => ts("Household head has one of the 'do not contact' attributes set", array('domain' => 'de.systopia.householdmerge')),
-                  ),
-      'HHTG' => array(
+                  'title' => ts("Household head has one of the 'do not contact' attributes set", ['domain' => 'de.systopia.householdmerge']),
+                  ],
+      'HHTG' => [
                   'code'  => 'HHTG',
-                  'title' => ts("Household head has tag '{tag}'", array('domain' => 'de.systopia.householdmerge')),
-                  ),
-      'HHMM' => array(
+                  'title' => ts("Household head has tag '{tag}'", ['domain' => 'de.systopia.householdmerge']),
+                  ],
+      'HHMM' => [
                   'code'  => 'HHMM',
-                  'title' => ts("Household head is head of multiple households", array('domain' => 'de.systopia.householdmerge')),
-                  ),
-      'HMBA' => array(
+                  'title' => ts("Household head is head of multiple households", ['domain' => 'de.systopia.householdmerge']),
+                  ],
+      'HMBA' => [
                   'code'  => 'HMBA',
-                  'title' => ts("Household member does not share the household's address any more", array('domain' => 'de.systopia.householdmerge')),
-                  ),
-      'HMNW' => array(
+                  'title' => ts("Household member does not share the household's address any more", ['domain' => 'de.systopia.householdmerge']),
+                  ],
+      'HMNW' => [
                   'code'  => 'HMNW',
-                  'title' => ts("New household member detected", array('domain' => 'de.systopia.householdmerge')),
-                  ),
-      );
+                  'title' => ts("New household member detected", ['domain' => 'de.systopia.householdmerge']),
+                  ],
+      ];
     }
     return self::$_problem_classes;
   }
@@ -81,7 +81,7 @@ class CRM_Householdmerge_Logic_Problem {
    * extract a problem from a given activity
    */
   public static function extractProblem($activity_id) {
-    $activity = civicrm_api3('Activity', 'getsingle', array('id' => $activity_id));
+    $activity = civicrm_api3('Activity', 'getsingle', ['id' => $activity_id]);
     if ($activity['activity_type_id'] != CRM_Householdmerge_Logic_Configuration::getCheckHouseholdActivityTypeID()) {
       return NULL;
     }
@@ -94,7 +94,7 @@ class CRM_Householdmerge_Logic_Problem {
     $code = substr($activity['subject'], 1, 4);
 
     // TODO: load member at this point?
-    return self::createProblem($code, $activity['source_contact_id'], array('activity_id' => $activity_id));
+    return self::createProblem($code, $activity['source_contact_id'], ['activity_id' => $activity_id]);
   }
 
 
@@ -130,9 +130,9 @@ class CRM_Householdmerge_Logic_Problem {
 
     if ($fixed && $close_activity && $this->getActivityID()) {
       // mark activity as completed
-      civicrm_api3('Activity','create', array(
+      civicrm_api3('Activity','create', [
         'id'        => $this->getActivityID(),
-        'status_id' => CRM_Householdmerge_Logic_Configuration::getCompletedActivityStatusID()));
+        'status_id' => CRM_Householdmerge_Logic_Configuration::getCompletedActivityStatusID()]);
     }
 
     return $fixed;
@@ -184,7 +184,7 @@ class CRM_Householdmerge_Logic_Problem {
     $activity_data['activity_date_time'] = date("Ymdhis");
     $activity_data['activity_type_id']   = CRM_Householdmerge_Logic_Configuration::getCheckHouseholdActivityTypeID();
     $activity_data['status_id']          = CRM_Householdmerge_Logic_Configuration::getScheduledActivityStatusID();
-    $activity_data['target_contact_id']  = array((int) $this->household_id);
+    $activity_data['target_contact_id']  = [(int) $this->household_id];
     if (!empty($this->params['member_id'])) {
       $activity_data['target_contact_id'][] = (int) $this->params['member_id'];
     }
@@ -234,7 +234,7 @@ class CRM_Householdmerge_Logic_Problem {
                        AND civicrm_activity.subject LIKE %1
                        AND target.contact_id = $household_id
                        $member_clause ;";
-    $selector_params = array(1 => array($sentinel, 'String'));
+    $selector_params = [1 => [$sentinel, 'String']];
     $query = CRM_Core_DAO::executeQuery($selector_sql, $selector_params);
     return $query->fetch();
   }

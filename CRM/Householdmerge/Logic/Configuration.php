@@ -86,11 +86,11 @@ class CRM_Householdmerge_Logic_Configuration {
    * @return array
    */
   public static function getHouseholdModeOptions() {
-    return array(
-      'link'      => ts("Linked with household", array('domain' => 'de.systopia.householdmerge')),
-      'hierarchy' => ts("Linked with household (with head)", array('domain' => 'de.systopia.householdmerge')),
-      'merge'     => ts("Merged into household contact", array('domain' => 'de.systopia.householdmerge'))
-      );
+    return [
+      'link'      => ts("Linked with household", ['domain' => 'de.systopia.householdmerge']),
+      'hierarchy' => ts("Linked with household (with head)", ['domain' => 'de.systopia.householdmerge']),
+      'merge'     => ts("Merged into household contact", ['domain' => 'de.systopia.householdmerge'])
+      ];
   }
 
   /**
@@ -131,9 +131,9 @@ class CRM_Householdmerge_Logic_Configuration {
    * @return array
    */
   public static function getHouseholdHeadModeOptions() {
-    return array(
-      'topdonor2y_m' => ts("Most contribtutions in the last 2 years, male preferred", array('domain' => 'de.systopia.householdmerge')),
-      );
+    return [
+      'topdonor2y_m' => ts("Most contribtutions in the last 2 years, male preferred", ['domain' => 'de.systopia.householdmerge']),
+      ];
   }
 
   /**
@@ -148,14 +148,14 @@ class CRM_Householdmerge_Logic_Configuration {
    * get the "do not *" options that should not not be set with a head
    */
   public static function getDontXXXChecks() {
-    return array("do_not_email", "do_not_phone", "do_not_mail", "do_not_sms");
+    return ["do_not_email", "do_not_phone", "do_not_mail", "do_not_sms"];
   }
 
   /**
    * get a list of tag names that a household head should not have
    */
   public static function getBadHeadTags() {
-    return array("unbekannt verzogen",  "Annahme verweigert", "Im Ausland");
+    return ["unbekannt verzogen",  "Annahme verweigert", "Im Ausland"];
   }
 
   /**
@@ -184,7 +184,7 @@ class CRM_Householdmerge_Logic_Configuration {
    */
   public static function getCreateHouseholdPermission() {
     // nested array means 'OR'
-    return array(array('import contacts', 'administer CiviCRM'));
+    return [['import contacts', 'administer CiviCRM']];
   }
 
 
@@ -194,23 +194,23 @@ class CRM_Householdmerge_Logic_Configuration {
   public static function getCheckHouseholdActivityTypeID() {
     if (self::$activity_type_id === NULL) {
       // now make sure that the activity types exist
-      $option_group = civicrm_api3('OptionGroup', 'getsingle', array('name' => 'activity_type'));
+      $option_group = civicrm_api3('OptionGroup', 'getsingle', ['name' => 'activity_type']);
       if ($option_group==NULL) {
         throw new Exception("Couldn't find activity_type group.");
       }
 
-      $activities = civicrm_api3('OptionValue', 'get', array('name' => self::$HHMERGE_CHECK_HH_NAME, 'option_group_id' => $option_group['id'], 'option.limit' => 1));
+      $activities = civicrm_api3('OptionValue', 'get', ['name' => self::$HHMERGE_CHECK_HH_NAME, 'option_group_id' => $option_group['id'], 'option.limit' => 1]);
       if (empty($activities['id']) || $activities['count'] != 1) {
-        $activities = civicrm_api3('OptionValue', 'create', array(
-          'label'           => ts("Check Household", array('domain' => 'de.systopia.householdmerge')),
+        $activities = civicrm_api3('OptionValue', 'create', [
+          'label'           => ts("Check Household", ['domain' => 'de.systopia.householdmerge']),
           'name'            => self::$HHMERGE_CHECK_HH_NAME,
           'option_group_id' => $option_group['id'],
           'is_default'      => 0,
-          'description'     => ts("This activity indicates that there might be something wrong with this household, and that (a human) should look into it.", array('domain' => 'de.systopia.householdmerge')),
+          'description'     => ts("This activity indicates that there might be something wrong with this household, and that (a human) should look into it.", ['domain' => 'de.systopia.householdmerge']),
           'is_active'       => 1,
           'is_reserved'     => 1
-        ));
-        $activities = civicrm_api3('OptionValue', 'get', array('id' => $activities['id']));
+        ]);
+        $activities = civicrm_api3('OptionValue', 'get', ['id' => $activities['id']]);
       }
 
       self::$activity_type_id = $activities['values'][$activities['id']]['value'];
