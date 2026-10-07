@@ -13,8 +13,6 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
-require_once 'CRM/Core/Page.php';
-
 class CRM_Householdmerge_Page_Mergeview extends CRM_Core_Page {
 
   /**
